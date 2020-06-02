@@ -11,8 +11,8 @@ This repo contains code for evaluating forward encoding models of animals, actio
 * Anatomical
 * Hyperalignment
 #### Data
-* Anatomical data:
-* Hyperalignment data: 
+* Anatomical data: `/idata/DBIC/cara/models/aa/visual/all/leftout_run_1/sub-rid000001/lh`
+* Hyperalignment data: `/idata/DBIC/cara/models/ha_testsubj/visual/all/leftout_run_1/sub-rid00000*`
 
 
 ### 2. Semantic Features
