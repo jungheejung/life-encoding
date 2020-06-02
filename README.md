@@ -6,7 +6,7 @@ This repo contains code for evaluating forward encoding models of animals, actio
 * Cara's "code": `/ihome/cara/frontiers_18w/life/forward_encoding/`
 
 ## Data analysis procedures
-### Anatomical alignment and Hyperalignment
+### 1. Anatomical alignment and Hyperalignment
 #### Scripts
 * Anatomical
 * Hyperalignment
@@ -15,7 +15,7 @@ This repo contains code for evaluating forward encoding models of animals, actio
 * Hyperalignment data: 
 
 
-### Semantic Features
+### 2. Semantic Features
 #### Scripts
 * word2vector
 #### Data
@@ -23,7 +23,7 @@ This repo contains code for evaluating forward encoding models of animals, actio
 * Taxonomy
 * Scene
 
-### Regularized Regression
+### 3. Regularized Regression
 #### Scripts
 * Behavior
 * Taxonomy
@@ -41,7 +41,7 @@ This repo contains code for evaluating forward encoding models of animals, actio
 * Taxonomy & Scene
 * Behavior & Taxonomy & Scene
 
-### Variance Partition
+### 4. Variance Partition
 #### Scripts
 * Behavior
 * Taxonomy
@@ -59,3 +59,31 @@ This repo contains code for evaluating forward encoding models of animals, actio
 * Taxonomy & Scene
 * Behavior & Taxonomy & Scene
 
+# Actual data structure in Cara's repository
+```
+idata/DBIC/cara/life
+├──  data
+│     ├── annotations 
+│     │    └── 4 files: annotations_1.csv
+│     └── audio 
+│          └── 4 files: annotations_1.csv
+│     
+├──  pymvpa
+│     ├── search_hyper_mappers_life_mask_nofsel_lh_leftout_1.hdf5
+│     ├── ...
+│     └── search_hyper_mappers_life_mask_nofsel_rh_leftout_4.hdf5
+│
+├──  ridge
+│     ├── avg_corrs (e.g. annotations_1.csv)
+│     ├── models (e.g. life_part1.wav)
+│     ├── incomplete
+│     ├── niml
+│     └── only actions.npy     only_animals.npy               only_bg.npy            
+│     
+└──  semantic_cat
+      ├── actions_bg.npy       bg_animals.npy                 faces.npy
+      ├── actions.npy          bg.npy                         objects.npy
+      ├── all.npy              body_parts.npy                 places.npy
+      ├── animals_actions.npy  body_parts_strict_animals.npy  strict_animals_faces.npy
+      └── animals.npy          faces_body_parts.npy           strict_animals.npy
+```
