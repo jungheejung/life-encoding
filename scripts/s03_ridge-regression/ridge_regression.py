@@ -323,7 +323,7 @@ for test_p in participants:
     print('\n\nvalinds: {0}'.format(valinds))
 
     print('\n\nWriting to file...')
-    directory = os.path.join('/dartfs-hpc/scratch/cara/models', '{0}/{1}/{2}/leftout_run_{3}'.format(align, model, stimfile, fold_shifted), test_p, hemi)
+    directory = os.path.join('/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/ridge-models', '{0}/{1}/{2}/leftout_run_{3}'.format(align, model, stimfile, fold_shifted), test_p, hemi)
     if not os.path.exists(directory):
         os.makedirs(directory)
 
