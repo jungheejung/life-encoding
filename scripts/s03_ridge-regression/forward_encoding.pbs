@@ -3,7 +3,7 @@
 #PBS -q default
 #PBS -N forward
 
-#PBS -M cara.e.van.uden.19@dartmouth.edu
+#PBS -M heejung.jung.gr@dartmouth.edu
 #PBS -m ea
 
 #PBS -l nodes=1:ppn=16
@@ -12,4 +12,8 @@
 
 cd $PBS_O_WORKDIR
 
-python life/forward_encoding/ridge_regression.py ${MODEL} ${ALIGN} ${STIM} ${RUN} ${HEMI}
+
+module load python/2.7-Anaconda  
+source /optnfs/common/miniconda3/etc/profile.d/conda.sh
+conda activate haxby_mvpc
+python /dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/s03_ridge-regression/ridge_regression.py ${MODEL} ${ALIGN} ${STIM} ${RUN} ${HEMI}
