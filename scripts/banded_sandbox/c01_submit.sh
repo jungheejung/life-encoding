@@ -14,7 +14,9 @@ subjects=("sub-rid000001")
 # sub-rid000001 sub-rid000005
 
 for SUB in ${subjects[*]}; do
-mksub /dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/s03_banded-ridge/c02_submitpython.sh -F ${SUB} 
-echo "Submitted job for ${SUB}"
+for RUN in {0..3}; do
+mksub -F "${SUB} ${RUN}" /dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/s03_banded-ridge/SANDBOX02_submit_python.sh
+echo "Running ${SUB} ${RUN}"
+done
 done
 
