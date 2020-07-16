@@ -17,7 +17,7 @@ ALIGN="ws"
 STIM1="bg"
 STIM2="actions"
 SUB=${1}
-RUN=3
+RUN=${2}
 hemis=("lh" "rh")
 MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/s03_banded-ridge
 
