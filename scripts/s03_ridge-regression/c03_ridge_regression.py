@@ -1,6 +1,7 @@
-# python life.py | tee logs/other_$(date +"%F-T%H%M%S").log
-import matplotlib; matplotlib.use('agg')
+#!/usr/bin/env python
 
+# load packages ________________________________________________________________________________
+import matplotlib; matplotlib.use('agg')
 import mvpa2.suite as mv
 import numpy as np
 import pandas as pd
@@ -10,6 +11,7 @@ from utils import hyper_ridge
 import sys, os, time, csv
 from sklearn.linear_model import RidgeCV
 
+# directories ________________________________________________________________________________
 mvpa_dir = '/idata/DBIC/cara/life/pymvpa/'
 sam_data_dir = '/idata/DBIC/snastase/life'
 ridge_dir = '/idata/DBIC/cara/life/ridge'
@@ -31,6 +33,7 @@ n_vertices = 40962
 n_proc = 32     # how many cores do we have?
 n_medial = {'lh': 3486, 'rh': 3491}
 
+# functions ____________________________________________________________________
 def get_visual_stim_for_fold(stimfile, fold_shifted, included):
     cam = np.load(os.path.join(npy_dir, '{0}.npy'.format(stimfile)))
     # motion = np.load('/ihome/cara/global_motion/motion_downsampled_complete.npy')
@@ -270,6 +273,10 @@ def get_ha_testsubj_data(test_p, mappers, fold_shifted, included, hemi):
 
     return train_resp, test_resp
 
+# parameters ___________________________________________________________________
+
+# ${MODEL} ${ALIGN} ${STIM} ${RUN} ${HEMI}
+
 model = sys.argv[1]
 align = sys.argv[2]
 stimfile = sys.argv[3]
@@ -280,6 +287,8 @@ hemi = sys.argv[5]
 
 included = [1,2,3,4]
 included.remove(fold_shifted)
+
+# main code ___________________________________________________________________
 
 # First let's create mask of cortical vertices excluding medial wall
 cortical_vertices = {}
