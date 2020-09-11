@@ -17,6 +17,7 @@ from tikreg import utils as tikutils
 from tikreg import models, utils as tikutils
 from tikreg import spatial_priors, temporal_priors
 
+import pickle
 # directories ________________________________________________________________________________
 mvpa_dir = '/idata/DBIC/cara/life/pymvpa/'
 sam_data_dir = '/idata/DBIC/snastase/life'
@@ -346,7 +347,7 @@ for test_p in participant:
     lambda_ones = voxelwise_optimal_hyperparameters[:,1]
     lambda_twos = voxelwise_optimal_hyperparameters[:,2]
 
-
+    # calculating primal weights from kernel weights
     kernel_weights = fit_banded_polar['weights']
     weights_x1 = np.linalg.multi_dot([X1train.T, kernel_weights, np.diag(new_alphas), np.diag(lambda_ones**-2)])
     weights_x2 = np.linalg.multi_dot([X2train.T, kernel_weights, np.diag(new_alphas), np.diag(lambda_twos**-2)])
@@ -355,7 +356,9 @@ for test_p in participant:
     print("\nFeature2 weight shape: ",weights_x2.shape)
     print("\nJoint weights shape: ", weights_joint.shape)
 #    assert np.allclose(weights_joint, primal_weights)
-
+    estimated_y1 = np.linalg.multi_dot([X1test_stim, weights_x1])
+    estimated_y2 = np.linalg.multi_dot([X2test_stim, weights_x2])
+    
     directory = os.path.join('/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/banded-ridge_alpha-cara_loro', '{0}/{1}/{2}_{3}/leftout_run_{4}'.format(align, model, stimfile1,stimfile2, fold_shifted), test_p, hemi)
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -364,15 +367,19 @@ for test_p in participant:
     print("type: ",type(weights_x1))
     np.save(os.path.join(directory, 'kernel-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.npy'.format(test_p, model, align, stimfile1, fold_shifted, hemi)), weights_x1)
     np.save(os.path.join(directory, 'kernel-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.npy'.format(test_p, model, align, stimfile2, fold_shifted, hemi)), weights_x2)
+    pkl_file = open(os.path.join(directory, 'fit-dictionarity_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.pkl'.format(test_p, model, align, stimfile1, fold_shifted, hemi)), 'rb')
+    fit = pickle.load(pkl_file)
+    pkl_file.close()
 
-
-# correlation coefficiet
-# FORLOOP CORRELATION
+# correlation coefficiet 
     actual_df = pd.DataFrame(data = Ytest)
-    estimated_x1 = pd.DataFrame(data = weights_x1)
-    estimated_x2 = pd.DataFrame(data = weights_x2)
-    corr_x1 = pd.DataFrame.corrwith(estimated_x1, actual_df, axis = 0, method = 'pearson')
-    corr_x2 = pd.DataFrame.corrwith(estimated_x2, actual_df, axis = 0, method = 'pearson')
+    estimated_y1_df = pd.DataFrame(data = estimated_y1)
+    estimated_y2_df = pd.DataFrame(data = estimated_y2)
+    corr_x1 = pd.DataFrame.corrwith(estimated_y1_df, actual_df, axis = 0, method = 'pearson')
+    corr_x2 = pd.DataFrame.corrwith(estimated_y2_df, actual_df, axis = 0, method = 'pearson')
+
+#    corr_x1 = np.corrcoef(estimated_y1, Ytest)
+#    corr_x2 = np.corrcoef(estimated_y2, Ytest)
 
 # save files
 
