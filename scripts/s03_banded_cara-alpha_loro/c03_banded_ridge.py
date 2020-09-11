@@ -251,6 +251,7 @@ else:
 
 
 
+
 # features ___________________________________________________________________
 for test_p in participant:
     if align == 'ws':
@@ -306,6 +307,15 @@ for test_p in participant:
     #         print(np.rad2deg(angle), ratio, alpha, lambda_one, lambda_two)
 
             # Use tikreg to find the solution
+
+    train_id = np.arange(X1train.shape[0])
+    dur1, dur2, dur3 = tr_movie[included[0]]-3, tr_movie[included[1]]-3,tr_movie[included[2]]-3
+
+    loro1 = [ (train_id[:dur1+dur2], train_id[dur1+dur2:]),                      
+       ( np.concatenate((train_id[:dur1],train_id[dur1+dur2:]),axis=0),
+         train_id[dur1:dur1+dur2]),                                           
+        (train_id[dur1:], train_id[:dur1])] 
+
     X1_prior = spatial_priors.SphericalPrior(X1train, hyparams=ratios)
     X2_prior = spatial_priors.SphericalPrior(X2train, hyparams=ratios)
             # A temporal prior is unnecessary, so we specify no delays
@@ -316,7 +326,7 @@ for test_p in participant:
                                                           feature_priors=[X1_prior, X2_prior],
                                                           temporal_prior=temporal_prior,
                                                           ridges=alphas,
-                                                          folds=(1,5), # 1x 5-fold cross-validation
+                                                          folds=loro1,
                                                           performance=True,
                                                           weights=True,
                                                           verbosity=False)
@@ -346,7 +356,7 @@ for test_p in participant:
     print("\nJoint weights shape: ", weights_joint.shape)
 #    assert np.allclose(weights_joint, primal_weights)
 
-    directory = os.path.join('/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/banded-ridge_alpha-cara', '{0}/{1}/{2}_{3}/leftout_run_{4}'.format(align, model, stimfile1,stimfile2, fold_shifted), test_p, hemi)
+    directory = os.path.join('/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/banded-ridge_alpha-cara_loro', '{0}/{1}/{2}_{3}/leftout_run_{4}'.format(align, model, stimfile1,stimfile2, fold_shifted), test_p, hemi)
     if not os.path.exists(directory):
         os.makedirs(directory)
     # SAVE WEIGHTS
