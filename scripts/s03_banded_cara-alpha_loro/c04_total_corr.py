@@ -8,6 +8,7 @@ import os
 
 # parameters ___________________________________________________________________
 data_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/banded-ridge_alpha-cara'
+# data_dir = '/Users/h/Documents/projects_local/cluster_poker/results/banded-ridge_alpha-cara_loro'
 n_vertices = 40962
 participants = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006', 'sub-rid000009', 'sub-rid000012',
                 'sub-rid000014', 'sub-rid000019', 'sub-rid000024', 'sub-rid000027',
@@ -52,13 +53,22 @@ for align in aligns:
             runlist = []
             for run in runs:
                 plist = []
-                for p in participants:
+                # for p in participants:
+                filename = glob.glob(os.path.join(data_dir, align, 'visual', 'bg_actions', 'leftout_run_' + str(run), '*', h,
+                'corrcoef_' + '*' + '_model-visual_align-' + align + '_feature-' + model + '_foldshifted-' + str(run) + '_hemi_' + h + '.niml.dset'))
+                for p in filename:
+                    ds = mv.niml.read(filename)
                 # 1. stack across participants per run ____________________________
                 # input: results > ridge-models > ws > visual > all > leftout_run_1 > sub-sid00001 > lh
                 # output: results > ridge-models > group_npy > ws_1.lh.py
                     # ds = np.load(os.path.join(data_dir, '{0}/run_{1}/{2}/{3}/{4}.npy'.format(model, run, p, h, nuisance)))
-                    ds = mv.niml.read(os.path.join(data_dir, align, 'visual', 'bg_actions', 'leftout_run_' + str(run), p, h,
-                    'corrcoef_' + p + '_model-visual_align-' + align + '_feature-' + model + '_foldshifted-' + str(run) + '_hemi_' + h + '.niml.dset'))
+                    # filename = glob.glob(os.path.join(data_dir, align, 'visual', 'bg_actions', 'leftout_run_' + str(run), '*', h,
+                    # 'corrcoef_' + '*' + '_model-visual_align-' + align + '_feature-' + model + '_foldshifted-' + str(run) + '_hemi_' + h + '.niml.dset'))
+                    # ds = mv.niml.read(filename)
+
+# glob.glob(os.path.join(data_dir, align, 'visual', 'bg_actions', 'leftout_run_' + str(run), p, h,
+# 'corrcoef_' + p + '_model-visual_align-' + align + '_feature-' + model + '_foldshifted-' + str(run) + '_hemi_' + h + '.niml.dset'))
+                    # ds = glob.glob(os.path.join('/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/banded-ridge_alpha-cara_loro/ws/visual/bg_actions/leftout_run_1/*/lh/corrcoef_*_model-visual_align-ws_feature-visual_foldshifted-1_hemi_lh.niml.dset'))
 
                         # data_dir, '{0}/{1}/{2}/leftout_run_{3}/{4}/{5}/corrs.npy'.format(align, 'visual', 'bg_actions' model, run, p, h)))
                     #
@@ -97,4 +107,3 @@ for align in aligns:
 
             np.save(os.path.join(data_dir, 'group_corr_total', 'total_{0}_model-{2}.{1}.npy'.format(align, h, model)), total)
             mv.niml.write(os.path.join(data_dir, 'group_corr_total', 'total_{0}_model-{2}.{1}.niml.dset'.format(align, h, model)), total)
-
