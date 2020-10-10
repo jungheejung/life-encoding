@@ -1,0 +1,5 @@
+sub-rid000032,2,lh
+sub-rid000034,2,lh
+sub-rid000037,3,rh
+sub-rid000038,0,lh
+sub-rid000041,3,rh
