@@ -50,18 +50,18 @@ for align in aligns:
             runlist = []
             for run in runs:
                 plist = []
-                # for p in participants:
-                filename = glob.glob(os.path.join(data_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_' + str(run), '*', h,
-                'corrcoef_' + '*' + '_model-visual_align-' + align + '_feature-' + model + '_foldshifted-' + str(run) + '_hemi_' + h + '.niml.dset'))
-                for p in filename:
-                    ds = mv.niml.read(filename)
+                for p in participants:
+                #filename = glob.glob(os.path.join(data_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_' + str(run), '*', h,
+                #'corrcoef_' + '*' + '_model-visual_align-' + align + '_feature-' + model + '_foldshifted-' + str(run) + '_hemi_' + h + '.niml.dset'))
+                #for p in filename:
+                #    ds = mv.niml.read(filename)
                 # 1. stack across participants per run ____________________________
                 # input: results > ridge-models > ws > visual > all > leftout_run_1 > sub-sid00001 > lh
                 # output: results > ridge-models > group_npy > ws_1.lh.py
-                    # ds = np.load(os.path.join(data_dir, '{0}/run_{1}/{2}/{3}/{4}.npy'.format(model, run, p, h, nuisance)))
+                    ds = np.load(os.path.join(data_dir, '{0}/visual/bg_actions_agents/leftout_run_{3}/{4}/{2}/corrcoef_{4}_model-visual_align-{0}_feature-{1}_foldshifted-{3}_hemi_{2}.niml.dset'.format(align, model, h, run, p)))
                     # filename = glob.glob(os.path.join(data_dir, align, 'visual', 'bg_actions', 'leftout_run_' + str(run), '*', h,
                     # 'corrcoef_' + '*' + '_model-visual_align-' + align + '_feature-' + model + '_foldshifted-' + str(run) + '_hemi_' + h + '.niml.dset'))
-                    # ds = mv.niml.read(filename)
+                    #ds = mv.niml.read(filename)
 
 # glob.glob(os.path.join(data_dir, align, 'visual', 'bg_actions', 'leftout_run_' + str(run), p, h,
 # 'corrcoef_' + p + '_model-visual_align-' + align + '_feature-' + model + '_foldshifted-' + str(run) + '_hemi_' + h + '.niml.dset'))
@@ -69,12 +69,12 @@ for align in aligns:
 
                         # data_dir, '{0}/{1}/{2}/leftout_run_{3}/{4}/{5}/corrs.npy'.format(align, 'visual', 'bg_actions' model, run, p, h)))
                     #
-                    # if ds.shape[0] != 40962:
-                    #     med_wall_ind = np.where(cortical_vertices[h] == 0)[0]
-                    #     dat = np.zeros(
-                    #         (ds.shape[0] + med_wall_ind.shape[0]), dtype=ds.dtype)
-                    #     dat[cortical_vertices[h] == 1] = ds
-                    #     ds = dat
+                    if ds.shape[0] != 40962:
+                        med_wall_ind = np.where(cortical_vertices[h] == 0)[0]
+                        dat = np.zeros(
+                            (ds.shape[0] + med_wall_ind.shape[0]), dtype=ds.dtype)
+                        dat[cortical_vertices[h] == 1] = ds
+                        ds = dat
                     ds_nan = np.nan_to_num(ds.samples[0])
                     plist.append(ds_nan)
 
