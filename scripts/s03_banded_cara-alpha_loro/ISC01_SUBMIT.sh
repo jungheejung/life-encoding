@@ -12,7 +12,7 @@ cd $PBS_O_WORKDIR
 module load python/2.7-Anaconda
 source /optnfs/common/miniconda3/etc/profile.d/conda.sh
 conda activate haxby_mvpc
-python /dartfs/rc/lab/D/DBIC/DBIC/f0041x1/life-encoding/scripts/s03_banded_cara-alpha_loro/isc_leave_one_subject_out.py
+python /dartfs/rc/lab/D/DBIC/DBIC/f0041x1/life-encoding/scripts/s03_banded_cara-alpha_loro/ISC02_leave_one_subject_out.py
 
 
 
