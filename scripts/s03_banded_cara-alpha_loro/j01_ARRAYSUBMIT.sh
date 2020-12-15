@@ -4,7 +4,7 @@
 #PBS -l nodes=1:ppn=16
 #PBS -l walltime=12:00:00
 #PBS -A DBIC
-#PBS -t 1-27
+#PBS -t 1-10
 
 cd $PBS_O_WORKDIR
 
@@ -16,13 +16,14 @@ MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/s03_banded_cara
 
 echo ${PBS_ARRAYID}
 echo "PBSARRAY"
-# INFILE=`awk "NR==${PBS_ARRAYID}" ${MAINDIR}/sublist.txt`
-INFILE=`awk "NR==${PBS_ARRAYID}" ${MAINDIR}/remainder.txt`
+# INFILE=`awk "NR==${PBS_ARRAYID}" ${MAINDIR}/canonical_sublist.txt`
+INFILE=`awk "NR==${PBS_ARRAYID}" ${MAINDIR}/sublist.txt`
 SUB=$(echo $INFILE | cut -f1 -d,)
 RUN=$(echo $INFILE | cut -f2 -d,)
 HEMI=$(echo $INFILE | cut -f3 -d,)
 MODEL="visual"
-ALIGN="ws"
+#ALIGN="ha_testsubj"  #"ws"
+ALIGN="aa"
 STIM1="bg"
 STIM2="actions"
 STIM3="agents"
