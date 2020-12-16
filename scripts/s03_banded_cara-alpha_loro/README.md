@@ -1,19 +1,27 @@
 ## Banded Ridge
 
-You will submit the jobs by typing `./c01_submit.sh` on your HPC. 
-This will instigate `mksub` within `c02_submitpython.sh` and will now submit parallel jobs. 
+### Where is this code from?
+* We carefully followed the banded ridge regression tutorial from the Gallant lab ([link](https://nbviewer.jupyter.org/github/gallantlab/tikreg/blob/master/examples/tutorial_banded_ridge_polar.ipynb)).
 
-We carefully followed the banded ridge regression tutorial from the Gallant lab ([link](https://nbviewer.jupyter.org/github/gallantlab/tikreg/blob/master/examples/tutorial_banded_ridge_polar.ipynb)).
+### What is being done in this code?
+* In this code, we use "background", "agents", and "actions" as our feature. 
+* In our code, we use Cara's alphas and ratios (whereas the notebook tutorial walksthrough one or a number of alphas)
 
-In this code, we use "background" and "actions" as our feature. 
-In our code, we use all of the alphas and ratios (whereas the notebook tutorial walksthrough one or a number of alphas)
-```
-X1_prior = spatial_priors.SphericalPrior(X1, hyparams=[lambda_one])
-X2_prior = spatial_priors.SphericalPrior(X2, hyparams=[lambda_two])
+### Are there any changes to the original tikreg code?
+* instead of searching the entire alpha space, we use one alpha -- 18.33 -- from Van Uden (2018)
+* The main analysis will search for the entire space.
 
-CHANGED TO
+### How do I use this code on Discovery? (or any PBS scheduling system)
+* submit the jobs via `mksub BANDEDRIDGE01_submit.sh` on your HPC. 
+* Jobs are submitted as job arrays, pulled from the canonical_sublist.txt
+* In other words, each hemisphere, participant, feature is submitted as a separate job
 
-X1_prior = spatial_priors.SphericalPrior(X1, hyparams=ratios)
-X2_prior = spatial_priors.SphericalPrior(X2, hyparams=ratios)
+---
 
-```
+## ISC
+ISC
+
+--- 
+
+## Average correlation coefficient between expected Y and beta weights
+THREE
