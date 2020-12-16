@@ -1,5 +1,8 @@
 ## Banded Ridge
 
+* instead of searching the entire alpha space, we use one alpha -- 18.33 -- from Van Uden (2018)
+* The main analysis will search for the entire space.
+
 You will submit the jobs by typing `mksub BANDEDRIDGE01_submit.sh` on your HPC. 
 Jobs are submitted as job arrays, pulled from the canonical_sublist.txt
 In other words, each hemisphere, participant, feature is submitted as a separate job
