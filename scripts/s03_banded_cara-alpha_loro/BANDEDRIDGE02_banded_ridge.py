@@ -8,20 +8,15 @@ from tikreg import utils as tikutils
 from tikreg import models
 import matplotlib.pyplot as plt
 from sklearn.linear_model import RidgeCV
-import csv
-import time
-import os
-import sys
+import os, sys, shutil, time, csv
 import subprocess
 from scipy.io import wavfile
 from scipy import stats
 import pandas as pd
 import numpy as np
 import mvpa2.suite as mv
-# from nilearn.plotting import plot_surf
 
 
-# import time
 # directories ________________________________________________________________________________
 if not os.path.exists('/scratch/f0042x1'):
     os.makedirs('/scratch/f0042x1')
@@ -45,9 +40,7 @@ n_vertices = 40962
 n_proc = 32     # how many cores do we have?
 n_medial = {'lh': 3486, 'rh': 3491}
 
-# functions ____________________________________________________________________
-
-
+# functions from Cara Van Uden Ridge Regression  ____________________________________________________________________
 def get_visual_stim_for_fold(stimfile, fold_shifted, included):
     cam = np.load(os.path.join(npy_dir, '{0}.npy'.format(stimfile)))
 
@@ -243,7 +236,7 @@ def get_ha_testsubj_data(test_p, mappers, fold_shifted, included, hemi):
 
     return train_resp, test_resp
 
-import os, shutil
+
 def copytree(src, dst, symlinks=False, ignore=None):
     for item in os.listdir(src):
         s = os.path.join(src, item)
@@ -253,12 +246,13 @@ def copytree(src, dst, symlinks=False, ignore=None):
         else:
             shutil.copy2(s, d)
 
+
 def subprocess_cmd(command):
     process = subprocess.Popen(command,stdout=subprocess.PIPE, shell=True)
     proc_stdout = process.communicate()[0].strip()
     print proc_stdout
 
-# parameters ___________________________________________________________________
+# 1. parameters from JOBSUBMIT script  ___________________________________________________________________
 model = sys.argv[1]
 align = sys.argv[2]
 stimfile1 = sys.argv[3]
@@ -275,9 +269,9 @@ test_p = sys.argv[8]
 included = [1, 2, 3, 4]
 included.remove(fold_shifted)
 
-# main code ___________________________________________________________________
-# First let's create mask of cortical vertices excluding medial wall
+# 2. Load data _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
+    # 2-1) First let's create mask of cortical vertices excluding medial wall __
 cortical_vertices = {}
 for half in ['lh', 'rh']:
     test_ds = mv.niml.read(
@@ -289,6 +283,7 @@ for half in ['lh', 'rh']:
 print('Model: {0}\nStim file: {1}, {2}\nHemi: {3}\nRuns in training: {4}\nRun in test: {5}\nParticipant: {6}'.format(
     model, stimfile1, stimfile2, hemi, included, fold_shifted, test_p))
 
+    # 2-2) load visual or narrative feature data _______________________________
 if model == 'visual':
     # stimfile1 = 'bg'
     X1train_stim, X1test_stim = get_visual_stim_for_fold(
@@ -296,11 +291,9 @@ if model == 'visual':
     # stimfile2 = 'actions'
     X2train_stim, X2test_stim = get_visual_stim_for_fold(
         '{0}_{1}'.format(model, stimfile2), fold_shifted, included)
-    # train_stim, test_stim = get_visual_stim_for_fold('{0}_{1}'.format(model, stimfile), fold_shifted, included)
+    # stimfile1 = 'agents'
     X3train_stim, X3test_stim = get_visual_stim_for_fold(
         '{0}_{1}'.format(model, stimfile3), fold_shifted, included)
-        # stimfile2 = 'actions'
-
 else:
     # stimfile1 = 'bg'
     X1train_stim, X1test_stim = get_narrative_stim_for_fold(
@@ -308,21 +301,17 @@ else:
     # stimfile2 = 'actions'
     X2train_stim, X2test_stim = get_narrative_stim_for_fold(
         '{0}_{1}'.format(model, stimfile2), fold_shifted, included)
-    X3train_stim, X3test_stim = get_visual_stim_for_fold(
+    # stimfile1 = 'agents'
+    X3train_stim, X3test_stim = get_narrative_stim_for_fold(
         '{0}_{1}'.format(model, stimfile3), fold_shifted, included)
-    # train_stim, test_stim = get_narrative_stim_for_fold('{0}_{1}'.format(model, stimfile), fold_shifted, included)
 
-
-# features ___________________________________________________________________
-# for test_p in participant:
+    # 2-3) load fMRI data __________________________________________________
 if align == 'ws':
     Ytrain_unconcat, Ytest = get_ws_data(
         test_p, fold_shifted, included, hemi)
-    # train_resp, test_resp = get_ws_data(test_p, fold_shifted, included, hemi)
 elif align == 'aa':
     Ytrain_unconcat, Ytest = get_aa_data(
         test_p, fold_shifted, included, hemi)
-    # train_resp, test_resp = get_aa_data(test_p, fold_shifted, included, hemi)
 else:
     print('\nLoading hyperaligned mappers...')
     mappers = mv.h5load(os.path.join(
@@ -334,36 +323,34 @@ else:
         Ytrain_unconcat, Ytest = get_ha_common_data(
             test_p, mappers, fold_shifted, included, hemi)
 
-    # train_resp, test_resp = get_aa_data(test_p, fold_shifted, included, hemi)
-
-    # concatenate 3 runs
+    # 2-4) concatenate 3 runs ______________________________________________
 X1train = np.concatenate(X1train_stim)
 X2train = np.concatenate(X2train_stim)
 X3train = np.concatenate(X3train_stim)
 Ytrain = np.concatenate(Ytrain_unconcat)
+
+    # 2-5) Print for JOB LOG ___________________________________________________
 print('\nShape of training and testing set')
-print(X1train.shape, "X1train")
-print(X2train.shape, "X2train")
-print(X3train.shape, "X3train")
-print(X1test_stim.shape, "X1test_stim")
-print(X2test_stim.shape, "X2test_stim")
-print(X3test_stim.shape, "X3test_stim")
+print(X1train.shape, "X1train");print(X2train.shape, "X2train");print(X3train.shape, "X3train")
+print(X1test_stim.shape, "X1test_stim");print(X2test_stim.shape, "X2test_stim");print(X3test_stim.shape, "X3test_stim")
 print(Ytest.shape, "Ytest")
 print(Ytrain.shape, "Ytrain")
 
-# tikreg
-# alphas = np.logspace(0, 3, 20)
-alphas = [18.33]
+
+# 3. [ banded ridge ] alpha and ratios _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+# alphas = np.logspace(0, 3, 20) commented out for current analysis
+alphas = [18.33] # currently using for our quick analysis. For the main analysis, use the full logspace as above
 ratios = np.logspace(-2, 2, 25)
-print('\nAlphas: np.logspace(0,3,20)')
 print("\nalphas: ", alphas)
-print('\nRatios: np.logspace(-2,2,25)')
+print("\nRatios: ", ratios)
 
 train_id = np.arange(X1train.shape[0])
-dur1, dur2, dur3 = tr_movie[included[0]] - \
-    3, tr_movie[included[1]] - 3, tr_movie[included[2]] - 3
+dur1, dur2, dur3 = tr_movie[included[0]] - 3, tr_movie[included[1]] - 3, tr_movie[included[2]] - 3
 
-# setting up loro and priors  ___________________________________________________________________
+
+# 4. [ banded ridge ] setting up loro and priors _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
 loro1 = [(train_id[:dur1 + dur2], train_id[dur1 + dur2:]),
          (np.concatenate((train_id[:dur1], train_id[dur1 + dur2:]), axis=0),
           train_id[dur1:dur1 + dur2]),
@@ -372,11 +359,18 @@ loro1 = [(train_id[:dur1 + dur2], train_id[dur1 + dur2:]),
 X1_prior = spatial_priors.SphericalPrior(X1train, hyparams=ratios)
 X2_prior = spatial_priors.SphericalPrior(X2train, hyparams=ratios)
 X3_prior = spatial_priors.SphericalPrior(X3train, hyparams=ratios)
-# A temporal prior is unnecessary, so we specify no delays
-temporal_prior = temporal_priors.SphericalPrior(delays=[0])  # no delays
-# start tikreg ___________________________________________________________________
 
-fit_banded_polar = models.estimate_stem_wmvnp([X1train, X2train, X3train], Ytrain, [X1test_stim, X2test_stim, X3test_stim], Ytest,feature_priors=[X1_prior, X2_prior, X3_prior], temporal_prior=temporal_prior, ridges=alphas, folds=loro1, performance=True, weights=True, verbosity=False)
+temporal_prior = temporal_priors.SphericalPrior(delays=[0])  # no delays
+
+
+# 5. [ banded ridge ] banded ridge regression _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+fit_banded_polar = models.estimate_stem_wmvnp([X1train, X2train, X3train], Ytrain,
+[X1test_stim, X2test_stim, X3test_stim], Ytest,
+feature_priors=[X1_prior, X2_prior, X3_prior],
+temporal_prior=temporal_prior,
+ridges=alphas, folds=loro1,
+performance=True, weights=True, verbosity=False)
 
 voxelwise_optimal_hyperparameters = fit_banded_polar['optima']
 print('\nVoxelwise optimal hyperparameter shape:',
@@ -389,9 +383,11 @@ lambda_ones = voxelwise_optimal_hyperparameters[:, 1]
 lambda_twos = voxelwise_optimal_hyperparameters[:, 2]
 lambda_threes = voxelwise_optimal_hyperparameters[:, 3]
 
-# calculating primal weights from kernel weights ___________________________________________________________________
+
+# 6. [ banded ridge ] calculating primal weights from kernel weights _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 kernel_weights = fit_banded_polar['weights']
+    # 6-1. calculate the beta weights from primal weights ______________________
 weights_x1 = np.linalg.multi_dot(
     [X1train.T, kernel_weights, np.diag(new_alphas), np.diag(lambda_ones**-2)])
 weights_x2 = np.linalg.multi_dot(
@@ -404,7 +400,8 @@ print("\nFeature1 weight shape: ", weights_x1.shape)
 print("\nFeature2 weight shape: ", weights_x2.shape)
 print("\nFeature2 weight shape: ", weights_x3.shape)
 print("\nJoint weights shape: ", weights_joint.shape)
-#    assert np.allclose(weights_joint, primal_weights)
+
+    # 6-2. calculate the estimated Y based on the primal weights _________________
 estimated_y1 = np.linalg.multi_dot([X1test_stim, weights_x1])
 estimated_y2 = np.linalg.multi_dot([X2test_stim, weights_x2])
 estimated_y3 = np.linalg.multi_dot([X3test_stim, weights_x3])
@@ -415,17 +412,21 @@ if not os.path.exists(directory):
     os.makedirs(directory)
 
 print("\ndirectory: ", directory)
-# SAVE WEIGHTS
-print("kernel weights shape: ", weights_x1.shape)
-print("kernel weights type: ", type(weights_x1))
-np.save(os.path.join(directory, 'kernel-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.npy'.format(
+print("weights shape: ", weights_x1.shape)
+print("weights type: ", type(weights_x1))
+
+
+    # 6-3. save primal weights _________________________________________________
+np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.npy'.format(
         test_p, model, align, stimfile1, fold_shifted, hemi)), weights_x1)
-np.save(os.path.join(directory, 'kernel-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.npy'.format(
+np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.npy'.format(
         test_p, model, align, stimfile2, fold_shifted, hemi)), weights_x2)
-np.save(os.path.join(directory, 'kernel-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.npy'.format(
+np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.npy'.format(
         test_p, model, align, stimfile3, fold_shifted, hemi)), weights_x3)
 
-# correlation coefficient
+
+# 7. [ banded ridge ] correlation coefficient between actual Y and estimated Y _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
 actual_df = pd.DataFrame(data=Ytest)
 estimated_y1_df = pd.DataFrame(data=estimated_y1)
 estimated_y2_df = pd.DataFrame(data=estimated_y2)
@@ -437,7 +438,7 @@ corr_x2 = pd.DataFrame.corrwith(
 corr_x3 = pd.DataFrame.corrwith(
     estimated_y3_df, actual_df, axis=0, method='pearson')
 
-# save files
+    # 7-1. save files __________________________________________________________
 med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
 
 out1 = np.zeros(
@@ -458,10 +459,5 @@ out3[cortical_vertices[hemi] == 1] = corr_x3
 mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.niml.dset'.format(
     test_p, model, align, stimfile3, fold_shifted, hemi)), out3[None, :])
 
-# copy files and remove files
-
-# command = 'cp -rf /scratch/f0042x1/banded-ridge_alpha-cara_loro/ /dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/'
-# process = subprocess.Popen(command.split(), stdout=subprocess.PIPE)
-# output, error = process.communicate()
-# reference: https://stackoverflow.com/questions/17742789/running-multiple-bash-commands-with-subprocess
+# copy files and remove files ___________________________________________________________________
 subprocess_cmd('cp -rf /scratch/f0042x1/banded-ridge_alpha-cara_loro/ /dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results; rm -rf /scratch/f0042x1/*')
