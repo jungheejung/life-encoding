@@ -84,7 +84,7 @@ for align in aligns:
 
                         # isc_result.shape (18, 37476)
                 triu_corrs = np.tanh(np.mean(np.nan_to_num(isc_result),axis=0))
-
+                med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
                 mv.niml.write(os.path.join(result_dir,align, 'isc','{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi)), triu_corrs)
 
             # at the end of run loop - stack files _________________________________________
@@ -97,4 +97,3 @@ for align in aligns:
 #                # Save it with niml.write
 #            print(avg_stack.shape, np.mean(avg_stack, axis=0).shape)
 #            mv.niml.write(os.path.join(result_dir,align, 'isc', 'group_{0}_isc_vsmean.lh.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])
-
