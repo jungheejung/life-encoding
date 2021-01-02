@@ -35,7 +35,7 @@ participants = sorted(['sub-rid000037', 'sub-rid000001', 'sub-rid000033', 'sub-r
                        'sub-rid000031', 'sub-rid000012', 'sub-rid000027', 'sub-rid000014',
                        'sub-rid000034', 'sub-rid000036'])
 
-# cortical_vertices = {}
+cortical_vertices = {}
 for hemi in ['lh', 'rh']:
     # ws = mv.niml.read('/idata/DBIC/cara/life/ridge/models/new_niml/ws/ws_run1.{0}.niml.dset'.format(hemi))
     ws = mv.niml.read(os.path.join(
@@ -296,7 +296,7 @@ for align in aligns:
         os.makedirs(os.path.join(result_dir,  align,  'isc_raw'))
     for model in models:
         print(model)
-        for h in hemispheres:
+        for hemi in hemispheres:
             runlist = []
             for run in runs:
                 plist = []
