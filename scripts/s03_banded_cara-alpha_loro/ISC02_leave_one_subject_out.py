@@ -84,6 +84,7 @@ for align in aligns:
 
                         # isc_result.shape (18, 37476)
                 triu_corrs = np.tanh(np.mean(np.nan_to_num(isc_result),axis=0))
+<<<<<<< HEAD
 
 		        med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
     		    output = np.zeros((triu_corrs.shape[0] + med_wall_ind.shape[0]))
@@ -100,3 +101,18 @@ for align in aligns:
                 # Save it with niml.write
             print(avg_stack.shape, np.mean(avg_stack, axis=0).shape)
             mv.niml.write(os.path.join(result_dir,align, 'isc', 'group_{0}_isc_vsmean.{1}.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])
+=======
+                med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
+                mv.niml.write(os.path.join(result_dir,align, 'isc','{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi)), triu_corrs)
+
+            # at the end of run loop - stack files _________________________________________
+
+                # avg_stack = np.empty((4, 40962))
+
+#            for run in range(1,5):
+#                print(mv.niml.read(os.path.join(result_dir,align,'isc', '{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi))).shape)
+#                avg_stack[run-1] = mv.niml.read(os.path.join(result_dir,align,'isc', '{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi)))
+#                # Save it with niml.write
+#            print(avg_stack.shape, np.mean(avg_stack, axis=0).shape)
+#            mv.niml.write(os.path.join(result_dir,align, 'isc', 'group_{0}_isc_vsmean.lh.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])
+>>>>>>> 8b72f2d0c1e1bc63ce28a36fb2b4bf4fe0863a15
