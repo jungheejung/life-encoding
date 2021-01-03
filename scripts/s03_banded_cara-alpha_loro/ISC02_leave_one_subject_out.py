@@ -20,6 +20,7 @@ tr = {1:374, 2:346, 3:377, 4:412}
 
 n_samples = 1509
 n_vertices = 40962
+n_medial = {'lh': 3486, 'rh': 3491}
 participants = sorted(['sub-rid000037', 'sub-rid000001', 'sub-rid000033', 'sub-rid000024',
                 'sub-rid000019', 'sub-rid000041', 'sub-rid000032', 'sub-rid000006',
                 'sub-rid000009', 'sub-rid000017', 'sub-rid000005', 'sub-rid000038',
@@ -64,7 +65,7 @@ for align in aligns:
                 all_data = np.array(plist)
                 #all_data.shape # (18, 1200, 37476)
 
-                n_vertices = 37476
+                temp_n_vertices = n_vertices - n_medial[hemi]
                 subject_ids = len(participants)
                 isc_result = np.zeros((len(participants), ds.shape[1]))
                 subject_ids = np.arange(len(participants))
@@ -76,7 +77,7 @@ for align in aligns:
                     other_subjects = all_data[subject_ids != subject,:, : ] # get N - 1 subjects
                     other_avg = np.mean(other_subjects, axis=0) # average N - 1 subjects (shape: 1200, 37471,)
                     #other_subjects_concat = np.concatenate(other_subjects)
-                    for voxel in np.arange(n_vertices):
+                    for voxel in np.arange(temp_n_vertices):
                         left_out_voxel = left_out_subject[:, voxel]
                         other_avg_voxel = other_avg[:, voxel]
                         isc = pearsonr(left_out_voxel, other_avg_voxel)[0] # get r-value from pearsonr
