@@ -37,7 +37,7 @@ for hemi in ['lh', 'rh']:
     cortical_vertices[hemi][np.sum(ws.samples[1:, :] != 0, axis=0) == 0] = 0
 
 models = ['actions', 'bg', 'agents']  # ['all']
-aligns = ['ha_testsubj', 'aa']  # ['aa', 'ws', 'ha_testsubj', 'ha_common']
+aligns = [ 'aa']  # ['aa', 'ws', 'ha_testsubj', 'ha_common'] 'ha_testsubj',
 runs = range(1, 5)
 hemispheres = ['lh', 'rh']
 
@@ -69,8 +69,8 @@ for align in aligns:
 
                 temp_n_vertices = n_vertices - n_medial[hemi]
                 subject_ids = len(filenames)
-                isc_result = np.zeros((len(participants), ds.shape[1]))
-                subject_ids = np.arange(len(participants))
+                isc_result = np.zeros((len(filenames), ds.shape[1]))
+                subject_ids = np.arange(len(filenames))
 
                 # stack
                 for subject in subject_ids:
