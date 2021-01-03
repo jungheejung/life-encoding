@@ -68,9 +68,11 @@ for align in aligns:
                 # all_data.shape # (18, 1200, 37476)
 
                 temp_n_vertices = n_vertices - n_medial[hemi]
-                subject_ids = len(participants)
+                subject_ids = len(filenames)
                 isc_result = np.zeros((len(participants), ds.shape[1]))
                 subject_ids = np.arange(len(participants))
+
+                # stack
                 for subject in subject_ids:  # subject_ids+1):
                     # left_out_subject.shape (1200, 37476)
                     # other_subjects.shape (17, 1200, 37476)
@@ -89,8 +91,7 @@ for align in aligns:
                         isc_result[subject, voxel] = isc
 
                         # isc_result.shape (18, 37476)
-                triu_corrs = np.tanh(
-                    np.mean(np.nan_to_num(isc_result), axis=0))
+                triu_corrs = np.tanh(np.mean(np.nan_to_num(isc_result), axis=0))
 		        med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
     		    output = np.zeros((triu_corrs.shape[0] + med_wall_ind.shape[0]))
     		          output[cortical_vertices[hemi] == 1] = triu_corrs
