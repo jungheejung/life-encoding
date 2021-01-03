@@ -4,7 +4,8 @@ import numpy as np
 from scipy.stats import pearsonr
 import matplotlib; matplotlib.use('agg')
 import mvpa2.suite as mv
-import sys, os
+import sys
+import os
 import glob
 
 
@@ -16,7 +17,7 @@ mvpa_dir = '/idata/DBIC/cara/life/pymvpa/'
 result_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/banded-ridge_alpha-cara_loro'
 
 # parameter ___________________________________________________________________________
-tr = {1:374, 2:346, 3:377, 4:412}
+tr = {1: 374, 2: 346, 3: 377, 4: 412}
 
 n_samples = 1509
 n_vertices = 40962
@@ -30,12 +31,13 @@ participants = sorted(['sub-rid000037', 'sub-rid000001', 'sub-rid000033', 'sub-r
 cortical_vertices = {}
 for hemi in ['lh', 'rh']:
     # ws = mv.niml.read('/idata/DBIC/cara/life/ridge/models/new_niml/ws/ws_run1.{0}.niml.dset'.format(hemi))
-    ws = mv.niml.read(os.path.join(data_dir, 'niml','ws.' + hemi + '.niml.dset'  ))
+    ws = mv.niml.read(os.path.join(
+        data_dir, 'niml', 'ws.' + hemi + '.niml.dset'))
     cortical_vertices[hemi] = np.ones((40962))
     cortical_vertices[hemi][np.sum(ws.samples[1:, :] != 0, axis=0) == 0] = 0
 
 models = ['actions', 'bg', 'agents']  # ['all']
-aligns = ['ha_testsubj','aa']  # ['aa', 'ws', 'ha_testsubj', 'ha_common']
+aligns = ['ha_testsubj', 'aa']  # ['aa', 'ws', 'ha_testsubj', 'ha_common']
 runs = range(1, 5)
 hemispheres = ['lh', 'rh']
 
@@ -63,28 +65,32 @@ for align in aligns:
                     ds = np.load(file)
                     plist.append(ds)
                 all_data = np.array(plist)
-                #all_data.shape # (18, 1200, 37476)
+                # all_data.shape # (18, 1200, 37476)
 
                 temp_n_vertices = n_vertices - n_medial[hemi]
                 subject_ids = len(participants)
                 isc_result = np.zeros((len(participants), ds.shape[1]))
                 subject_ids = np.arange(len(participants))
-                for subject in subject_ids:#subject_ids+1):
+                for subject in subject_ids:  # subject_ids+1):
                     # left_out_subject.shape (1200, 37476)
                     # other_subjects.shape (17, 1200, 37476)
                     # other_avg.shape (1200, 37476)
-                    left_out_subject = all_data[subject,:, : ]
-                    other_subjects = all_data[subject_ids != subject,:, : ] # get N - 1 subjects
-                    other_avg = np.mean(other_subjects, axis=0) # average N - 1 subjects (shape: 1200, 37471,)
-                    #other_subjects_concat = np.concatenate(other_subjects)
+                    left_out_subject = all_data[subject, :, :]
+                    # get N - 1 subjects
+                    other_subjects = all_data[subject_ids != subject, :, :]
+                    # average N - 1 subjects (shape: 1200, 37471,)
+                    other_avg = np.mean(other_subjects, axis=0)
+                    # other_subjects_concat = np.concatenate(other_subjects)
                     for voxel in np.arange(temp_n_vertices):
                         left_out_voxel = left_out_subject[:, voxel]
                         other_avg_voxel = other_avg[:, voxel]
-                        isc = pearsonr(left_out_voxel, other_avg_voxel)[0] # get r-value from pearsonr
+                        isc = pearsonr(left_out_voxel, other_avg_voxel)[
+                                       0]  # get r-value from pearsonr
                         isc_result[subject, voxel] = isc
 
                         # isc_result.shape (18, 37476)
-                triu_corrs = np.tanh(np.mean(np.nan_to_num(isc_result),axis=0))
+                triu_corrs = np.tanh(
+                    np.mean(np.nan_to_num(isc_result), axis=0))
 		        med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
     		    output = np.zeros((triu_corrs.shape[0] + med_wall_ind.shape[0]))
     		          output[cortical_vertices[hemi] == 1] = triu_corrs
