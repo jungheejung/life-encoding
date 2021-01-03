@@ -88,7 +88,7 @@ for align in aligns:
                         other_avg_voxel = other_avg[:, voxel]
                         isc = pearsonr(left_out_voxel, other_avg_voxel)[0]  # get r-value from pearsonr
                         isc_result[subject, voxel] = isc
-                triu_corrs = np.tanh(np.mean(np.nan_to_num(isc_result), axis=0))
+            	        triu_corrs = np.tanh(np.mean(np.nan_to_num(isc_result), axis=0))
 		        med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
     		    output = np.zeros((triu_corrs.shape[0] + med_wall_ind.shape[0]))
     		          output[cortical_vertices[hemi] == 1] = triu_corrs
