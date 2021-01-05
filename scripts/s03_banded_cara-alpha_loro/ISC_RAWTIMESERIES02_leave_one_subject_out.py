@@ -292,14 +292,15 @@ def subprocess_cmd(command):
 # load gifti data
 plist = []
 for align in aligns:
-    if not os.path.exists(os.path.join(result_dir, align, 'isc_raw')):
-        os.makedirs(os.path.join(result_dir,  align,  'isc_raw'))
+    if not os.path.exists(os.path.join(result_dir, align, 'isc_raw_0104')):
+        os.makedirs(os.path.join(result_dir,  align,  'isc_raw_0104'))
     for model in models:
         print(model)
         for hemi in hemispheres:
+            avg_stack = np.empty((4, 40962))
             runlist = []
             for run in runs:
-                avg_stack = np.empty((4, 40962))
+
                 plist = []
                 for participant in participants:
                     #     filenames = []
@@ -354,14 +355,15 @@ for align in aligns:
                         # isc_result.shape (18, 37476)
                 triu_corrs = np.tanh(
                     np.mean(np.nan_to_num(isc_result), axis=0))
+                np.save(os.path.join(result_dir,align, 'isc_raw_0104', 'isc_model-{0}_run-{1}_hemi-{2}_vsmean.npy'.format(model, run, hemi)), triu_corrs)
                 med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
                 output = np.zeros(
                     (triu_corrs.shape[0] + med_wall_ind.shape[0]))
                 output[cortical_vertices[hemi] == 1] = triu_corrs
 
-                mv.niml.write(os.path.join(result_dir, align, 'isc_raw',
-                           '{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi)), output[None,:])
+                mv.niml.write(os.path.join(result_dir, align, 'isc_raw_0104',
+                           'isc_model-{0}_run-{1}_hemi-{2}_vsmean.niml.dset'.format(model, run, hemi)), output[None,:])
 
 #  work on this
-            avg_stack[run-1] = output
-            mv.niml.write(os.path.join(result_dir, align, 'isc_raw', 'group_{0}_isc_vsmean.{1}.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])
+                avg_stack[run-1] = output
+            mv.niml.write(os.path.join(result_dir, align, 'isc_raw_0104', 'group_{0}_isc_vsmean.{1}.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])
