@@ -299,6 +299,7 @@ for align in aligns:
         for hemi in hemispheres:
             runlist = []
             for run in runs:
+                avg_stack = np.empty((4, 40962))
                 plist = []
                 for participant in participants:
                     #     filenames = []
@@ -359,14 +360,8 @@ for align in aligns:
                 output[cortical_vertices[hemi] == 1] = triu_corrs
 
                 mv.niml.write(os.path.join(result_dir, align, 'isc_raw',
-                           '{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi)), output)
+                           '{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi)), output[None,:])
 
 #  work on this
-            avg_stack = np.empty((4, 40962))
-
-            for run in range(1,5):
-                print(mv.niml.read(os.path.join(result_dir,align,'isc_raw', '{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi))).shape)
-                avg_stack[run-1] = mv.niml.read(os.path.join(result_dir,align,'isc', '{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi)))
-                # Save it with niml.write
-                print(avg_stack.shape, np.mean(avg_stack, axis=0).shape)
-                mv.niml.write(os.path.join(result_dir, align, 'isc_raw', 'group_{0}_isc_vsmean.{1}.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])
+            avg_stack[run-1] = output
+            mv.niml.write(os.path.join(result_dir, align, 'isc_raw', 'group_{0}_isc_vsmean.{1}.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])

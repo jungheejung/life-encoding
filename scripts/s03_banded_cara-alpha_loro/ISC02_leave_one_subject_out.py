@@ -27,6 +27,12 @@ participants = sorted(['sub-rid000037', 'sub-rid000001', 'sub-rid000033', 'sub-r
                 'sub-rid000009', 'sub-rid000017', 'sub-rid000005', 'sub-rid000038',
                 'sub-rid000031', 'sub-rid000012', 'sub-rid000027', 'sub-rid000014',
                 'sub-rid000034', 'sub-rid000036'])
+cortical_vertices = {}
+for half in ['lh', 'rh']:
+    test_ds = mv.niml.read('/idata/DBIC/cara/life/ridge/models/niml/ws.{0}.niml.dset'.format(half))
+    cortical_vertices[half] = np.ones((n_vertices))
+    cortical_vertices[half][np.sum(test_ds.samples[1:, :] != 0, axis=0) == 0] = 0
+
 
 cortical_vertices = {}
 for hemi in ['lh', 'rh']:
@@ -36,8 +42,8 @@ for hemi in ['lh', 'rh']:
     cortical_vertices[hemi] = np.ones((40962))
     cortical_vertices[hemi][np.sum(ws.samples[1:, :] != 0, axis=0) == 0] = 0
 
-models = ['actions', 'bg', 'agents']  # ['all']
-aligns = [ 'aa']  # ['aa', 'ws', 'ha_testsubj', 'ha_common'] 'ha_testsubj',
+models = ['agents','actions', 'bg']
+aligns = [ 'aa', 'ha_testsubj']  # ['aa', 'ws', 'ha_testsubj', 'ha_common'] 'ha_testsubj',
 runs = range(1, 5)
 hemispheres = ['lh', 'rh']
 
@@ -45,24 +51,25 @@ hemispheres = ['lh', 'rh']
 
 plist = []
 for align in aligns:
-    if not os.path.exists(os.path.join(result_dir, align, 'isc')):
-        os.makedirs(os.path.join(result_dir,  align,  'isc'))
+    if not os.path.exists(os.path.join(result_dir, align, 'isc_0104')):
+        os.makedirs(os.path.join(result_dir,  align,  'isc_0104'))
     for model in models:
         print(model)
         for hemi in hemispheres:
             runlist = []
             for run in runs:
+                avg_stack = np.empty((4, 40962))
                 plist = []
                 for p in participants:
                     filenames = []
-                    filenames = glob.glob(os.path.join(result_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_' + str(run), '*', h,
-                'kernel-weights_' + '*' + '_model-visual_align-' + align + '_feature-' + model + '_foldshifted-' + str(run) + '_hemi_' + h + '.npy'))
+                    filenames = glob.glob(os.path.join(result_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_' + str(run), '*', hemi,
+                'kernel-weights_' + '*' + '_model-visual_align-' + align + '_feature-' + model + '_foldshifted-' + str(run) + '_hemi_' + hemi + '.npy'))
 
                 # 1. stack across participants per run ____________________________
                 # input: results > ridge-models > ws > visual > all > leftout_run_1 > sub-sid00001 > lh
                 # output: results > ridge-models > group_npy > ws_1.lh.py
-                for ind, file in enumerate(filenames):
-                    ds = np.load(file)
+                for ind, fname in enumerate(filenames):
+                    ds = np.load(fname)
                     plist.append(ds)
                 all_data = np.array(plist)
                 # all_data.shape # (18, 1200, 37476)
@@ -89,19 +96,33 @@ for align in aligns:
                         other_avg_voxel = other_avg[:, voxel]
                         isc = pearsonr(left_out_voxel, other_avg_voxel)[0]  # get r-value from pearsonr
                         isc_result[subject, voxel] = isc
-            	triu_corrs = np.tanh(np.mean(np.nan_to_num(isc_result), axis=0))
-		        med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
-    		    output = np.zeros((triu_corrs.shape[0] + med_wall_ind.shape[0]))
-    		          output[cortical_vertices[hemi] == 1] = triu_corrs
-                mv.niml.write(os.path.join(result_dir,align, 'isc','{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi)), output)
 
+                triu_corrs = np.tanh(np.mean(np.nan_to_num(isc_result), axis=0))
+                np.save(os.path.join(result_dir,align, 'isc_0104', 'isc_model-{0}_run-{1}_hemi-{2}_vsmean.npy'.format(model, run, hemi)), triu_corrs)
+                med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
+                output = np.zeros((triu_corrs.shape[0] + med_wall_ind.shape[0]), dtype = triu_corrs.dtype)
+                output[cortical_vertices[hemi] == 1] = triu_corrs
+                mv.niml.write(os.path.join(result_dir,align, 'isc_0104','{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi)), output[None,:])
+
+        #
+        #
+        # np.save(os.path.join(directory, '{0}.npy'.format(corrtype)), corrs)
+        # med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
+        # out = np.zeros((corrs.shape[0]+med_wall_ind.shape[0]),dtype= corrs.dtype)
+        # out[cortical_vertices[hemi] == 1] = corrs
+        # mv.niml.write(os.path.join(directory, '{0}.{1}.niml.dset'.format(corrtype, hemi)), out[None,:])
+        #
+        #
             # at the end of run loop - stack files _________________________________________
+            avg_stack[run-1] = output
+            mv.niml.write(os.path.join(result_dir,align, 'isc_0104', 'group_{0}_isc_vsmean.{1}.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])
 
-            avg_stack = np.empty((4, 40962))
-
-            for run in range(1,5):
-                print(mv.niml.read(os.path.join(result_dir,align,'isc', '{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi))).shape)
-                avg_stack[run-1] = mv.niml.read(os.path.join(result_dir,align,'isc', '{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi)))
-                # Save it with niml.write
-            print(avg_stack.shape, np.mean(avg_stack, axis=0).shape)
-            mv.niml.write(os.path.join(result_dir,align, 'isc', 'group_{0}_isc_vsmean.{1}.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])
+            #
+            #
+            # for run in range(1,5):
+            #     # print(mv.niml.read(os.path.join(result_dir,align,'isc', '{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi))).shape)
+            #     dset = mv.niml.read(os.path.join(result_dir, align, 'isc', '{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi)))
+            #     avg_stack[run-1] = dset
+            #     # Save it with niml.write
+            # # print(avg_stack.shape, np.mean(avg_stack, axis=0).shape)
+            # mv.niml.write(os.path.join(result_dir,align, 'isc', 'group_{0}_isc_vsmean.{1}.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])
