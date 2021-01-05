@@ -297,9 +297,10 @@ for align in aligns:
     for model in models:
         print(model)
         for hemi in hemispheres:
-            avg_stack = np.empty((4, 40962))
+
             runlist = []
             for run in runs:
+            avg_stack = np.empty((4, 40962))
 
                 plist = []
                 for participant in participants:
