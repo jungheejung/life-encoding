@@ -292,16 +292,16 @@ def subprocess_cmd(command):
 # load gifti data
 plist = []
 for align in aligns:
-    if not os.path.exists(os.path.join(result_dir, align, 'isc_raw_0104')):
-        os.makedirs(os.path.join(result_dir,  align,  'isc_raw_0104'))
+    if not os.path.exists(os.path.join(result_dir, align, 'isc_raw_0105')):
+        os.makedirs(os.path.join(result_dir,  align,  'isc_raw_0105'))
     for model in models:
         print(model)
         for hemi in hemispheres:
 
             runlist = []
             for run in runs:
-            avg_stack = np.empty((4, 40962))
-
+                avg_stack = np.empty((4, 40962))
+                triu_corrs = []
                 plist = []
                 for participant in participants:
                     #     filenames = []
@@ -315,9 +315,9 @@ for align in aligns:
                             resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
                                 participant, tr_fmri[run], run, hemi))).samples[4:-4, :]
 
-                        resp = resp[:, cortical_vertices[hemi] == 1]
-                        mv.zscore(resp, chunks_attr=None)
-                        plist.append(resp)
+                    resp = resp[:, cortical_vertices[hemi] == 1]
+                    mv.zscore(resp, chunks_attr=None)
+                    plist.append(resp)
                         # np.shape(plist) (18, 403, 37471)
 
                     # ds = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
@@ -356,15 +356,15 @@ for align in aligns:
                         # isc_result.shape (18, 37476)
                 triu_corrs = np.tanh(
                     np.mean(np.nan_to_num(isc_result), axis=0))
-                np.save(os.path.join(result_dir,align, 'isc_raw_0104', 'isc_model-{0}_run-{1}_hemi-{2}_vsmean.npy'.format(model, run, hemi)), triu_corrs)
+                np.save(os.path.join(result_dir,align, 'isc_raw_0105', 'isc_model-{0}_run-{1}_hemi-{2}_vsmean.npy'.format(model, run, hemi)), triu_corrs)
                 med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
                 output = np.zeros(
                     (triu_corrs.shape[0] + med_wall_ind.shape[0]))
                 output[cortical_vertices[hemi] == 1] = triu_corrs
 
-                mv.niml.write(os.path.join(result_dir, align, 'isc_raw_0104',
+                mv.niml.write(os.path.join(result_dir, align, 'isc_raw_0105',
                            'isc_model-{0}_run-{1}_hemi-{2}_vsmean.niml.dset'.format(model, run, hemi)), output[None,:])
 
 #  work on this
                 avg_stack[run-1] = output
-            mv.niml.write(os.path.join(result_dir, align, 'isc_raw_0104', 'group_{0}_isc_vsmean.{1}.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])
+            mv.niml.write(os.path.join(result_dir, align, 'isc_raw_0105', 'group_{0}_isc_vsmean.{1}.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])
