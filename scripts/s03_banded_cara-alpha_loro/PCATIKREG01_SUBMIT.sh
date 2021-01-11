@@ -1,4 +1,4 @@
-#!/bin/bash -l 
+#!/bin/bash -l
 #PBS -N fe1aja
 #PBS -q default
 #PBS -l nodes=1:ppn=16
@@ -28,5 +28,4 @@ STIM1="bg"
 STIM2="actions"
 STIM3="agents"
 
-python ${MAINDIR}/BANDEDRIDGE02_banded_ridge.py ${MODEL} ${ALIGN} ${STIM1} ${STIM2} ${STIM3} ${RUN} ${HEMI} ${SUB}
-
+python ${MAINDIR}/PCATIKREG02_banded_ridge.py ${MODEL} ${ALIGN} ${STIM1} ${STIM2} ${STIM3} ${RUN} ${HEMI} ${SUB}
