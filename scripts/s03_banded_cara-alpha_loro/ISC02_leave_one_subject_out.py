@@ -59,7 +59,8 @@ for align in aligns:
             runlist = []
             for run in runs:
                 avg_stack = np.empty((4, 40962))
-                plist = []
+                triu_corrs = []
+	        plist = []
                 for p in participants:
                     filenames = []
                     filenames = glob.glob(os.path.join(result_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_' + str(run), '*', hemi,
@@ -114,7 +115,7 @@ for align in aligns:
         #
         #
             # at the end of run loop - stack files _________________________________________
-            avg_stack[run-1] = output
+                avg_stack[run-1] = output
             mv.niml.write(os.path.join(result_dir,align, 'isc_0104', 'group_{0}_isc_vsmean.{1}.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])
 
             #
