@@ -185,12 +185,13 @@ def get_ws_data(test_p, fold_shifted, included, hemi):
                 sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(test_p, tr_fmri[run], run, hemi))).samples[4:-4, :]
 
         # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-        # DELETE LATER -
+        # CHANGE LATER -
         # resp = resp[:, cortical_vertices[hemi] == 1]
 
         resp = resp[:, 2483]
+        # mv.zscore(resp, chunks_attr=None)
         # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-        mv.zscore(resp, chunks_attr=None)
+
         print('train', run, resp.shape)
 
         train_resp.append(resp)
@@ -228,8 +229,9 @@ def get_aa_data(test_p, fold_shifted, included, hemi):
             # resp = resp[:, cortical_vertices[hemi] == 1]
 
             resp = resp[:, 2483]
+            # mv.zscore(resp, chunks_attr=None)
             # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-            mv.zscore(resp, chunks_attr=None)
+
             avg.append(resp)
 
         avg = np.mean(avg, axis=0)
@@ -274,8 +276,9 @@ def get_ha_common_data(test_p, mappers, fold_shifted, included, hemi):
             # resp = resp[:, cortical_vertices[hemi] == 1]
 
             resp = resp[:, 2483]
+            # mv.zscore(resp, chunks_attr=None)
             # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-            mv.zscore(resp, chunks_attr=None)
+
             avg.append(resp)
 
         avg = np.mean(avg, axis=0)
@@ -324,8 +327,9 @@ def get_ha_testsubj_data(test_p, mappers, fold_shifted, included, hemi):
             # resp = resp[:, cortical_vertices[hemi] == 1]
 
             resp = resp[:, 2483]
+            # mv.zscore(resp, chunks_attr=None)
             # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-            mv.zscore(resp, chunks_attr=None)
+
             avg.append(resp)
 
         avg = np.mean(avg, axis=0)
