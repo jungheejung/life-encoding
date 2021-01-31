@@ -97,8 +97,9 @@ def PCA_analysis(train_stim, test_stim, n_components, pca_dim=0):
 #     test_stim = full_stim[fold_shifted - 1]
 #
 #     return train_stim, test_stim
-def get_visual_stim_for_fold(stimfile, fold_shifted, included, pca_or_not):
-	cam = np.load(os.path.join(npy_dir, '{0}.npy'.format(stimfile)))
+def get_visual_stim_for_fold(stimfile, fold_shifted, included):
+    pca_or_not = True
+    cam = np.load(os.path.join(npy_dir, '{0}.npy'.format(stimfile)))
 	# motion = np.load('/ihome/cara/global_motion/motion_downsampled_complete.npy')
 	#
 	# motion_list = []
