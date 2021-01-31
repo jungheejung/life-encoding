@@ -8,7 +8,11 @@ from tikreg import utils as tikutils
 from tikreg import models
 import matplotlib.pyplot as plt
 from sklearn.linear_model import RidgeCV
-import os, sys, shutil, time, csv
+import os
+import sys
+import shutil
+import time
+import csv
 import subprocess
 from scipy.io import wavfile
 from scipy import stats
@@ -21,8 +25,6 @@ from sklearn.decomposition import PCA
 from sklearn.linear_model import LinearRegression
 
 
-
-
 # directories _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 if not os.path.exists('/scratch/f0042x1'):
     os.makedirs('/scratch/f0042x1')
@@ -33,10 +35,10 @@ cara_data_dir = '/idata/DBIC/cara/life/data'
 npy_dir = '/idata/DBIC/cara/w2v/w2v_features'
 scratch_dir = '/scratch/f0042x1'
 
-participants = ['sub-rid000001','sub-rid000005','sub-rid000006','sub-rid000009','sub-rid000012',\
-                'sub-rid000014','sub-rid000017','sub-rid000019','sub-rid000024','sub-rid000027',\
-                'sub-rid000031','sub-rid000032','sub-rid000033','sub-rid000034','sub-rid000036',\
-                'sub-rid000037','sub-rid000038','sub-rid000041']
+participants = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006', 'sub-rid000009', 'sub-rid000012',
+                'sub-rid000014', 'sub-rid000017', 'sub-rid000019', 'sub-rid000024', 'sub-rid000027',
+                'sub-rid000031', 'sub-rid000032', 'sub-rid000033', 'sub-rid000034', 'sub-rid000036',
+                'sub-rid000037', 'sub-rid000038', 'sub-rid000041']
 
 tr_movie = {1: 369, 2: 341, 3: 372, 4: 406}
 tr_fmri = {1: 374, 2: 346, 3: 377, 4: 412}
@@ -47,36 +49,38 @@ n_proc = 32     # how many cores do we have?
 n_medial = {'lh': 3486, 'rh': 3491}
 selected_node = 2483
 # functions from Cara Van Uden Ridge Regression  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+
 def PCA_analysis(train_stim, test_stim, n_components, pca_dim=0):
-	assert pca_dim == 0 or pca_dim == 1, 'pca_dim should be 0 or 1, but got {}'.format(pca_dim)
+    assert pca_dim == 0 or pca_dim == 1, 'pca_dim should be 0 or 1, but got {}'.format(
+        pca_dim)
+    if pca_dim == 1:
+        train_stim = train_stim.T
+        test_stim = test_stim.T
 
-	if pca_dim == 1:
-		train_stim = train_stim.T
-		test_stim = test_stim.T
+    scaler1 = StandardScaler()
+    scaler1.fit(train_stim)
 
-	scaler1 = StandardScaler()
-	scaler1.fit(train_stim)
+    scaler2 = StandardScaler()
+    scaler2.fit(test_stim)
 
-	scaler2 = StandardScaler()
-	scaler2.fit(test_stim)
+    train_stim = scaler1.transform(train_stim)
+    test_stim = scaler2.transform(test_stim)
 
-	train_stim = scaler1.transform(train_stim)
-	test_stim = scaler2.transform(test_stim)
+    if pca_dim == 1:
+        train_stim = train_stim.T
+        test_stim = test_stim.T
 
-	if pca_dim == 1:
-		train_stim = train_stim.T
-		test_stim = test_stim.T
+    pca = PCA(n_components=n_components, svd_solver='full')
+    pca.fit(train_stim)
 
-	pca = PCA(n_components=n_components, svd_solver='full')
-	pca.fit(train_stim)
+    train_stim = pca.transform(train_stim)
+    test_stim = pca.transform(test_stim)
 
-	train_stim = pca.transform(train_stim)
-	test_stim = pca.transform(test_stim)
+    train_stim = np.array(train_stim)
+    test_stim = np.array(test_stim)
 
-	train_stim = np.array(train_stim)
-	test_stim = np.array(test_stim)
-
-	return train_stim, test_stim
+    return train_stim, test_stim
 
 
 # def get_visual_stim_for_fold(stimfile, fold_shifted, included):
@@ -97,59 +101,51 @@ def PCA_analysis(train_stim, test_stim, n_components, pca_dim=0):
 #     test_stim = full_stim[fold_shifted - 1]
 #
 #     return train_stim, test_stim
+
 def get_visual_stim_for_fold(stimfile, fold_shifted, included):
     pca_or_not = True
     cam = np.load(os.path.join(npy_dir, '{0}.npy'.format(stimfile)))
-	# motion = np.load('/ihome/cara/global_motion/motion_downsampled_complete.npy')
-	#
-	# motion_list = []
-	# motion_list.append(motion[:369])
-	# motion_list.append(motion[369:710])
-	# motion_list.append(motion[710:1082])
-	# motion_list.append(motion[1082:])
+    full_stim = []
+    full_stim.append(cam[:369, :])
+    full_stim.append(cam[369:710, :])
+    full_stim.append(cam[710:1082, :])
+    full_stim.append(cam[1082:, :])
 
-	full_stim = []
-	full_stim.append(cam[:369,:])
-	full_stim.append(cam[369:710,:])
-	full_stim.append(cam[710:1082,:])
-	full_stim.append(cam[1082:,:])
+    train_stim = [full_stim[i] for i in np.subtract(included, 1)]
+    test_stim = full_stim[fold_shifted - 1]
+    print("full_stim dim:", len(test_stim))
+    len_train_stim = [len(full_stim[i]) for i in np.subtract(included, 1)]
+    if pca_or_not:
+        step = 300
+        train_stim_pca = []
+        test_stim_pca = []
+        train_stim = np.concatenate(train_stim, axis=0)
 
+        for i in range(0, len(train_stim[0]), step):
+            train_temp, test_temp = PCA_analysis(
+                train_stim[:, i:i + step], test_stim[:, i:i + step], n_components, pca_dim)
+            train_stim_pca.append(
+                train_temp), test_stim_pca.append(test_temp)
 
+        train_stim_pca = np.hstack(np.array(train_stim_pca))
+        test_stim_pca = np.hstack(np.array(test_stim_pca))
 
-	train_stim = [full_stim[i] for i in np.subtract(included, 1)]
-	test_stim = full_stim[fold_shifted-1]
-	print("full_stim dim:", len(test_stim))
-	len_train_stim = [len(full_stim[i]) for i in np.subtract(included, 1)]
+    train_stim_split = []
+    cum = 0
+    for len_ in len_train_stim:
+        train_stim_split.append(train_stim_pca[cum:cum + len_])
+        cum += len_
+    train_stim_pca = train_stim_split
 
-	if pca_or_not:
-		step = 300
-		train_stim_pca = []
-		test_stim_pca = []
-		train_stim = np.concatenate(train_stim, axis=0)
+    for i in range(len(train_stim_pca)):
+        this = train_stim_pca[i]
+        train_stim_pca[i] = np.concatenate(
+            (this[3:, :], this[2:-1, :], this[1:-2, :], this[:-3, :]), axis=1)
 
-		for i in range(0, len(train_stim[0]), step):
-			train_temp, test_temp = PCA_analysis(train_stim[:,i:i+step],test_stim[:,i:i+step], n_components, pca_dim)
-			train_stim_pca.append(train_temp),test_stim_pca.append(test_temp)
+    test_stim_pca = np.concatenate(
+        (test_stim_pca[3:, :], test_stim_pca[2:-1, :], test_stim_pca[1:-2, :], test_stim_pca[:-3, :]), axis=1)
 
-		train_stim_pca = np.hstack(np.array(train_stim_pca))
-		test_stim_pca = np.hstack(np.array(test_stim_pca))
-
-
-	train_stim_split = []
-	cum = 0
-	for len_ in len_train_stim:
-		train_stim_split.append(train_stim_pca[cum:cum+len_])
-		cum += len_
-	train_stim_pca = train_stim_split
-
-
-	for i in range(len(train_stim_pca)):
-		this = train_stim_pca[i]
-		train_stim_pca[i] = np.concatenate((this[3:,:], this[2:-1,:], this[1:-2,:], this[:-3,:]), axis=1)
-
-	test_stim_pca = np.concatenate((test_stim_pca[3:,:], test_stim_pca[2:-1,:], test_stim_pca[1:-2,:], test_stim_pca[:-3,:]), axis=1)
-
-	return train_stim_pca, test_stim_pca
+    return train_stim_pca, test_stim_pca
 
 
 def get_mel():
@@ -362,9 +358,10 @@ def copytree(src, dst, symlinks=False, ignore=None):
 
 
 def subprocess_cmd(command):
-    process = subprocess.Popen(command,stdout=subprocess.PIPE, shell=True)
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     proc_stdout = process.communicate()[0].strip()
     print proc_stdout
+
 
 # 1. parameters from JOBSUBMIT script  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 model = sys.argv[1]
@@ -389,7 +386,7 @@ pca_dim = 1
 # ridge_or_not = True
 # 2. Load data _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-    # 2-1) First let's create mask of cortical vertices excluding medial wall __
+# 2-1) First let's create mask of cortical vertices excluding medial wall __
 cortical_vertices = {}
 for half in ['lh', 'rh']:
     test_ds = mv.niml.read(
@@ -401,7 +398,7 @@ for half in ['lh', 'rh']:
 print('Model: {0}\nStim file: {1}, {2}\nHemi: {3}\nRuns in training: {4}\nRun in test: {5}\nParticipant: {6}'.format(
     model, stimfile1, stimfile2, hemi, included, fold_shifted, test_p))
 
-    # 2-2) load visual or narrative feature data _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+# 2-2) load visual or narrative feature data _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 if model == 'visual':
     # stimfile1 = 'bg'
     X1train_stim, X1test_stim = get_visual_stim_for_fold(
@@ -443,32 +440,38 @@ else:
 
 
 # delete later: ONLY ONE NODE
-Ytrain_unconcat
+#
+print(Ytrain_unconcat.shape, "Y train unconcatenate shape"
 
-    # 2-4) concatenate 3 runs ______________________________________________
+# 2-4) concatenate 3 runs ______________________________________________
 X1train = np.concatenate(X1train_stim)
 X2train = np.concatenate(X2train_stim)
 X3train = np.concatenate(X3train_stim)
 Ytrain = np.concatenate(Ytrain_unconcat)
 
-    # 2-5) Print for JOB LOG ___________________________________________________
+# 2-5) Print for JOB LOG ___________________________________________________
 print('\nShape of training and testing set')
-print(X1train.shape, "X1train");print(X2train.shape, "X2train");print(X3train.shape, "X3train")
-print(X1test_stim.shape, "X1test_stim");print(X2test_stim.shape, "X2test_stim");print(X3test_stim.shape, "X3test_stim")
+print(X1train.shape, "X1train")
+print(X2train.shape, "X2train")
+print(X3train.shape, "X3train")
+print(X1test_stim.shape, "X1test_stim")
+print(X2test_stim.shape, "X2test_stim")
+print(X3test_stim.shape, "X3test_stim")
 print(Ytest.shape, "Ytest")
 print(Ytrain.shape, "Ytrain")
 
 
 # 3. [ banded ridge ] alpha and ratios _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-alphas = np.logspace(0, 3, 20) #commented out for current analysis
+alphas = np.logspace(0, 3, 20)  # commented out for current analysis
 # alphas = [18.33] # currently using for our quick analysis. For the main analysis, use the full logspace as above
 ratios = np.logspace(-2, 2, 25)
 print("\nalphas: ", alphas)
 print("\nRatios: ", ratios)
 
 train_id = np.arange(X1train.shape[0])
-dur1, dur2, dur3 = tr_movie[included[0]] - 3, tr_movie[included[1]] - 3, tr_movie[included[2]] - 3
+dur1, dur2, dur3 = tr_movie[included[0]] - \
+    3, tr_movie[included[1]] - 3, tr_movie[included[2]] - 3
 
 
 # 4. [ banded ridge ] setting up loro and priors _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
@@ -488,11 +491,13 @@ temporal_prior = temporal_priors.SphericalPrior(delays=[0])  # no delays
 # 5. [ banded ridge ] banded ridge regression _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 fit_banded_polar = models.estimate_stem_wmvnp([X1train, X2train, X3train], Ytrain,
-[X1test_stim, X2test_stim, X3test_stim], Ytest,
-feature_priors=[X1_prior, X2_prior, X3_prior],
-temporal_prior=temporal_prior,
-ridges=alphas, folds=loro1,
-performance=True, weights=True, verbosity=False)
+                                              [X1test_stim, X2test_stim,
+                                                  X3test_stim], Ytest,
+                                              feature_priors=[
+                                                  X1_prior, X2_prior, X3_prior],
+                                              temporal_prior=temporal_prior,
+                                              ridges=alphas, folds=loro1,
+                                              performance=True, weights=True, verbosity=False)
 
 voxelwise_optimal_hyperparameters = fit_banded_polar['optima']
 print('\nVoxelwise optimal hyperparameter shape:',
@@ -509,7 +514,7 @@ lambda_threes = voxelwise_optimal_hyperparameters[:, 3]
 # 6. [ banded ridge ] calculating primal weights from kernel weights _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 kernel_weights = fit_banded_polar['weights']
-    # 6-1. calculate the beta weights from primal weights ______________________
+# 6-1. calculate the beta weights from primal weights ______________________
 weights_x1 = np.linalg.multi_dot(
     [X1train.T, kernel_weights, np.diag(new_alphas), np.diag(lambda_ones**-2)])
 weights_x2 = np.linalg.multi_dot(
@@ -523,13 +528,13 @@ print("\nFeature2 weight shape: ", weights_x2.shape)
 print("\nFeature2 weight shape: ", weights_x3.shape)
 print("\nJoint weights shape: ", weights_joint.shape)
 
-    # 6-2. calculate the estimated Y based on the primal weights _________________
+# 6-2. calculate the estimated Y based on the primal weights _________________
 estimated_y1 = np.linalg.multi_dot([X1test_stim, weights_x1])
 estimated_y2 = np.linalg.multi_dot([X2test_stim, weights_x2])
 estimated_y3 = np.linalg.multi_dot([X3test_stim, weights_x3])
 
 directory = os.path.join(scratch_dir, 'PCA_banded-ridge_loro_onenode',
-                         '{0}/{1}/{2}_{3}_{4}/leftout_run_{5}'.format(align, model, stimfile1, stimfile2, stimfile3,fold_shifted), test_p, hemi)
+                         '{0}/{1}/{2}_{3}_{4}/leftout_run_{5}'.format(align, model, stimfile1, stimfile2, stimfile3, fold_shifted), test_p, hemi)
 if not os.path.exists(directory):
     os.makedirs(directory)
 
@@ -537,8 +542,7 @@ print("\ndirectory: ", directory)
 print("weights shape: ", weights_x1.shape)
 print("weights type: ", type(weights_x1))
 
-
-    # 6-3. save primal weights _________________________________________________
+# 6-3. save primal weights _________________________________________________
 np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.npy'.format(
         test_p, model, align, stimfile1, fold_shifted, hemi)), weights_x1)
 np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.npy'.format(
@@ -560,7 +564,7 @@ corr_x2 = pd.DataFrame.corrwith(
 corr_x3 = pd.DataFrame.corrwith(
     estimated_y3_df, actual_df, axis=0, method='pearson')
 
-    # 7-1. save files _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+# 7-1. save files _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
 
 out1 = np.zeros(
