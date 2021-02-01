@@ -47,7 +47,7 @@ n_samples = 1509
 n_vertices = 40962
 n_proc = 32     # how many cores do we have?
 n_medial = {'lh': 3486, 'rh': 3491}
-selected_node = 2483
+selected_node = [28445, 28446, 2483]
 # functions from Cara Van Uden Ridge Regression  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
 
@@ -185,8 +185,8 @@ def get_ws_data(test_p, fold_shifted, included, hemi):
         # CHANGE LATER -
         # resp = resp[:, cortical_vertices[hemi] == 1]
 
-        resp = resp[:, 2483]
-        # mv.zscore(resp, chunks_attr=None)
+        resp = resp[:, selected_node]
+        mv.zscore(resp, chunks_attr=None)
         # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
         print('train', run, resp.shape)
@@ -225,8 +225,8 @@ def get_aa_data(test_p, fold_shifted, included, hemi):
             # DELETE LATER -
             # resp = resp[:, cortical_vertices[hemi] == 1]
 
-            resp = resp[:, 2483]
-            # mv.zscore(resp, chunks_attr=None)
+            resp = resp[:, selected_node]
+            mv.zscore(resp, chunks_attr=None)
             # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
             avg.append(resp)
@@ -272,10 +272,10 @@ def get_ha_common_data(test_p, mappers, fold_shifted, included, hemi):
             # DELETE LATER -
             # resp = resp[:, cortical_vertices[hemi] == 1]
 
-            resp = resp[:, 2483]
-            # mv.zscore(resp, chunks_attr=None)
+            resp = resp[:, selected_node]
+            #
             # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-
+            mv.zscore(resp, chunks_attr=None)
             avg.append(resp)
 
         avg = np.mean(avg, axis=0)
@@ -323,8 +323,8 @@ def get_ha_testsubj_data(test_p, mappers, fold_shifted, included, hemi):
             # DELETE LATER -
             # resp = resp[:, cortical_vertices[hemi] == 1]
 
-            resp = resp[:, 2483]
-            # mv.zscore(resp, chunks_attr=None)
+            resp = resp[:, selected_node]
+            mv.zscore(resp, chunks_attr=None)
             # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
             avg.append(resp)
