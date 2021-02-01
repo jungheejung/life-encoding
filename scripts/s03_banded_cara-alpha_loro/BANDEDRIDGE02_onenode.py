@@ -441,7 +441,7 @@ else:
 
 # delete later: ONLY ONE NODE
 #
-print(Ytrain_unconcat.shape, "Y train unconcatenate shape")
+# print(Ytrain_unconcat.shape, "Y train unconcatenate shape")
 
 # 2-4) concatenate 3 runs ______________________________________________
 X1train = np.concatenate(X1train_stim)
