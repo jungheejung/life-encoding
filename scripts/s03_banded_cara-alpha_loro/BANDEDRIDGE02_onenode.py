@@ -182,12 +182,13 @@ def get_ws_data(test_p, fold_shifted, included, hemi):
                 sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(test_p, tr_fmri[run], run, hemi))).samples[4:-4, :]
 
         # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-        # CHANGE LATER -
+        # DELETE LATER -
         # resp = resp[:, cortical_vertices[hemi] == 1]
 
         resp = resp[:, selected_node]
-        mv.zscore(resp, chunks_attr=None)
         # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+        mv.zscore(resp, chunks_attr=None)
+
 
         print('train', run, resp.shape)
 
@@ -200,7 +201,8 @@ def get_ws_data(test_p, fold_shifted, included, hemi):
         test_resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
             test_p, tr_fmri[fold_shifted], fold_shifted, hemi))).samples[4:-4, :]
 
-    test_resp = test_resp[:, cortical_vertices[hemi] == 1]
+    # test_resp = test_resp[:, cortical_vertices[hemi] == 1]
+    test_resp = test_resp[:, selected_node]
     mv.zscore(test_resp, chunks_attr=None)
     print('test', fold_shifted, test_resp.shape)
 
@@ -215,6 +217,8 @@ def get_aa_data(test_p, fold_shifted, included, hemi):
     for run in included:
         avg = []
         for participant in train_p:
+            # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+            # UNCOMMENT LATER -
             if run == 4:
                 resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
                     participant, tr_fmri[run], run, hemi))).samples[4:-5, :]
@@ -242,8 +246,8 @@ def get_aa_data(test_p, fold_shifted, included, hemi):
     else:
         test_resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
             test_p, tr_fmri[fold_shifted], fold_shifted, hemi))).samples[4:-4, :]
-
-    test_resp = test_resp[:, cortical_vertices[hemi] == 1]
+    # test_resp = test_resp[:, cortical_vertices[hemi] == 1]
+    test_resp = test_resp[:, selected_node]
     mv.zscore(test_resp, chunks_attr=None)
 
     print('test', fold_shifted, test_resp.shape)
@@ -259,13 +263,21 @@ def get_ha_common_data(test_p, mappers, fold_shifted, included, hemi):
     for run in included:
         avg = []
         for participant in train_p:
+            # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+            # UNCOMMENT LATER -
+            # if run == 4:
+            #     resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
+            #         participant, tr_fmri[run], run, hemi))).samples[4:-5, :]
+            # else:
+            #     resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
+            #         participant, tr_fmri[run], run, hemi))).samples[4:-4, :]
+            # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
             if run == 4:
                 resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
                     participant, tr_fmri[run], run, hemi))).samples[4:-5, :]
             else:
                 resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
                     participant, tr_fmri[run], run, hemi))).samples[4:-4, :]
-
             mv.zscore(resp, chunks_attr=None)
             resp = mappers[participant].forward(resp)
             # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
@@ -289,10 +301,10 @@ def get_ha_common_data(test_p, mappers, fold_shifted, included, hemi):
     else:
         test_resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
             test_p, tr_fmri[fold_shifted], fold_shifted, hemi))).samples[4:-4, :]
-
     mv.zscore(test_resp, chunks_attr=None)
     test_resp = mappers[participant].forward(test_resp)
-    test_resp = test_resp[:, cortical_vertices[hemi] == 1]
+    # test_resp = test_resp[:, cortical_vertices[hemi] == 1]
+    test_resp = test_resp[:, selected_node]
     mv.zscore(test_resp, chunks_attr=None)
 
     print('test', fold_shifted, test_resp.shape)
@@ -308,13 +320,23 @@ def get_ha_testsubj_data(test_p, mappers, fold_shifted, included, hemi):
     for run in included:
         avg = []
         for participant in train_p:
+            # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+            # UNCOMMENT LATER -
+            # if run == 4:
+            #     resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
+            #         participant, tr_fmri[run], run, hemi))).samples[4:-5, :]
+            # else:
+            #     resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
+            #         participant, tr_fmri[run], run, hemi))).samples[4:-4, :]
+            # # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+            # DELETE LATER -
             if run == 4:
                 resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
                     participant, tr_fmri[run], run, hemi))).samples[4:-5, :]
             else:
                 resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
                     participant, tr_fmri[run], run, hemi))).samples[4:-4, :]
-
+            # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
             mv.zscore(resp, chunks_attr=None)
             resp = mappers[participant].forward(resp)
             mv.zscore(resp, chunks_attr=None)
@@ -324,8 +346,9 @@ def get_ha_testsubj_data(test_p, mappers, fold_shifted, included, hemi):
             # resp = resp[:, cortical_vertices[hemi] == 1]
 
             resp = resp[:, selected_node]
-            mv.zscore(resp, chunks_attr=None)
             # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+            mv.zscore(resp, chunks_attr=None)
+
 
             avg.append(resp)
 
@@ -334,12 +357,20 @@ def get_ha_testsubj_data(test_p, mappers, fold_shifted, included, hemi):
         print('train', run, avg.shape)
         train_resp.append(avg)
 
+    # if fold_shifted == 4:
+    #     test_resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
+    #         test_p, tr_fmri[fold_shifted], fold_shifted, hemi))).samples[4:-5, cortical_vertices[hemi] == 1]
+    # else:
+    #     test_resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
+    #         test_p, tr_fmri[fold_shifted], fold_shifted, hemi))).samples[4:-4, cortical_vertices[hemi] == 1]
+
     if fold_shifted == 4:
         test_resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
-            test_p, tr_fmri[fold_shifted], fold_shifted, hemi))).samples[4:-5, cortical_vertices[hemi] == 1]
+            test_p, tr_fmri[fold_shifted], fold_shifted, hemi))).samples[4:-5, selected_node]
     else:
         test_resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
-            test_p, tr_fmri[fold_shifted], fold_shifted, hemi))).samples[4:-4, cortical_vertices[hemi] == 1]
+            test_p, tr_fmri[fold_shifted], fold_shifted, hemi))).samples[4:-4, selected_node]
+
     mv.zscore(test_resp, chunks_attr=None)
 
     print('test', fold_shifted, test_resp.shape)
@@ -451,14 +482,15 @@ Ytrain = np.concatenate(Ytrain_unconcat)
 
 # 2-5) Print for JOB LOG ___________________________________________________
 print('\nShape of training and testing set')
-print(X1train.shape, "X1train")
-print(X2train.shape, "X2train")
-print(X3train.shape, "X3train")
-print(X1test_stim.shape, "X1test_stim")
-print(X2test_stim.shape, "X2test_stim")
-print(X3test_stim.shape, "X3test_stim")
-print(Ytest.shape, "Ytest")
-print(Ytrain.shape, "Ytrain")
+print(X1train.shape, "X1train") # ((1073, 120), 'X1train')
+print(X2train.shape, "X2train") # ((1073, 120), 'X2train')
+print(X3train.shape, "X3train") # ((1073, 120), 'X3train')
+print(X1test_stim.shape, "X1test_stim") # ((403, 120), 'X1test_stim')
+print(X2test_stim.shape, "X2test_stim") # ((403, 120), 'X2test_stim')
+print(X3test_stim.shape, "X3test_stim") # ((403, 120), 'X3test_stim')
+print(Ytest.shape, "Ytest") # ((403, 37476), 'Ytest')
+print(Ytrain.shape, "Ytrain") # ((1073, 3), 'Ytrain')
+
 
 
 # 3. [ banded ridge ] alpha and ratios _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
@@ -567,21 +599,38 @@ corr_x3 = pd.DataFrame.corrwith(
 # 7-1. save files _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
 
+# out1 = np.zeros(
+#     (corr_x1.shape[0] + med_wall_ind.shape[0]), dtype=np.dtype(corr_x1).type)
+# out1[cortical_vertices[hemi] == 1] = corr_x1
+# mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.niml.dset'.format(
+#     test_p, model, align, stimfile1, fold_shifted, hemi)), out1[None, :])
+#
+# out2 = np.zeros(
+#     (corr_x2.shape[0] + med_wall_ind.shape[0]), dtype=np.dtype(corr_x2).type)
+# out2[cortical_vertices[hemi] == 1] = corr_x2
+# mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.niml.dset'.format(
+#     test_p, model, align, stimfile2, fold_shifted, hemi)), out2[None, :])
+#
+# out3 = np.zeros(
+#     (corr_x3.shape[0] + med_wall_ind.shape[0]), dtype=np.dtype(corr_x3).type)
+# out3[cortical_vertices[hemi] == 1] = corr_x3
+# mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.niml.dset'.format(
+#     test_p, model, align, stimfile3, fold_shifted, hemi)), out3[None, :])
 out1 = np.zeros(
     (corr_x1.shape[0] + med_wall_ind.shape[0]), dtype=np.dtype(corr_x1).type)
-out1[cortical_vertices[hemi] == 1] = corr_x1
+out1[selected_node] = corr_x1
 mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.niml.dset'.format(
     test_p, model, align, stimfile1, fold_shifted, hemi)), out1[None, :])
 
 out2 = np.zeros(
     (corr_x2.shape[0] + med_wall_ind.shape[0]), dtype=np.dtype(corr_x2).type)
-out2[cortical_vertices[hemi] == 1] = corr_x2
+out2[selected_node] = corr_x2
 mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.niml.dset'.format(
     test_p, model, align, stimfile2, fold_shifted, hemi)), out2[None, :])
 
 out3 = np.zeros(
     (corr_x3.shape[0] + med_wall_ind.shape[0]), dtype=np.dtype(corr_x3).type)
-out3[cortical_vertices[hemi] == 1] = corr_x3
+out3[selected_node] = corr_x3
 mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.niml.dset'.format(
     test_p, model, align, stimfile3, fold_shifted, hemi)), out3[None, :])
 
