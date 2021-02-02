@@ -616,20 +616,21 @@ med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
 # out3[cortical_vertices[hemi] == 1] = corr_x3
 # mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.niml.dset'.format(
 #     test_p, model, align, stimfile3, fold_shifted, hemi)), out3[None, :])
+corr_shape = n_vertices - n_medial[hemi]
 out1 = np.zeros(
-    (corr_x1.shape[0] + med_wall_ind.shape[0]), dtype=np.dtype(corr_x1).type)
+    (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(corr_x1).type)
 out1[selected_node] = corr_x1
 mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.niml.dset'.format(
     test_p, model, align, stimfile1, fold_shifted, hemi)), out1[None, :])
 
 out2 = np.zeros(
-    (corr_x2.shape[0] + med_wall_ind.shape[0]), dtype=np.dtype(corr_x2).type)
+    (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(corr_x2).type)
 out2[selected_node] = corr_x2
 mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.niml.dset'.format(
     test_p, model, align, stimfile2, fold_shifted, hemi)), out2[None, :])
 
 out3 = np.zeros(
-    (corr_x3.shape[0] + med_wall_ind.shape[0]), dtype=np.dtype(corr_x3).type)
+    (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(corr_x3).type)
 out3[selected_node] = corr_x3
 mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.niml.dset'.format(
     test_p, model, align, stimfile3, fold_shifted, hemi)), out3[None, :])
