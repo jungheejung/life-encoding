@@ -60,7 +60,7 @@ for align in aligns:
             for run in runs:
                 avg_stack = np.empty((4, 40962))
                 triu_corrs = []
-	        plist = []
+	            plist = []
                 for p in participants:
                     filenames = []
                     filenames = glob.glob(os.path.join(result_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_' + str(run), '*', hemi,
