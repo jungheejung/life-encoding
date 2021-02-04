@@ -54,8 +54,8 @@ for align in aligns:
 
                 # for p in participants:
                     filenames = []
-                    filenames = glob.glob(os.path.join(data_dir, '{0}/visual/bg_actions_agents/leftout_run_{3}/{4}/{2}/corrcoef_{4}_model-visual_align-{0}_feature-{1}_foldshifted-{3}_hemi_{2}.niml.dset'.format(align, model, h, run, p)))
-                    # filenames = glob.glob(os.path.join(result_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_' + str(run), '*', hemi,
+                    #filenames = glob.glob(os.path.join(data_dir, '{0}/visual/bg_actions_agents/leftout_run_{3}/{4}/{2}/corrcoef_{4}_model-visual_align-{0}_feature-{1}_foldshifted-{3}_hemi_{2}.niml.dset'.format(align, model, h, run, p)))
+                    filenames = glob.glob(os.path.join(data_dir, '*', 'visual', 'bg_actions_agents', 'leftout_run_' + str(run), '*', h,'corrcoef*model-visual_align-ws_feature-' + model + '_foldshifted-' + str(run)+'_hemi_' + h + '.niml.dset'))
                 # 'kernel-weights_' + '*' + '_model-visual_align-' + align + '_feature-' + model + '_foldshifted-' + str(run) + '_hemi_' + hemi + '.npy'))
                 for ind, fname in enumerate(filenames):
                     ds = mv.niml.read(fname)
