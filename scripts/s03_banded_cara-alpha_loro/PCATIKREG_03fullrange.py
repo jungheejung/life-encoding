@@ -86,9 +86,9 @@ print('Model: {0}\nStim file: {1}, {2}\nHemi: {3}\nRuns in training: {4}\nRun in
 nonmedial = cortical_vertices[hemi] == 1
 
 if start_node == 410:
-    node_range = [40901:40962]
+    node_range = list(range(40901, 40962))
 else:
-    node_range = [(start_node-1)*100+1:start_node*100]
+    node_range = list(range((start_node-1)*100+1, start_node*100))
 
 save_nodename = (start_node-1)*100+1
 selected_node = np.intersect1d(nonmedial, node_range)
