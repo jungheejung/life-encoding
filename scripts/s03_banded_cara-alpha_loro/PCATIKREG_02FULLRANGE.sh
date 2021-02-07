@@ -4,7 +4,7 @@
 #PBS -l nodes=1:ppn=16
 #PBS -l walltime=24:00:00
 #PBS -A DBIC
-#PBS -t 1-410
+#PBS -t 1-10
 
 cd $PBS_O_WORKDIR
 
@@ -34,4 +34,4 @@ STIM2="actions"
 STIM3="agents"
 
 
-python ${MAINDIR}/BANDEDRIDGE02_fullrange.py ${MODEL} ${ALIGN} ${STIM1} ${STIM2} ${STIM3} ${RUN} ${HEMI} ${SUB} ${NODE}
+python ${MAINDIR}/PCATIKREG_03fullrange.py ${MODEL} ${ALIGN} ${STIM1} ${STIM2} ${STIM3} ${RUN} ${HEMI} ${SUB} ${NODE}
