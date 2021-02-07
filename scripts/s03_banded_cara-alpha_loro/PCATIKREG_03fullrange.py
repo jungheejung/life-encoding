@@ -59,7 +59,7 @@ stimfile3 = sys.argv[5]
 fold = int(sys.argv[6])
 hemi = sys.argv[7]
 test_p = sys.argv[8]
-start_node = sys.argv[9]
+start_node = int(sys.argv[9])
 # participant = []
 # participant.append(part)
 fold_shifted = fold + 1
