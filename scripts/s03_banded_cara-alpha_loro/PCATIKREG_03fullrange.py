@@ -546,13 +546,13 @@ weights_x2 = np.linalg.multi_dot(
 weights_x3 = np.linalg.multi_dot(
     [X3train.T, kernel_weights, np.diag(new_alphas), np.diag(lambda_threes**-2)])
 
-weights_joint = np.vstack([weights_x1, weights_x2, weights_x3])
-teststim_joint = np.vstack([X1test_stim, X2test_stim, X3test_stim])
+weights_joint = np.vstack((weights_x1, weights_x2, weights_x3))
+teststim_joint = np.vstack((X1test_stim, X2test_stim, X3test_stim))
 print("\nFeature1 weight shape: ", weights_x1.shape)
 print("\nFeature2 weight shape: ", weights_x2.shape)
 print("\nFeature2 weight shape: ", weights_x3.shape)
 print("\nJoint weights shape: ", weights_joint.shape)
-print("\nJoint stim shape: ", teststim_join.shape)
+print("\nJoint stim shape: ", teststim_joint.shape)
 
 # 6-2. calculate the estimated Y based on the primal weights _________________
 estimated_y1 = np.linalg.multi_dot([X1test_stim, weights_x1])
@@ -560,7 +560,7 @@ estimated_y2 = np.linalg.multi_dot([X2test_stim, weights_x2])
 estimated_y3 = np.linalg.multi_dot([X3test_stim, weights_x3])
 estimated_ytotal = np.linalg.multi_dot([teststim_joint, weights_joint])
 
-directory = os.path.join(scratch_dir, 'PCA_banded-ridge_loro_onenode',
+directory = os.path.join(scratch_dir, 'PCA_banded-ridge_loro_fullrange',
                          '{0}/{1}/{2}_{3}_{4}/leftout_run_{5}'.format(align, model, stimfile1, stimfile2, stimfile3, fold_shifted), test_p, hemi)
 if not os.path.exists(directory):
     os.makedirs(directory)
