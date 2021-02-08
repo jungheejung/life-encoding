@@ -92,6 +92,9 @@ else:
 
 save_nodename = (start_node-1)*100+1
 selected_node = np.intersect1d(nonmedial, node_range)
+print(type(selected_node))
+print(selected_node.shape, "selected_node") # ((1073, 3), 'Ytrain')
+
 # [ ] check if the intersection returns nodes in the right order
 #
 
