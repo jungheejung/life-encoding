@@ -325,20 +325,14 @@ else:
         Ytrain_unconcat, Ytest = get_ha_common_data(
             test_p, mappers, fold_shifted, included, hemi)
 
-
-
 # 2-4) concatenate 3 runs ______________________________________________
 X1train = np.concatenate(X1train_stim)
 X2train = np.concatenate(X2train_stim)
 X3train = np.concatenate(X3train_stim)
 Ytrain = np.concatenate(Ytrain_unconcat)
 
-
 # load numpy primal weights
-# /dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/s03_banded_cara-alpha_loro
 result_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/banded-ridge_alpha-cara_loro'
-# '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/banded-ridge_alpha-cara_loro/aa/visual/bg_actions_agents/leftout_run_1/sub-rid000001/rh'
-# 'kernel-weights_sub-rid000001_model-visual_align-aa_feature-actions_foldshifted-1_hemi_rh.npy'
 filename1 = os.path.join(result_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_'+str(fold_shifted), test_p, hemi,
 'kernel-weights_'+test_p+'_model-'+model+'_align-'+align+'_feature-'+stimfile1+'_foldshifted-'+str(fold_shifted)+'_hemi_'+hemi+'.npy')
 filename2 = os.path.join(result_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_'+str(fold_shifted), test_p, hemi,
@@ -350,9 +344,10 @@ weights_x1 = np.load(filename1)
 weights_x2 = np.load(filename2)
 weights_x3 = np.load(filename3)
 
-
-# load actual
+# load actual data
 actual_df = pd.DataFrame(data=Ytest)
+
+print("completed loading weights and stim files")
 # vstack weights, hstack test_stim
 weights_joint = np.vstack((weights_x1, weights_x2, weights_x3))
 teststim_joint = np.hstack((X1test_stim, X2test_stim, X3test_stim))
@@ -363,14 +358,16 @@ estimated_ytotal_df = pd.DataFrame(data=estimated_ytotal)
 corr_total = pd.DataFrame.corrwith(
     estimated_ytotal_df, actual_df, axis=0, method='pearson')
 
+print("calculated total correlation - saving files")
 # save as numpy and niml
 med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
 
-# outtotal = np.zeros(
-#     (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(corr_total).type)
-# outtotal[selected_node] = corr_total
-# np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-total_foldshifted-{3}_hemi-{4}_range-{5}.npy'.format(
-#         test_p, model, align, fold_shifted, hemi, save_nodename)), outtotal)
+directory = os.path.join(scratch_dir, 'banded-ridge_alpha-cara_loro',
+                         '{0}/{1}/{2}_{3}_{4}/leftout_run_{5}'.format(align, model, stimfile1, stimfile2, stimfile3,fold_shifted), test_p, hemi)
+if not os.path.exists(directory):
+    os.makedirs(directory)
+
+print("\ndirectory: ", directory)
 
 outtotal = np.zeros(
     (corr_total.shape[0] + med_wall_ind.shape[0]), dtype=np.dtype(corr_total).type)
@@ -378,5 +375,7 @@ outtotal[cortical_vertices[hemi] == 1] = corr_total
 mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-total_foldshifted-{3}_hemi_{4}.niml.dset'.format(
     test_p, model, align, fold_shifted, hemi)), outtotal[None, :])
 ## add medial wall back in
+
 # copy files and remove files _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 subprocess_cmd('cp -rf /scratch/f0042x1/banded-ridge_alpha-cara_loro/ /dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results; rm -rf /scratch/f0042x1/*')
+print("process complete")
