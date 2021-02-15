@@ -17,6 +17,7 @@ import numpy as np
 import mvpa2.suite as mv
 
 
+
 # directories ________________________________________________________________________________
 if not os.path.exists('/scratch/f0042x1'):
     os.makedirs('/scratch/f0042x1')
@@ -40,6 +41,23 @@ n_vertices = 40962
 n_proc = 32     # how many cores do we have?
 n_medial = {'lh': 3486, 'rh': 3491}
 
+
+# 1. parameters from JOBSUBMIT script  ___________________________________________________________________
+model = sys.argv[1]
+align = sys.argv[2]
+stimfile1 = sys.argv[3]
+stimfile2 = sys.argv[4]
+stimfile3 = sys.argv[5]
+fold = int(sys.argv[6])
+fold_shifted = fold + 1
+
+hemi = sys.argv[7]
+test_p = sys.argv[8]
+# participant = []
+# participant.append(part)
+
+included = [1, 2, 3, 4]
+included.remove(fold_shifted)
 # functions from Cara Van Uden Ridge Regression  ____________________________________________________________________
 def get_visual_stim_for_fold(stimfile, fold_shifted, included):
     cam = np.load(os.path.join(npy_dir, '{0}.npy'.format(stimfile)))
@@ -296,22 +314,6 @@ else:
             test_p, mappers, fold_shifted, included, hemi)
 
 
-# 1. parameters from JOBSUBMIT script  ___________________________________________________________________
-model = sys.argv[1]
-align = sys.argv[2]
-stimfile1 = sys.argv[3]
-stimfile2 = sys.argv[4]
-stimfile3 = sys.argv[5]
-fold = int(sys.argv[6])
-fold_shifted = fold + 1
-
-hemi = sys.argv[7]
-test_p = sys.argv[8]
-# participant = []
-# participant.append(part)
-
-included = [1, 2, 3, 4]
-included.remove(fold_shifted)
 
 # 2-4) concatenate 3 runs ______________________________________________
 X1train = np.concatenate(X1train_stim)
@@ -321,6 +323,7 @@ Ytrain = np.concatenate(Ytrain_unconcat)
 
 
 # load numpy primal weights
+# /dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/s03_banded_cara-alpha_loro
 result_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/banded-ridge_alpha-cara_loro'
 # '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/banded-ridge_alpha-cara_loro/aa/visual/bg_actions_agents/leftout_run_1/sub-rid000001/rh'
 # 'kernel-weights_sub-rid000001_model-visual_align-aa_feature-actions_foldshifted-1_hemi_rh.npy'
