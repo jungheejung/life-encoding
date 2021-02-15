@@ -273,6 +273,18 @@ def subprocess_cmd(command):
 
 # 2. Load data _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
+    # 2-1) First let's create mask of cortical vertices excluding medial wall __
+cortical_vertices = {}
+for half in ['lh', 'rh']:
+    test_ds = mv.niml.read(
+        '/idata/DBIC/cara/life/ridge/models/niml/ws.{0}.niml.dset'.format(half))
+    cortical_vertices[half] = np.ones((n_vertices))
+    cortical_vertices[half][np.sum(
+        test_ds.samples[1:, :] != 0, axis=0) == 0] = 0
+
+print('Model: {0}\nStim file: {1}, {2}\nHemi: {3}\nRuns in training: {4}\nRun in test: {5}\nParticipant: {6}'.format(
+    model, stimfile1, stimfile2, hemi, included, fold_shifted, test_p))
+
 # 2-2) load visual or narrative feature data _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 if model == 'visual':
     # stimfile1 = 'bg'
