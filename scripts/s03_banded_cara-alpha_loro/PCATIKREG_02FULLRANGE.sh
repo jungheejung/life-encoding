@@ -2,9 +2,11 @@
 #PBS -N fe1aja
 #PBS -q default
 #PBS -l nodes=1:ppn=16
-#PBS -l walltime=24:00:00
+#PBS -l walltime=05:00:00
 #PBS -A DBIC
-#PBS -t 1-10
+#PBS -t 1-410
+#PBS -o /log_fullrange/%o
+#PBS -e /log_fullrange/%e
 
 cd $PBS_O_WORKDIR
 
@@ -28,7 +30,7 @@ HEMI=$3
 NODE=${PBS_ARRAYID}
 MODEL="visual"
 #ALIGN="ha_testsubj"  #"ws"
-ALIGN="aa"
+ALIGN="ws"
 STIM1="bg"
 STIM2="actions"
 STIM3="agents"
