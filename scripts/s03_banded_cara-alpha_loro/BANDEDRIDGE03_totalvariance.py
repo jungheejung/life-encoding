@@ -339,12 +339,12 @@ Ytrain = np.concatenate(Ytrain_unconcat)
 result_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/banded-ridge_alpha-cara_loro'
 # '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/banded-ridge_alpha-cara_loro/aa/visual/bg_actions_agents/leftout_run_1/sub-rid000001/rh'
 # 'kernel-weights_sub-rid000001_model-visual_align-aa_feature-actions_foldshifted-1_hemi_rh.npy'
-filename1 = os.path.join(result_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_'+fold_shifted, test_p, hemi,
-'kernel-weights_'+test_p+'_model-'+model+'_align-'+align+'_feature-'+stimfile1+'_foldshifted-'+fold_shifted+'_hemi_'+hemi+'.npy')
-filename2 = os.path.join(result_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_'+fold_shifted, test_p, hemi,
-'kernel-weights_'+test_p+'_model-'+model+'_align-'+align+'_feature-'+stimfile2+'_foldshifted-'+fold_shifted+'_hemi_'+hemi+'.npy')
-filename3 = os.path.join(result_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_'+fold_shifted, test_p, hemi,
-'kernel-weights_'+test_p+'_model-'+model+'_align-'+align+'_feature-'+stimfile3+'_foldshifted-'+fold_shifted+'_hemi_'+hemi+'.npy')
+filename1 = os.path.join(result_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_'+str(fold_shifted), test_p, hemi,
+'kernel-weights_'+test_p+'_model-'+model+'_align-'+align+'_feature-'+stimfile1+'_foldshifted-'+str(fold_shifted)+'_hemi_'+hemi+'.npy')
+filename2 = os.path.join(result_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_'+str(fold_shifted), test_p, hemi,
+'kernel-weights_'+test_p+'_model-'+model+'_align-'+align+'_feature-'+stimfile2+'_foldshifted-'+str(fold_shifted)+'_hemi_'+hemi+'.npy')
+filename3 = os.path.join(result_dir, align, 'visual', 'bg_actions_agents', 'leftout_run_'+str(fold_shifted), test_p, hemi,
+'kernel-weights_'+test_p+'_model-'+model+'_align-'+align+'_feature-'+stimfile3+'_foldshifted-'+str(fold_shifted)+'_hemi_'+hemi+'.npy')
 
 weights_x1 = np.load(filename1)
 weights_x2 = np.load(filename2)
