@@ -47,7 +47,7 @@ n_samples = 1509
 n_vertices = 40962
 n_proc = 32     # how many cores do we have?
 n_medial = {'lh': 3486, 'rh': 3491}
-increment = 100 # 8 hr instead of 30 min
+increment = 1000 # 8 hr instead of 30 min
 
 
 # 1. parameters from JOBSUBMIT script  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
@@ -83,15 +83,22 @@ for half in ['lh', 'rh']:
 print('Model: {0}\nStim file: {1}, {2}\nHemi: {3}\nRuns in training: {4}\nRun in test: {5}\nParticipant: {6}'.format(
     model, stimfile1, stimfile2, hemi, included, fold_shifted, test_p))
 
-nonmedial = cortical_vertices[hemi] == 1
+#nonmedial = cortical_vertices[hemi] == 1
+nonmedial = np.where(cortical_vertices[hemi] == 1)[0] 
 
 if start_node == 410:
-    node_range = list(range(40901, 40962))
+    node_range = np.arange(40901, 40963)
+#    node_range = list(range(40901, 40962))
 else:
-    node_range = list(range((start_node-1)*100+1, start_node*100))
+    node_range = np.arange((start_node-1)*100+1, start_node*100)
+#    node_range = list(range((start_node-1)*100+1, start_node*100))
 
 save_nodename = (start_node-1)*100+1
 selected_node = np.intersect1d(nonmedial, node_range)
+print(type(nonmedial))
+print(nonmedial.shape, "nonmedial")
+print(type(node_range))
+print(node_range.shape, "noderange")
 print(type(selected_node))
 print(selected_node.shape, "selected_node") # ((1073, 3), 'Ytrain')
 
@@ -214,7 +221,7 @@ def get_ws_data(test_p, fold_shifted, included, hemi):
 
         # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
         # DELETE LATER -
-        # resp = resp[:, cortical_vertices[hemi] == 1]
+        # resp = resp[:, c##ortical_verticee[hemi] == 1]
 
         resp = resp[:, selected_node]
         # _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
@@ -232,7 +239,7 @@ def get_ws_data(test_p, fold_shifted, included, hemi):
         test_resp = mv.gifti_dataset(os.path.join(sam_data_dir, '{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format(
             test_p, tr_fmri[fold_shifted], fold_shifted, hemi))).samples[4:-4, :]
 
-    # test_resp = test_resp[:, cortical_vertices[hemi] == 1]
+    # test_resp = test_resp[:, cortical_verticee[hemi] == 1]
     test_resp = test_resp[:, selected_node]
     mv.zscore(test_resp, chunks_attr=None)
     print('test', fold_shifted, test_resp.shape)
@@ -550,7 +557,7 @@ weights_x3 = np.linalg.multi_dot(
     [X3train.T, kernel_weights, np.diag(new_alphas), np.diag(lambda_threes**-2)])
 
 weights_joint = np.vstack((weights_x1, weights_x2, weights_x3))
-teststim_joint = np.vstack((X1test_stim, X2test_stim, X3test_stim))
+teststim_joint = np.hstack((X1test_stim, X2test_stim, X3test_stim))
 print("\nFeature1 weight shape: ", weights_x1.shape)
 print("\nFeature2 weight shape: ", weights_x2.shape)
 print("\nFeature2 weight shape: ", weights_x3.shape)
@@ -572,6 +579,10 @@ print("\ndirectory: ", directory)
 print("weights shape: ", weights_x1.shape)
 print("weights type: ", type(weights_x1))
 
+# 6-4. save alpha
+np.save(os.path.join(directory, 'hyperparam-alpha_{0}_model-{1}_align-{2}_foldshifted-{3}_hemi-{4}_range-{5}.npy'.format(
+        test_p, model, align,  fold_shifted, hemi,save_nodename)), new_alphas)
+
 # 6-3. save primal weights _________________________________________________
 np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.npy'.format(
         test_p, model, align, stimfile1, fold_shifted, hemi,save_nodename)), weights_x1)
@@ -579,7 +590,7 @@ np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-
         test_p, model, align, stimfile2, fold_shifted, hemi,save_nodename)), weights_x2)
 np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.npy'.format(
         test_p, model, align, stimfile3, fold_shifted, hemi,save_nodename)), weights_x3)
-
+np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-total_foldshifted-{3}_hemi-{4}_range-{5}.npy'.format(test_p, model, align, fold_shifted, hemi, save_nodename)), weights_joint)
 
 # 7. [ banded ridge ] correlation coefficient between actual Y and estimated Y _ _ _ _ _ _ _
 
@@ -587,7 +598,7 @@ actual_df = pd.DataFrame(data=Ytest)
 estimated_y1_df = pd.DataFrame(data=estimated_y1)
 estimated_y2_df = pd.DataFrame(data=estimated_y2)
 estimated_y3_df = pd.DataFrame(data=estimated_y3)
-estimated_ytotal_df = pd.DataFrame(data=estimated_ytotal_df)
+estimated_ytotal_df = pd.DataFrame(data=estimated_ytotal)
 
 corr_x1 = pd.DataFrame.corrwith(
     estimated_y1_df, actual_df, axis=0, method='pearson')
@@ -638,6 +649,14 @@ out3[selected_node] = corr_x3
 np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.npy'.format(
         test_p, model, align, stimfile3, fold_shifted, hemi, save_nodename)), out3)
 
+outtotal = np.zeros(
+    (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(corr_total).type)
+outtotal[selected_node] = corr_total
+np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-total_foldshifted-{3}_hemi-{4}_range-{5}.npy'.format(
+        test_p, model, align, fold_shifted, hemi, save_nodename)), outtotal)
+
 ## add medial wall back in
 # copy files and remove files _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 subprocess_cmd('cp -rf /scratch/f0042x1/PCA_banded-ridge_loro_fullrange/ /dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results; rm -rf /scratch/f0042x1/*')
+
+print("\nprocess complete")
