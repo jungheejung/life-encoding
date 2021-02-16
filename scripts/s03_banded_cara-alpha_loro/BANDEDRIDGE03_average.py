@@ -21,7 +21,6 @@ aligns = ['ws', 'aa', 'ha_testsubj']  # ['aa', 'ws', 'ha_testsubj', 'ha_common']
 runs = range(1, 5)
 hemispheres = ['lh', 'rh']
 
-
 # functions ____________________________________________________________________
 def load_data(filename):
     ds = mv.gifti_dataset(filename)
@@ -96,6 +95,6 @@ for align in aligns:
             print(total_avg.shape) # (1, 40962)
             total = np.concatenate((total_avg, total_concat), axis=0)
             # print(total.shape)
-
+            total[cortical_vertices[h] == 0] = 0
             np.save(os.path.join(group_dir, 'groupaverage_{0}_model-{2}.{1}.npy'.format(align, h, model)), total)
             mv.niml.write(os.path.join(group_dir, 'groupaverage_{0}_model-{2}.{1}.niml.dset'.format(align, h, model)), total)
