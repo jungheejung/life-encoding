@@ -19,7 +19,7 @@ participants = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006', 'sub-rid00000
 models = ['all']
 aligns = ['ws', 'aa', 'ha_testsubj']  # ['aa', 'ws', 'ha_testsubj', 'ha_common']
 runs = range(1, 5)
-hemispheres = ['lh', 'rh']
+hemispheres = [ 'rh']
 
 
 # functions ____________________________________________________________________
