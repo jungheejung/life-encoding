@@ -2,9 +2,11 @@
 #PBS -N fe1aja
 #PBS -q default
 #PBS -l nodes=1:ppn=16
-#PBS -l walltime=12:00:00
+#PBS -l walltime=24:00:00
+#PBS -l vmem=20GB
+#PBS -l mem=2GB
 #PBS -A DBIC
-#PBS -t 1-10
+#PBS -t 1-4
 
 cd $PBS_O_WORKDIR
 
