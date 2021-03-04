@@ -418,7 +418,7 @@ print(Ytrain.shape, "Ytrain") # ((1073, 3), 'Ytrain')
 
 # 3. [ banded ridge ] alpha and ratios _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
-alphas = np.logspace(0, 3, 20) commented out for current analysis
+alphas = np.logspace(0, 3, 20) #commented out for current analysis
 # alphas = [18.33] # currently using for our quick analysis. For the main analysis, use the full logspace as above
 ratios = np.logspace(-2, 2, 25)
 print("\nalphas: ", alphas)
@@ -449,7 +449,7 @@ fit_banded_polar = models.estimate_stem_wmvnp([X1train, X2train, X3train], Ytrai
 feature_priors=[X1_prior, X2_prior, X3_prior],
 temporal_prior=temporal_prior,
 ridges=alphas, folds=loro1,
-performance=True, weights=True, verbosity=False)
+performance=True, weights=True, verbosity=True)
 
 voxelwise_optimal_hyperparameters = fit_banded_polar['optima']
 print('\nVoxelwise optimal hyperparameter shape:',
