@@ -2,9 +2,9 @@
 #PBS -N fe1aja
 #PBS -q default
 #PBS -l nodes=1:ppn=16
-#PBS -l walltime=05:00:00
+#PBS -l walltime=24:00:00
 #PBS -A DBIC
-#PBS -t 1-410
+#PBS -t 1-4
 #PBS -o /log_fullrange/%o
 #PBS -e /log_fullrange/%e
 
@@ -20,14 +20,14 @@ echo ${PBS_ARRAYID}
 echo "PBSARRAY"
 # INFILE=`awk "NR==${PBS_ARRAYID}" ${MAINDIR}/canonical_sublist.txt`
 INFILE=`awk "NR==${PBS_ARRAYID}" ${MAINDIR}/canonical_sublist.txt`
-# SUB=$(echo $INFILE | cut -f1 -d,)
-# RUN=$(echo $INFILE | cut -f2 -d,)
-# HEMI=$(echo $INFILE | cut -f3 -d,)
-# NODE=$(echo $INFILE | cut -f4 -d,)
-SUB=$1
-RUN=$2
-HEMI=$3
-NODE=${PBS_ARRAYID}
+SUB=$(echo $INFILE | cut -f1 -d,)
+RUN=$(echo $INFILE | cut -f2 -d,)
+HEMI=$(echo $INFILE | cut -f3 -d,)
+NODE=$(echo $INFILE | cut -f4 -d,)
+# SUB=$1
+# RUN=$2
+# HEMI=$3
+# NODE=${PBS_ARRAYID}
 MODEL="visual"
 #ALIGN="ha_testsubj"  #"ws"
 ALIGN="ws"
