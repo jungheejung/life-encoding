@@ -14,7 +14,7 @@ module load python/2.7-Anaconda
 source /optnfs/common/miniconda3/etc/profile.d/conda.sh
 conda activate haxby_mvpc
 
-MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/s03_banded_cara-alpha_loro
+#MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/s03_banded_cara-alpha_loro
 
 echo "PBSARRAY: " ${PBS_ARRAYID}
 # INFILE=`awk "NR==${PBS_ARRAYID}" ${MAINDIR}/canonical_sublist.txt`
@@ -35,4 +35,4 @@ STIM2="actions"
 STIM3="agents"
 
 
-python ${MAINDIR}/PCATIKREG_03fullrange.py ${MODEL} ${ALIGN} ${STIM1} ${STIM2} ${STIM3} ${RUN} ${HEMI} ${SUB} ${NODE}
+python ./PCATIKREG_03fullrange.py ${MODEL} ${ALIGN} ${STIM1} ${STIM2} ${STIM3} ${RUN} ${HEMI} ${SUB} ${NODE}
