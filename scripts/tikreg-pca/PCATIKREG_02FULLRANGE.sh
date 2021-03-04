@@ -5,8 +5,8 @@
 #PBS -l walltime=24:00:00
 #PBS -A DBIC
 #PBS -t 1-4
-#PBS -o /log_fullrange/%o
-#PBS -e /log_fullrange/%e
+#PBS -o ./log_fullrange/%o
+#PBS -e ./log_fullrange/%e
 
 cd $PBS_O_WORKDIR
 
@@ -16,8 +16,7 @@ conda activate haxby_mvpc
 
 MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/s03_banded_cara-alpha_loro
 
-echo ${PBS_ARRAYID}
-echo "PBSARRAY"
+echo "PBSARRAY: " ${PBS_ARRAYID}
 # INFILE=`awk "NR==${PBS_ARRAYID}" ${MAINDIR}/canonical_sublist.txt`
 INFILE=`awk "NR==${PBS_ARRAYID}" ${MAINDIR}/sublist_with_range.txt`
 SUB=$(echo $INFILE | cut -f1 -d,)
