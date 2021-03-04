@@ -8,11 +8,9 @@ from tikreg import utils as tikutils
 from tikreg import models
 import matplotlib.pyplot as plt
 from sklearn.linear_model import RidgeCV
-import os
-import sys
-import shutil
-import time
+import os,sys,shutil,time
 import csv
+import math
 import subprocess
 from scipy.io import wavfile
 from scipy import stats
@@ -84,17 +82,20 @@ print('Model: {0}\nStim file: {1}, {2}\nHemi: {3}\nRuns in training: {4}\nRun in
     model, stimfile1, stimfile2, hemi, included, fold_shifted, test_p))
 
 #nonmedial = cortical_vertices[hemi] == 1
-nonmedial = np.where(cortical_vertices[hemi] == 1)[0] 
+nonmedial = np.where(cortical_vertices[hemi] == 1)[0]
 
-if start_node == 410:
-    node_range = np.arange(40901, 40963)
+if start_node == round(n_vertices/increment )  :
+    node_range = np.arange((start_node-1)*increment, n_vertices)
 #    node_range = list(range(40901, 40962))
 else:
-    node_range = np.arange((start_node-1)*100+1, start_node*100)
+    node_range = np.arange((start_node-1)*increment, start_node*increment)
 #    node_range = list(range((start_node-1)*100+1, start_node*100))
 
-save_nodename = (start_node-1)*100+1
-selected_node = np.intersect1d(nonmedial, node_range)
+#save_nodename = (start_node-1)*100+1
+node_start = node_range[0]
+node_end = node_range[-1]
+selected_node = node_range
+#selected_node = np.intersect1d(nonmedial, node_range)
 print(type(nonmedial))
 print(nonmedial.shape, "nonmedial")
 print(type(node_range))
@@ -579,18 +580,25 @@ print("\ndirectory: ", directory)
 print("weights shape: ", weights_x1.shape)
 print("weights type: ", type(weights_x1))
 
+# 6-4. save alpha_________________________________________________
+corr_shape = n_vertices - n_medial[hemi]
+outhyperparam = np.zeros(
+    (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(new_alphas).type)
+outhyperparam[outhyperparam] = new_alphas
+
 # 6-4. save alpha
-np.save(os.path.join(directory, 'hyperparam-alpha_{0}_model-{1}_align-{2}_foldshifted-{3}_hemi-{4}_range-{5}.npy'.format(
-        test_p, model, align,  fold_shifted, hemi,save_nodename)), new_alphas)
+np.save(os.path.join(directory, 'hyperparam-alpha_{0}_model-{1}_align-{2}_foldshifted-{3}_hemi-{4}_range-{5}-{6}.npy'.format(
+        test_p, model, align,  fold_shifted, hemi,node_start, node_end)), outhyperparam)
 
 # 6-3. save primal weights _________________________________________________
-np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.npy'.format(
-        test_p, model, align, stimfile1, fold_shifted, hemi,save_nodename)), weights_x1)
-np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.npy'.format(
-        test_p, model, align, stimfile2, fold_shifted, hemi,save_nodename)), weights_x2)
-np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.npy'.format(
-        test_p, model, align, stimfile3, fold_shifted, hemi,save_nodename)), weights_x3)
-np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-total_foldshifted-{3}_hemi-{4}_range-{5}.npy'.format(test_p, model, align, fold_shifted, hemi, save_nodename)), weights_joint)
+np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.npy'.format(
+        test_p, model, align, stimfile1, fold_shifted, hemi,node_start, node_end)), weights_x1)
+np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.npy'.format(
+        test_p, model, align, stimfile2, fold_shifted, hemi,node_start, node_end)), weights_x2)
+np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.npy'.format(
+        test_p, model, align, stimfile3, fold_shifted, hemi,node_start, node_end)), weights_x3)
+np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-total_foldshifted-{3}_hemi-{4}_range-{5}-{6}.npy'.format(
+test_p, model, align, fold_shifted, hemi, node_start, node_end)), weights_joint)
 
 # 7. [ banded ridge ] correlation coefficient between actual Y and estimated Y _ _ _ _ _ _ _
 
@@ -612,48 +620,31 @@ corr_total = pd.DataFrame.corrwith(
 # 7-1. save files _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
 
-# out1 = np.zeros(
-#     (corr_x1.shape[0] + med_wall_ind.shape[0]), dtype=np.dtype(corr_x1).type)
-# out1[cortical_vertices[hemi] == 1] = corr_x1
-# mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.niml.dset'.format(
-#     test_p, model, align, stimfile1, fold_shifted, hemi)), out1[None, :])
-#
-# out2 = np.zeros(
-#     (corr_x2.shape[0] + med_wall_ind.shape[0]), dtype=np.dtype(corr_x2).type)
-# out2[cortical_vertices[hemi] == 1] = corr_x2
-# mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.niml.dset'.format(
-#     test_p, model, align, stimfile2, fold_shifted, hemi)), out2[None, :])
-#
-# out3 = np.zeros(
-#     (corr_x3.shape[0] + med_wall_ind.shape[0]), dtype=np.dtype(corr_x3).type)
-# out3[cortical_vertices[hemi] == 1] = corr_x3
-# mv.niml.write(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi_{5}.niml.dset'.format(
-#     test_p, model, align, stimfile3, fold_shifted, hemi)), out3[None, :])
 corr_shape = n_vertices - n_medial[hemi]
 
 out1 = np.zeros(
     (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(corr_x1).type)
 out1[selected_node] = corr_x1
-np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.npy'.format(
-        test_p, model, align, stimfile1, fold_shifted, hemi,save_nodename)), out1)
+np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.npy'.format(
+        test_p, model, align, stimfile1, fold_shifted, hemi,node_start, node_end)), out1)
 
 out2 = np.zeros(
     (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(corr_x2).type)
 out2[selected_node] = corr_x2
-np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.npy'.format(
-        test_p, model, align, stimfile2, fold_shifted, hemi, save_nodename)), out2)
+np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.npy'.format(
+        test_p, model, align, stimfile2, fold_shifted, hemi, node_start, node_end)), out2)
 
 out3 = np.zeros(
     (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(corr_x3).type)
 out3[selected_node] = corr_x3
-np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.npy'.format(
-        test_p, model, align, stimfile3, fold_shifted, hemi, save_nodename)), out3)
+np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.npy'.format(
+        test_p, model, align, stimfile3, fold_shifted, hemi, node_start, node_end)), out3)
 
 outtotal = np.zeros(
     (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(corr_total).type)
 outtotal[selected_node] = corr_total
-np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-total_foldshifted-{3}_hemi-{4}_range-{5}.npy'.format(
-        test_p, model, align, fold_shifted, hemi, save_nodename)), outtotal)
+np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-total_foldshifted-{3}_hemi-{4}_range-{5}-{6}.npy'.format(
+        test_p, model, align, fold_shifted, hemi, node_start, node_end)), outtotal)
 
 ## add medial wall back in
 # copy files and remove files _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
