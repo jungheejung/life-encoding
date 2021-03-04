@@ -571,7 +571,7 @@ estimated_y2 = np.linalg.multi_dot([X2test_stim, weights_x2])
 estimated_y3 = np.linalg.multi_dot([X3test_stim, weights_x3])
 estimated_ytotal = np.linalg.multi_dot([teststim_joint, weights_joint])
 
-directory = os.path.join(scratch_dir, 'PCA_banded-ridge_loro_fullrange',
+directory = os.path.join(scratch_dir, 'PCA_tikreg-loro_fullrange-chunk',
                          '{0}/{1}/{2}_{3}_{4}/leftout_run_{5}'.format(align, model, stimfile1, stimfile2, stimfile3, fold_shifted), test_p, hemi)
 if not os.path.exists(directory):
     os.makedirs(directory)
@@ -648,6 +648,6 @@ np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-total_
 
 ## add medial wall back in
 # copy files and remove files _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-subprocess_cmd('cp -rf /scratch/f0042x1/PCA_banded-ridge_loro_fullrange/ /dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results; rm -rf /scratch/f0042x1/*')
+subprocess_cmd('cp -rf /scratch/f0042x1/PCA_tikreg-loro_fullrange-chunk/ /dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results; rm -rf /scratch/f0042x1/*')
 
 print("\nprocess complete")
