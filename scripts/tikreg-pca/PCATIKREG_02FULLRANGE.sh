@@ -18,7 +18,7 @@ conda activate haxby_mvpc
 
 echo "PBSARRAY: " ${PBS_ARRAYID}
 # INFILE=`awk "NR==${PBS_ARRAYID}" ${MAINDIR}/canonical_sublist.txt`
-INFILE=`awk "NR==${PBS_ARRAYID}" ${MAINDIR}/sublist_with_range.txt`
+INFILE=`awk "NR==${PBS_ARRAYID}" ./sublist_with_range.txt`
 SUB=$(echo $INFILE | cut -f1 -d,)
 RUN=$(echo $INFILE | cut -f2 -d,)
 HEMI=$(echo $INFILE | cut -f3 -d,)
