@@ -103,6 +103,8 @@ print(node_range.shape, "noderange")
 print(type(selected_node))
 print(selected_node.shape, "selected_node") # ((1073, 3), 'Ytrain')
 
+med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
+
 # [ ] check if the intersection returns nodes in the right order
 #
 
@@ -618,7 +620,6 @@ corr_total = pd.DataFrame.corrwith(
     estimated_ytotal_df, actual_df, axis=0, method='pearson')
 
 # 7-1. save files _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
 
 corr_shape = n_vertices - n_medial[hemi]
 
