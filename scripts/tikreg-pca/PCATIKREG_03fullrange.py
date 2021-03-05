@@ -78,11 +78,11 @@ for half in ['lh', 'rh']:
     cortical_vertices[half][np.sum(
         test_ds.samples[1:, :] != 0, axis=0) == 0] = 0
 
-print('Model: {0}\nStim file: {1}, {2}\nHemi: {3}\nRuns in training: {4}\nRun in test: {5}\nParticipant: {6}'.format(
-    model, stimfile1, stimfile2, hemi, included, fold_shifted, test_p))
+print('Model: {0}\nStim file: {1}, {2}, {3}\nHemi: {3}\nRuns in training: {4}\nRun in test: {5}\nParticipant: {6}'.format(
+    model, stimfile1, stimfile2, stimfile3, hemi, included, fold_shifted, test_p))
 
 #nonmedial = cortical_vertices[hemi] == 1
-nonmedial = np.where(cortical_vertices[hemi] == 1)[0]
+# nonmedial = np.where(cortical_vertices[hemi] == 1)[0]
 
 if start_node == round(n_vertices/increment )  :
     node_range = np.arange((start_node-1)*increment, n_vertices)
@@ -96,17 +96,16 @@ node_start = node_range[0]
 node_end = node_range[-1]
 selected_node = node_range
 #selected_node = np.intersect1d(nonmedial, node_range)
-print(type(nonmedial))
-print(nonmedial.shape, "nonmedial")
-print(type(node_range))
-print(node_range.shape, "noderange")
-print(type(selected_node))
-print(selected_node.shape, "selected_node") # ((1073, 3), 'Ytrain')
+print("\n node range: {0}-{1}".format(node_start, node_end))
+print("\n node shape: {0}".format(selected_node.shape))
+# print(type(nonmedial))
+# print(nonmedial.shape, "nonmedial")
+# print(type(node_range))
+# print(node_range.shape, "noderange")
+# print(type(selected_node))
+# print(selected_node.shape, "selected_node") # ((1073, 3), 'Ytrain')
 
 med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
-
-# [ ] check if the intersection returns nodes in the right order
-#
 
 # ridge_or_not = True
 # functions from Cara Van Uden Ridge Regression  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
@@ -488,12 +487,12 @@ Ytrain = np.concatenate(Ytrain_unconcat)
 
 # 2-5) Print for JOB LOG ___________________________________________________
 print('\nShape of training and testing set')
-print(X1train.shape, "X1train") # ((1073, 120), 'X1train')
-print(X2train.shape, "X2train") # ((1073, 120), 'X2train')
-print(X3train.shape, "X3train") # ((1073, 120), 'X3train')
-print(X1test_stim.shape, "X1test_stim") # ((403, 120), 'X1test_stim')
-print(X2test_stim.shape, "X2test_stim") # ((403, 120), 'X2test_stim')
-print(X3test_stim.shape, "X3test_stim") # ((403, 120), 'X3test_stim')
+print(X1train.shape, "X1train shape") # ((1073, 120), 'X1train')
+print(X2train.shape, "X2train shape") # ((1073, 120), 'X2train')
+print(X3train.shape, "X3train shape") # ((1073, 120), 'X3train')
+print(X1test_stim.shape, "X1test stim") # ((403, 120), 'X1test_stim')
+print(X2test_stim.shape, "X2test stim") # ((403, 120), 'X2test_stim')
+print(X3test_stim.shape, "X3test stim") # ((403, 120), 'X3test_stim')
 print(Ytest.shape, "Ytest") # ((403, 37476), 'Ytest')
 print(Ytrain.shape, "Ytrain") # ((1073, 3), 'Ytrain')
 
@@ -503,8 +502,8 @@ print(Ytrain.shape, "Ytrain") # ((1073, 3), 'Ytrain')
 alphas = np.logspace(0, 3, 20)  # commented out for current analysis
 # alphas = [18.33] # currently using for our quick analysis. For the main analysis, use the full logspace as above
 ratios = np.logspace(-2, 2, 25)
-print("\nalphas: ", alphas)
-print("\nRatios: ", ratios)
+print("\nalphas: {0}".format(alphas))
+print("\nRatios: {0}".format(ratios))
 
 train_id = np.arange(X1train.shape[0])
 dur1, dur2, dur3 = tr_movie[included[0]] - \
@@ -537,8 +536,7 @@ fit_banded_polar = models.estimate_stem_wmvnp([X1train, X2train, X3train], Ytrai
                                               performance=True, weights=True, verbosity=False)
 
 voxelwise_optimal_hyperparameters = fit_banded_polar['optima']
-print('\nVoxelwise optimal hyperparameter shape:',
-      voxelwise_optimal_hyperparameters.shape)
+print('\nVoxelwise optimal hyperparameter shape: {0}'.format(voxelwise_optimal_hyperparameters.shape))
 
 # Faster conversion of kernel weights to primal weights via matrix multiplication
 # each vector (new_alphas, lamda_ones, lamda_twos) contains v number of entries (e.g. voxels)
@@ -561,11 +559,12 @@ weights_x3 = np.linalg.multi_dot(
 
 weights_joint = np.vstack((weights_x1, weights_x2, weights_x3))
 teststim_joint = np.hstack((X1test_stim, X2test_stim, X3test_stim))
-print("\nFeature1 weight shape: ", weights_x1.shape)
-print("\nFeature2 weight shape: ", weights_x2.shape)
-print("\nFeature2 weight shape: ", weights_x3.shape)
-print("\nJoint weights shape: ", weights_joint.shape)
-print("\nJoint stim shape: ", teststim_joint.shape)
+print("\nFeature1 weight shape: {0}".format(weights_x1.shape))
+print("\nFeature2 weight shape: {0}".format(weights_x2.shape))
+print("\nFeature3 weight shape: {0}".format(weights_x3.shape))
+print("\nweights type: {0}".format( type(weights_x1)))
+print("\nJoint weights shape: {0}".format(weights_joint.shape))
+print("\nJoint stim shape: {0}".format(teststim_joint.shape))
 
 # 6-2. calculate the estimated Y based on the primal weights _________________
 estimated_y1 = np.linalg.multi_dot([X1test_stim, weights_x1])
@@ -578,14 +577,15 @@ directory = os.path.join(scratch_dir, 'PCA_tikreg-loro_fullrange-chunk',
 if not os.path.exists(directory):
     os.makedirs(directory)
 
-print("\ndirectory: ", directory)
-print("weights shape: ", weights_x1.shape)
-print("weights type: ", type(weights_x1))
+print("\nsave directory: {0}".format(directory))
+
+print("\nalpha shape: {0}".format( new_alphas.shape))
+print("\nalpha type: {0}".format( type(new_alphas)))
 
 # 6-4. save alpha_________________________________________________
 corr_shape = n_vertices - n_medial[hemi]
 outhyperparam = np.zeros(
-    (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(new_alphas).type)
+    (corr_shape + med_wall_ind.shape[0]), dtype=new_alphas.dtype)
 outhyperparam[outhyperparam] = new_alphas
 
 # 6-4. save alpha
