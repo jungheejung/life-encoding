@@ -5,8 +5,6 @@
 #PBS -l walltime=24:00:00
 #PBS -A DBIC
 #PBS -t 1-4
-#PBS -o ./log_fullrange/%o
-#PBS -e ./log_fullrange/%e
 
 cd $PBS_O_WORKDIR
 
