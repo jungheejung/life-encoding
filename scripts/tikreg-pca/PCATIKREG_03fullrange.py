@@ -21,7 +21,7 @@ from sklearn.linear_model import RidgeCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LinearRegression
-
+import json
 
 # directories _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 if not os.path.exists('/scratch/f0042x1'):
@@ -45,7 +45,7 @@ n_samples = 1509
 n_vertices = 40962
 n_proc = 32     # how many cores do we have?
 n_medial = {'lh': 3486, 'rh': 3491}
-increment = 1000 # 8 hr instead of 30 min
+increment = 100 # 8 hr instead of 30 min
 
 
 # 1. parameters from JOBSUBMIT script  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
@@ -561,12 +561,12 @@ weights_x3 = np.linalg.multi_dot(
 
 weights_joint = np.vstack((weights_x1, weights_x2, weights_x3))
 teststim_joint = np.hstack((X1test_stim, X2test_stim, X3test_stim))
-print("\nFeature1 weight shape: {0}".format(weights_x1.shape))
-print("\nFeature2 weight shape: {0}".format(weights_x2.shape))
-print("\nFeature3 weight shape: {0}".format(weights_x3.shape))
-print("\nweights type: {0}".format( type(weights_x1)))
-print("\nJoint weights shape: {0}".format(weights_joint.shape))
-print("\nJoint stim shape: {0}".format(teststim_joint.shape))
+print("Feature 1 weight shape: {0}".format(weights_x1.shape))
+print("Feature 2 weight shape: {0}".format(weights_x2.shape))
+print("Feature 3 weight shape: {0}".format(weights_x3.shape))
+print("weights type: {0}".format( type(weights_x1)))
+print("Joint weights shape: {0}".format(weights_joint.shape))
+print("Joint stim shape: {0}".format(teststim_joint.shape))
 
 # 6-2. calculate the estimated Y based on the primal weights _________________
 estimated_y1 = np.linalg.multi_dot([X1test_stim, weights_x1])
