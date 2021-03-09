@@ -45,7 +45,7 @@ n_samples = 1509
 n_vertices = 40962
 n_proc = 32     # how many cores do we have?
 n_medial = {'lh': 3486, 'rh': 3491}
-increment = 100 # 8 hr instead of 30 min
+increment = 5# 8 hr instead of 30 min
 
 
 # 1. parameters from JOBSUBMIT script  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
@@ -634,7 +634,7 @@ weightx1_savename = os.path.join(directory, 'primal-weights_{0}_model-{1}_align-
 weightx2_savename = os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.json'.format(
         test_p, model, align, stimfile2, fold_shifted, hemi,node_start, node_end))
 weightx3_savename = os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.json'.format(
-        test_p, model, align, fold_shifted, hemi,node_start, node_end))
+        test_p, model, align, stimfile3, fold_shifted, hemi,node_start, node_end))
 weightj_savename = os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-total_foldshifted-{3}_hemi-{4}_range-{5}-{6}.json'.format(
         test_p, model, align, fold_shifted, hemi, node_start, node_end))
 
