@@ -98,7 +98,7 @@ node_start = node_range[0]
 node_end = node_range[-1]
 # selected_node = node_range
 selected_node = np.intersect1d(nonmedial, node_range)
-medial_node = np.intersect1d(nonmedial, node_range)
+medial_node = np.intersect1d(medial, node_range)
 print("\n node range: {0}-{1}".format(node_start, node_end))
 print("\n node shape: {0}".format(selected_node.shape))
 # print(type(nonmedial))
@@ -433,7 +433,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
 def subprocess_cmd(command):
     process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     proc_stdout = process.communicate()[0].strip()
-    print(proc_stdout)
+    print(proc_stdout_
 
 
 # 2. Load data _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
@@ -495,7 +495,7 @@ print(X3train.shape, "X3train shape") # ((1073, 120), 'X3train')
 print(X1test_stim.shape, "X1test stim") # ((403, 120), 'X1test_stim')
 print(X2test_stim.shape, "X2test stim") # ((403, 120), 'X2test_stim')
 print(X3test_stim.shape, "X3test stim") # ((403, 120), 'X3test_stim')
-print(Ytest.shape, "Ytest") # ((403, 37476), 'Ytest')
+print(Ytest.shape, "Ytest") # ((403, 3), 'Ytest')
 print(Ytrain.shape, "Ytrain") # ((1073, 3), 'Ytrain')
 
 
@@ -561,7 +561,7 @@ weights_x3 = np.linalg.multi_dot(
 
 weights_joint = np.vstack((weights_x1, weights_x2, weights_x3))
 teststim_joint = np.hstack((X1test_stim, X2test_stim, X3test_stim))
-print("Feature 1 weight shape: {0}".format(weights_x1.shape))
+print("Feature 1 weight shape: {0}".format(weights_x1.shape)) #(120, 5)
 print("Feature 2 weight shape: {0}".format(weights_x2.shape))
 print("Feature 3 weight shape: {0}".format(weights_x3.shape))
 print("weights type: {0}".format( type(weights_x1)))
@@ -569,10 +569,10 @@ print("Joint weights shape: {0}".format(weights_joint.shape))
 print("Joint stim shape: {0}".format(teststim_joint.shape))
 
 # 6-2. calculate the estimated Y based on the primal weights _________________
-estimated_y1 = np.linalg.multi_dot([X1test_stim, weights_x1])
+estimated_y1 = np.linalg.multi_dot([X1test_stim, weights_x1]) # (369, 120) * (120, 5)
 estimated_y2 = np.linalg.multi_dot([X2test_stim, weights_x2])
 estimated_y3 = np.linalg.multi_dot([X3test_stim, weights_x3])
-estimated_ytotal = np.linalg.multi_dot([teststim_joint, weights_joint])
+estimated_ytotal = np.linalg.multi_dot([teststim_joint, weights_joint]) # (369, 360) * (360, 5)
 
 directory = os.path.join(scratch_dir, 'PCA_tikreg-loro_fullrange-chunk',
                          '{0}/{1}/{2}_{3}_{4}/leftout_run_{5}'.format(align, model, stimfile1, stimfile2, stimfile3, fold_shifted), test_p, hemi)
@@ -589,33 +589,28 @@ print("\nalpha type: {0}".format( type(new_alphas)))
 # outhyperparam = np.zeros(
 #     (corr_shape + med_wall_ind.shape[0]), dtype=new_alphas.dtype)
 #outhyperparam = np.zeros(node_range.shape[0], dtype=new_alphas.dtype)
-ind_nonmedial = np.array(nonmedial) # insert nonmedial index
-ind_medial = np.array(med_wall_ind) # insert medial index
 
-append_zero = np.zeros(len(med_wall_ind)) # insert medial = 0
+
+ind_nonmedial = np.array(selected_node) # insert nonmedial index
+print("ind_nonmedial: ", ind_nonmedial)
+ind_medial = np.array(medial_node) # insert medial index
+print("ind_medial: ", ind_medial)
+append_zero = np.zeros(len(medial_node)) # insert medial = 0
 alpha_nonmedial = np.array(new_alphas) # insert nonmedial alpha
+print("append_zero: ", append_zero)
+print("alpha_nonmedial: ", alpha_nonmedial)
 weight_x1_nonmedial = np.array(weights_x1)
 weight_x2_nonmedial = np.array(weights_x2)
-weight_x3_nonmedial = np.array(weights_x3)
+weight_x3_nonmedial = np.array(weights_x3) # (120, 5)
 weights_joint_nonmedial = np.array(weights_joint)
 
 index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
 alpha_value = np.concatenate((alpha_nonmedial,append_zero),axis = None)
-weightx1_value = np.concatenate((weight_x1_nonmedial,append_zero),axis = None)
-weightx2_value = np.concatenate((weight_x2_nonmedial,append_zero),axis = None)
-weightx3_value = np.concatenate((weight_x3_nonmedial,append_zero),axis = None)
-weightj_value = np.concatenate((weights_joint_nonmedial,append_zero),axis = None)
+
 # zipped_alphas = zip(index_alpha, alpha_value)
 zipped_alphas = zip(index_chunk.astype(float), alpha_value.astype(float))
-zipped_x1 = zip(index_chunk.astype(float), weightx1_value.astype(float))
-zipped_x2 = zip(index_chunk.astype(float), weightx2_value.astype(float))
-zipped_x3 = zip(index_chunk.astype(float), weightx3_value.astype(float))
-zipped_joint = zip(index_chunk.astype(float), weightj_value.astype(float))
 sorted_alphas = sorted(zipped_alphas)
-sorted_x1 = sorted(zipped_x1);
-sorted_x2 = sorted(zipped_x2);
-sorted_x3 = sorted(zipped_x3);
-sorted_joint = sorted(zipped_joint);
+
 
 #outhyperparam[outhyperparam] = new_alphas
 
@@ -629,6 +624,28 @@ with open(alpha_savename, 'w') as f:
 #         test_p, model, align,  fold_shifted, hemi,node_start, node_end)), outhyperparam)
 
 # 6-3. save primal weights _________________________________________________
+# [ ] TO DO: primal weights. make sure to grab the shape and create numpy zeros of that shape
+# [ ] save tuple index and numpy array
+
+weight_zero = np.zeros(weight_x3_nonmedial.size[0], len(medial_node)) # insert medial = 0
+
+weightx1_value = np.concatenate((weight_x1_nonmedial,weight_zero),axis = None)
+weightx2_value = np.concatenate((weight_x2_nonmedial,weight_zero),axis = None)
+weightx3_value = np.concatenate((weight_x3_nonmedial,weight_zero),axis = None)
+weightj_value = np.concatenate((weights_joint_nonmedial,weight_zero),axis = None)
+
+# zipped_x1 = zip(index_chunk.astype(float), weightx1_value.astype(float))
+# zipped_x2 = zip(index_chunk.astype(float), weightx2_value.astype(float))
+# zipped_x3 = zip(index_chunk.astype(float), weightx3_value.astype(float))
+# zipped_joint = zip(index_chunk.astype(float), weightj_value.astype(float))
+#
+# sorted_x1 = sorted(zipped_x1);
+# sorted_x2 = sorted(zipped_x2);
+# sorted_x3 = sorted(zipped_x3);
+# sorted_joint = sorted(zipped_joint);
+
+# np.vstack((np.array(a[1]), np.array(b[1])))
+
 weightx1_savename = os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.json'.format(
         test_p, model, align, stimfile1, fold_shifted, hemi,node_start, node_end))
 weightx2_savename = os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.json'.format(
@@ -676,7 +693,7 @@ corr_total = pd.DataFrame.corrwith(
 corr_x1_nonmedial = corr_x1.to_numpy()
 corr_x2_nonmedial = corr_x2.to_numpy()
 corr_x3_nonmedial = corr_x3.to_numpy()
-corr_t_nonmedial = corr_total.to_numpy()
+corr_t_nonmedial = corr_t.to_numpy()
 
 corrx1_value = np.concatenate((corr_x1_nonmedial,append_zero),axis = None)
 corrx2_value = np.concatenate((corr_x2_nonmedial,append_zero),axis = None)
