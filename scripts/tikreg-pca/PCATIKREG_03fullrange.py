@@ -433,7 +433,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
 def subprocess_cmd(command):
     process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
     proc_stdout = process.communicate()[0].strip()
-    print(proc_stdout_
+    print(proc_stdout)
 
 
 # 2. Load data _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
