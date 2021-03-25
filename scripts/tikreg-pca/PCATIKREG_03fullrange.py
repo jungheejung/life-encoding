@@ -26,11 +26,11 @@ import json
 # directories _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 if not os.path.exists('/scratch/f0042x1'):
     os.makedirs('/scratch/f0042x1')
-mvpa_dir = '/idata/DBIC/cara/life/pymvpa/'
-sam_data_dir = '/idata/DBIC/snastase/life'
-ridge_dir = '/idata/DBIC/cara/life/ridge'
-cara_data_dir = '/idata/DBIC/cara/life/data'
-npy_dir = '/idata/DBIC/cara/w2v/w2v_features'
+mvpa_dir = '/dartfs/rc/lab/D/DBIC/DBIC/life_data/hyperalign_mapper' # '/idata/DBIC/cara/life/pymvpa/'
+sam_data_dir = '/dartfs/rc/lab/D/DBIC/DBIC/life_data/life_dataset' # '/idata/DBIC/snastase/life'
+#ridge_dir = '/idata/DBIC/cara/life/ridge'
+#cara_data_dir = '/idata/DBIC/cara/life/data'
+npy_dir = '/dartfs/rc/lab/D/DBIC/DBIC/life_data/w2v_feature' # '/idata/DBIC/cara/w2v/w2v_features'
 scratch_dir = '/scratch/f0042x1'
 
 participants = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006', 'sub-rid000009', 'sub-rid000012',
