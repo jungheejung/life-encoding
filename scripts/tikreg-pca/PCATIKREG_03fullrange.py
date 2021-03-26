@@ -627,26 +627,6 @@ with open(alpha_savename, 'w') as f:
 # [ ] TO DO: primal weights. make sure to grab the shape and create numpy zeros of that shape
 # [ ] save tuple index and numpy array
 
-ind_nonmedial = np.array(selected_node) # insert nonmedial index
-print("ind_nonmedial: ", ind_nonmedial)
-ind_medial = np.array(medial_node) # insert medial index
-print("ind_medial: ", ind_medial)
-append_zero = np.zeros(len(medial_node)) # insert medial = 0
-alpha_nonmedial = np.array(new_alphas) # insert nonmedial alpha
-print("append_zero: ", append_zero)
-print("alpha_nonmedial: ", alpha_nonmedial)
-weight_x1_nonmedial = np.array(weights_x1)
-weight_x2_nonmedial = np.array(weights_x2)
-weight_x3_nonmedial = np.array(weights_x3) # (120, 5)
-weights_joint_nonmedial = np.array(weights_joint)
-
-index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
-alpha_value = np.concatenate((alpha_nonmedial,append_zero),axis = None)
-
-# zipped_alphas = zip(index_alpha, alpha_value)
-zipped_alphas = zip(index_chunk.astype(float), alpha_value.astype(float))
-sorted_alphas = sorted(zipped_alphas)
----------
 print(weight_x3_nonmedial.shape[0])
 print(len(medial_node))
 if len(medial_node) != 0:
