@@ -713,7 +713,7 @@ corr_total = pd.DataFrame.corrwith(
 corr_x1_nonmedial = corr_x1.to_numpy()
 corr_x2_nonmedial = corr_x2.to_numpy()
 corr_x3_nonmedial = corr_x3.to_numpy()
-corr_t_nonmedial = corr_t.to_numpy()
+corr_t_nonmedial = corr_total.to_numpy()
 
 corrx1_value = np.concatenate((corr_x1_nonmedial,append_zero),axis = None)
 corrx2_value = np.concatenate((corr_x2_nonmedial,append_zero),axis = None)
