@@ -676,13 +676,13 @@ weightj_savename = os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{
         test_p, model, align, fold_shifted, hemi, node_start, node_end))
 
 with open(weightx1_savename, 'w') as f:
-     json.dump(sorted_x1, f)
+     json.dump(sorted_weightx1, f)
 with open(weightx2_savename, 'w') as f:
-     json.dump(sorted_x2, f)
+     json.dump(sorted_weightx2, f)
 with open(weightx3_savename, 'w') as f:
-     json.dump(sorted_x3, f)
+     json.dump(sorted_weightx3, f)
 with open(weightj_savename, 'w') as f:
-     json.dump(sorted_joint, f)
+     json.dump(sorted_weightj, f)
 # np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.npy'.format(
 #         test_p, model, align, stimfile1, fold_shifted, hemi,node_start, node_end)), weights_x1)
 # np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.npy'.format(
