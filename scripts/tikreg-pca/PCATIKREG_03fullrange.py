@@ -84,7 +84,7 @@ print('Model: {0}\nStim file: {1}, {2}, {3}\nHemi: {3}\nRuns in training: {4}\nR
 #nonmedial = cortical_vertices[hemi] == 1
 
 nonmedial = np.where(cortical_vertices[hemi] == 1)[0]
-med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
+medial = np.where(cortical_vertices[hemi] == 0)[0]
 
 if start_node == round(n_vertices/increment )  :
     node_range = np.arange((start_node-1)*increment, n_vertices)
@@ -626,7 +626,8 @@ with open(alpha_savename, 'w') as f:
 # 6-3. save primal weights _________________________________________________
 # [ ] TO DO: primal weights. make sure to grab the shape and create numpy zeros of that shape
 # [ ] save tuple index and numpy array
-
+print(weight_x3_nonmedial.shape[0])
+print(len(medial_node))
 weight_zero = np.zeros(weight_x3_nonmedial.shape[0], len(medial_node)) # insert medial = 0
 print("weight_zero shape: ", alpha_nonmedial.shape[0])
 weightx1_value = np.concatenate((weight_x1_nonmedial,weight_zero),axis = None)
