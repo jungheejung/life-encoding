@@ -626,15 +626,54 @@ with open(alpha_savename, 'w') as f:
 # 6-3. save primal weights _________________________________________________
 # [ ] TO DO: primal weights. make sure to grab the shape and create numpy zeros of that shape
 # [ ] save tuple index and numpy array
+
+ind_nonmedial = np.array(selected_node) # insert nonmedial index
+print("ind_nonmedial: ", ind_nonmedial)
+ind_medial = np.array(medial_node) # insert medial index
+print("ind_medial: ", ind_medial)
+append_zero = np.zeros(len(medial_node)) # insert medial = 0
+alpha_nonmedial = np.array(new_alphas) # insert nonmedial alpha
+print("append_zero: ", append_zero)
+print("alpha_nonmedial: ", alpha_nonmedial)
+weight_x1_nonmedial = np.array(weights_x1)
+weight_x2_nonmedial = np.array(weights_x2)
+weight_x3_nonmedial = np.array(weights_x3) # (120, 5)
+weights_joint_nonmedial = np.array(weights_joint)
+
+index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
+alpha_value = np.concatenate((alpha_nonmedial,append_zero),axis = None)
+
+# zipped_alphas = zip(index_alpha, alpha_value)
+zipped_alphas = zip(index_chunk.astype(float), alpha_value.astype(float))
+sorted_alphas = sorted(zipped_alphas)
+---------
 print(weight_x3_nonmedial.shape[0])
 print(len(medial_node))
-weight_zero = np.zeros(weight_x3_nonmedial.shape[0], len(medial_node)) # insert medial = 0
-print("weight_zero shape: ", alpha_nonmedial.shape[0])
-weightx1_value = np.concatenate((weight_x1_nonmedial,weight_zero),axis = None)
-weightx2_value = np.concatenate((weight_x2_nonmedial,weight_zero),axis = None)
-weightx3_value = np.concatenate((weight_x3_nonmedial,weight_zero),axis = None)
-weightj_value = np.concatenate((weights_joint_nonmedial,weight_zero),axis = None)
-print("weightx1_value shape", weightx1_value.shape[0])
+if len(medial_node) != 0:
+    index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
+    weight_zero = np.zeros(weight_x3_nonmedial.shape[0], len(medial_node)) # insert medial = 0
+    print("weight_zero shape: ", alpha_nonmedial.shape[0])
+    weightx1_value = np.concatenate((weight_x1_nonmedial,weight_zero),axis = None)
+    weightx2_value = np.concatenate((weight_x2_nonmedial,weight_zero),axis = None)
+    weightx3_value = np.concatenate((weight_x3_nonmedial,weight_zero),axis = None)
+    weightj_value = np.concatenate((weights_joint_nonmedial,weight_zero),axis = None)
+    print("weightx1_value shape", weightx1_value.shape[0])
+elif len(medial_node) == 0:
+    index_chunk = np.concatenate((ind_nonmedial), axis = None)
+    weightx1_value = np.concatenate((weight_x1_nonmedial),axis = None)
+    weightx2_value = np.concatenate((weight_x2_nonmedial),axis = None)
+    weightx3_value = np.concatenate((weight_x3_nonmedial),axis = None)
+    weightj_value = np.concatenate((weights_joint_nonmedial),axis = None)
+    print("weightx1_value shape", weightx1_value.shape[0])
+
+zipped_weightx1 = zip(index_chunk.astype(float), weightx1_value.astype(float))
+sorted_weightx1 = sorted(zipped_weightx1)
+zipped_weightx2 = zip(index_chunk.astype(float), weightx2_value.astype(float))
+sorted_weightx2 = sorted(zipped_weightx2)
+zipped_weightx3 = zip(index_chunk.astype(float), weightx3_value.astype(float))
+sorted_weightx3 = sorted(zipped_weightx3)
+zipped_weightj = zip(index_chunk.astype(float), weightj_value.astype(float))
+sorted_weightj = sorted(zipped_weightj)
 # zipped_x1 = zip(index_chunk.astype(float), weightx1_value.astype(float))
 # zipped_x2 = zip(index_chunk.astype(float), weightx2_value.astype(float))
 # zipped_x3 = zip(index_chunk.astype(float), weightx3_value.astype(float))
