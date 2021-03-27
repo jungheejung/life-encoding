@@ -77,7 +77,7 @@ for half in ['lh', 'rh']:
     cortical_vertices[half] = np.ones((n_vertices))
     cortical_vertices[half][np.sum(
         test_ds.samples[1:, :] != 0, axis=0) == 0] = 0
-
+print("\n1. analysis parameters")
 print('Model: {0}\nStim file: {1}, {2}, {3}\nHemi: {3}\nRuns in training: {4}\nRun in test: {5}\nParticipant: {6}'.format(
     model, stimfile1, stimfile2, stimfile3, hemi, included, fold_shifted, test_p))
 
@@ -99,8 +99,9 @@ node_end = node_range[-1]
 # selected_node = node_range
 selected_node = np.intersect1d(nonmedial, node_range)
 medial_node = np.intersect1d(medial, node_range)
-print("\n node range: {0}-{1}".format(node_start, node_end))
-print("\n node shape: {0}".format(selected_node.shape))
+print("2. node - medial & nonmedial")
+print("node range: {0}-{1}".format(node_start, node_end))
+print("node shape: {0}".format(selected_node.shape))
 # print(type(nonmedial))
 # print(nonmedial.shape, "nonmedial")
 # print(type(node_range))
@@ -155,6 +156,7 @@ def get_visual_stim_for_fold(stimfile, fold_shifted, included):
 
     train_stim = [full_stim[i] for i in np.subtract(included, 1)]
     test_stim = full_stim[fold_shifted - 1]
+    print("\n3. visual stim details")
     print("full_stim dim:", len(test_stim))
     len_train_stim = [len(full_stim[i]) for i in np.subtract(included, 1)]
     if pca_or_not:
@@ -211,8 +213,9 @@ def get_mel():
 
 
 def get_ws_data(test_p, fold_shifted, included, hemi):
+    print("4. within subject data")
     print(
-        '\nLoading fMRI GIFTI data for HA in test subj space and using {0} as test participant...'.format(test_p))
+        'Loading fMRI GIFTI data for HA in test subj space and using {0} as test participant...'.format(test_p))
     train_resp = []
     for run in included:
         avg = []
@@ -253,8 +256,9 @@ def get_ws_data(test_p, fold_shifted, included, hemi):
 
 def get_aa_data(test_p, fold_shifted, included, hemi):
     train_p = [x for x in participants if x != test_p]
+    print("4. anatomical alignment data")
     print(
-        '\nLoading fMRI GIFTI data for HA in test subj space and using {0} as test participant...'.format(test_p))
+        'Loading fMRI GIFTI data for HA in test subj space and using {0} as test participant...'.format(test_p))
     train_resp = []
     for run in included:
         avg = []
@@ -299,8 +303,9 @@ def get_aa_data(test_p, fold_shifted, included, hemi):
 
 def get_ha_common_data(test_p, mappers, fold_shifted, included, hemi):
     train_p = [x for x in participants if x != test_p]
+    print("\n4. hyperalignment common data")
     print(
-        '\nLoading fMRI GIFTI data for HA in test subj space and using {0} as test participant...'.format(test_p))
+        'Loading fMRI GIFTI data for HA in test subj space and using {0} as test participant...'.format(test_p))
     train_resp = []
     for run in included:
         avg = []
@@ -356,8 +361,9 @@ def get_ha_common_data(test_p, mappers, fold_shifted, included, hemi):
 
 def get_ha_testsubj_data(test_p, mappers, fold_shifted, included, hemi):
     train_p = [x for x in participants if x != test_p]
+    print("\n4. hyperalignment test subject data")
     print(
-        '\nLoading fMRI GIFTI data for HA in test subj space and using {0} as test participant...'.format(test_p))
+        'Loading fMRI GIFTI data for HA in test subj space and using {0} as test participant...'.format(test_p))
     train_resp = []
     for run in included:
         avg = []
@@ -564,7 +570,7 @@ teststim_joint = np.hstack((X1test_stim, X2test_stim, X3test_stim))
 print("Feature 1 weight shape: {0}".format(weights_x1.shape)) #(120, 5)
 print("Feature 2 weight shape: {0}".format(weights_x2.shape))
 print("Feature 3 weight shape: {0}".format(weights_x3.shape))
-print("weights type: {0}".format( type(weights_x1)))
+print("weights type: {0}".format(type(weights_x1)))
 print("Joint weights shape: {0}".format(weights_joint.shape))
 print("Joint stim shape: {0}".format(teststim_joint.shape))
 
@@ -581,24 +587,24 @@ if not os.path.exists(directory):
 
 print("\nsave directory: {0}".format(directory))
 
-print("\nalpha shape: {0}".format( new_alphas.shape))
-print("\nalpha type: {0}".format( type(new_alphas)))
+print("\nalpha shape: {0}".format(new_alphas.shape))
+print("alpha type: {0}".format(type(new_alphas)))
 
 # 6-4. save alpha_________________________________________________
 # corr_shape = n_vertices - n_medial[hemi]
 # outhyperparam = np.zeros(
 #     (corr_shape + med_wall_ind.shape[0]), dtype=new_alphas.dtype)
 #outhyperparam = np.zeros(node_range.shape[0], dtype=new_alphas.dtype)
-
+print("\n6-4. alphas")
 
 ind_nonmedial = np.array(selected_node) # insert nonmedial index
-print("ind_nonmedial: ", ind_nonmedial)
+print("ind_nonmedial: {0}".format(ind_nonmedial))
 ind_medial = np.array(medial_node) # insert medial index
-print("ind_medial: ", ind_medial)
+print("ind_medial: {0}", .format(ind_medial))
 append_zero = np.zeros(len(medial_node)) # insert medial = 0
 alpha_nonmedial = np.array(new_alphas) # insert nonmedial alpha
-print("append_zero: ", append_zero)
-print("alpha_nonmedial: ", alpha_nonmedial)
+print("append_zero: {0}", .format(append_zero))
+print("alpha_nonmedial: {0}", .format(alpha_nonmedial))
 weight_x1_nonmedial = np.array(weights_x1)
 weight_x2_nonmedial = np.array(weights_x2)
 weight_x3_nonmedial = np.array(weights_x3) # (120, 5)
@@ -607,7 +613,6 @@ weights_joint_nonmedial = np.array(weights_joint)
 index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
 alpha_value = np.concatenate((alpha_nonmedial,append_zero),axis = None)
 
-# zipped_alphas = zip(index_alpha, alpha_value)
 zipped_alphas = zip(index_chunk.astype(float), alpha_value.astype(float))
 sorted_alphas = sorted(zipped_alphas)
 
@@ -620,31 +625,30 @@ alpha_savename = os.path.join(directory, 'hyperparam-alpha_{0}_model-{1}_align-{
         test_p, model, align,  fold_shifted, hemi,node_start, node_end))
 with open(alpha_savename, 'w') as f:
      json.dump(sorted_alphas, f)
-# np.save(os.path.join(directory, 'hyperparam-alpha_{0}_model-{1}_align-{2}_foldshifted-{3}_hemi-{4}_range-{5}-{6}.npy'.format(
-#         test_p, model, align,  fold_shifted, hemi,node_start, node_end)), outhyperparam)
 
 # 6-3. save primal weights _________________________________________________
 # [ ] TO DO: primal weights. make sure to grab the shape and create numpy zeros of that shape
 # [ ] save tuple index and numpy array
+print("\n6-3.save primal weights")
+print("weights nonmedial shape: {0}".format(weight_x3_nonmedial.shape[0])) #(120, 5)
+print("length of medial nodes: {0}".format(len(medial_node)))
 
-print("weights nonmedial shape",weight_x3_nonmedial.shape[0])
-print("length of medial nodes",len(medial_node))
 if len(medial_node) != 0:
     index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
-    weight_zero = np.zeros((weight_x3_nonmedial.shape[0], len(medial_node)) # insert medial = 0
-    print("weight_zero shape: ", alpha_nonmedial.shape[0])
+    weight_zero = np.zeros((weight_x3_nonmedial.shape[0], len(medial_node))) # insert medial = 0
+    print("weight_zero shape: {0}".format(weight_x3_nonmedial.shape[0]))
     weightx1_value = np.concatenate((weight_x1_nonmedial,weight_zero),axis = None)
     weightx2_value = np.concatenate((weight_x2_nonmedial,weight_zero),axis = None)
     weightx3_value = np.concatenate((weight_x3_nonmedial,weight_zero),axis = None)
     weightj_value = np.concatenate((weights_joint_nonmedial,weight_zero),axis = None)
-    print("weightx1_value shape", weightx1_value.shape[0]) # 600
+    print("weightx1_value shape: {0}".format(weightx1_value.shape[0])) # 600
 elif len(medial_node) == 0:
     index_chunk = np.concatenate((ind_nonmedial), axis = None)
     weightx1_value = np.concatenate((weight_x1_nonmedial),axis = None)
     weightx2_value = np.concatenate((weight_x2_nonmedial),axis = None)
     weightx3_value = np.concatenate((weight_x3_nonmedial),axis = None)
     weightj_value = np.concatenate((weights_joint_nonmedial),axis = None)
-    print("weightx1_value shape", weightx1_value.shape[0])
+    print("weightx1_value shape: {0}".format(weightx1_value.shape[0]))
 
 zipped_weightx1 = zip(index_chunk.astype(float), weightx1_value.astype(float))
 sorted_weightx1 = sorted(zipped_weightx1)
@@ -654,17 +658,6 @@ zipped_weightx3 = zip(index_chunk.astype(float), weightx3_value.astype(float))
 sorted_weightx3 = sorted(zipped_weightx3)
 zipped_weightj = zip(index_chunk.astype(float), weightj_value.astype(float))
 sorted_weightj = sorted(zipped_weightj)
-# zipped_x1 = zip(index_chunk.astype(float), weightx1_value.astype(float))
-# zipped_x2 = zip(index_chunk.astype(float), weightx2_value.astype(float))
-# zipped_x3 = zip(index_chunk.astype(float), weightx3_value.astype(float))
-# zipped_joint = zip(index_chunk.astype(float), weightj_value.astype(float))
-#
-# sorted_x1 = sorted(zipped_x1);
-# sorted_x2 = sorted(zipped_x2);
-# sorted_x3 = sorted(zipped_x3);
-# sorted_joint = sorted(zipped_joint);
-
-# np.vstack((np.array(a[1]), np.array(b[1])))
 
 weightx1_savename = os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.json'.format(
         test_p, model, align, stimfile1, fold_shifted, hemi,node_start, node_end))
@@ -683,14 +676,6 @@ with open(weightx3_savename, 'w') as f:
      json.dump(sorted_weightx3, f)
 with open(weightj_savename, 'w') as f:
      json.dump(sorted_weightj, f)
-# np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.npy'.format(
-#         test_p, model, align, stimfile1, fold_shifted, hemi,node_start, node_end)), weights_x1)
-# np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.npy'.format(
-#         test_p, model, align, stimfile2, fold_shifted, hemi,node_start, node_end)), weights_x2)
-# np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.npy'.format(
-#         test_p, model, align, stimfile3, fold_shifted, hemi,node_start, node_end)), weights_x3)
-# np.save(os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-total_foldshifted-{3}_hemi-{4}_range-{5}-{6}.npy'.format(
-# test_p, model, align, fold_shifted, hemi, node_start, node_end)), weights_joint)
 
 # 7. [ banded ridge ] correlation coefficient between actual Y and estimated Y _ _ _ _ _ _ _
 
@@ -710,6 +695,7 @@ corr_total = pd.DataFrame.corrwith(
     estimated_ytotal_df, actual_df, axis=0, method='pearson')
 
 # 7-1. save files _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+print("7. correlation values")
 corr_x1_nonmedial = corr_x1.to_numpy()
 corr_x2_nonmedial = corr_x2.to_numpy()
 corr_x3_nonmedial = corr_x3.to_numpy()
@@ -717,7 +703,7 @@ corr_t_nonmedial = corr_total.to_numpy()
 
 if len(medial_node) != 0:
     index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
-    weight_zero = np.zeros((weight_x3_nonmedial.shape[0], len(medial_node)) # insert medial = 0
+    weight_zero = np.zeros((weight_x3_nonmedial.shape[0], len(medial_node))) # insert medial = 0
     corrx1_value = np.concatenate((corr_x1_nonmedial,append_zero),axis = None)
     corrx2_value = np.concatenate((corr_x2_nonmedial,append_zero),axis = None)
     corrx3_value = np.concatenate((corr_x3_nonmedial,append_zero),axis = None)
@@ -728,7 +714,7 @@ elif len(medial_node) == 0:
     corrx2_value = np.concatenate((corr_x2_nonmedial),axis = None)
     corrx3_value = np.concatenate((corr_x3_nonmedial),axis = None)
     corr_t_value = np.concatenate((corr_t_nonmedial),axis = None)
-    print("weightx1_value shape", weightx1_value.shape[0])
+    print("weightx1_value shape: {0}".format( weightx1_value.shape[0]))
 
 zipped_corrx1 = zip(index_chunk.astype(float), corrx1_value.astype(float))
 zipped_corrx2 = zip(index_chunk.astype(float), corrx2_value.astype(float))
@@ -758,33 +744,6 @@ with open(corrx3_savename, 'w') as f:
      json.dump(sorted_corrx3, f)
 with open(corrt_savename, 'w') as f:
      json.dump(sorted_corrjoint, f)
-
-
-
-#
-# out1 = np.zeros(
-#     (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(corr_x1).type)
-# out1[selected_node] = corr_x1
-# np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.npy'.format(
-#         test_p, model, align, stimfile1, fold_shifted, hemi,node_start, node_end)), out1)
-#
-# out2 = np.zeros(
-#     (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(corr_x2).type)
-# out2[selected_node] = corr_x2
-# np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.npy'.format(
-#         test_p, model, align, stimfile2, fold_shifted, hemi, node_start, node_end)), out2)
-#
-# out3 = np.zeros(
-#     (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(corr_x3).type)
-# out3[selected_node] = corr_x3
-# np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.npy'.format(
-#         test_p, model, align, stimfile3, fold_shifted, hemi, node_start, node_end)), out3)
-#
-# outtotal = np.zeros(
-#     (corr_shape + med_wall_ind.shape[0]), dtype=np.dtype(corr_total).type)
-# outtotal[selected_node] = corr_total
-# np.save(os.path.join(directory, 'corrcoef_{0}_model-{1}_align-{2}_feature-total_foldshifted-{3}_hemi-{4}_range-{5}-{6}.npy'.format(
-#         test_p, model, align, fold_shifted, hemi, node_start, node_end)), outtotal)
 
 ## add medial wall back in
 # copy files and remove files _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
