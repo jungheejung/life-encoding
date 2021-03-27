@@ -627,17 +627,17 @@ with open(alpha_savename, 'w') as f:
 # [ ] TO DO: primal weights. make sure to grab the shape and create numpy zeros of that shape
 # [ ] save tuple index and numpy array
 
-print(weight_x3_nonmedial.shape[0])
-print(len(medial_node))
+print("weights nonmedial shape",weight_x3_nonmedial.shape[0])
+print("length of medial nodes",len(medial_node))
 if len(medial_node) != 0:
     index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
-    weight_zero = np.zeros(weight_x3_nonmedial.shape[0], len(medial_node)) # insert medial = 0
+    weight_zero = np.zeros((weight_x3_nonmedial.shape[0], len(medial_node)) # insert medial = 0
     print("weight_zero shape: ", alpha_nonmedial.shape[0])
     weightx1_value = np.concatenate((weight_x1_nonmedial,weight_zero),axis = None)
     weightx2_value = np.concatenate((weight_x2_nonmedial,weight_zero),axis = None)
     weightx3_value = np.concatenate((weight_x3_nonmedial,weight_zero),axis = None)
     weightj_value = np.concatenate((weights_joint_nonmedial,weight_zero),axis = None)
-    print("weightx1_value shape", weightx1_value.shape[0])
+    print("weightx1_value shape", weightx1_value.shape[0]) # 600
 elif len(medial_node) == 0:
     index_chunk = np.concatenate((ind_nonmedial), axis = None)
     weightx1_value = np.concatenate((weight_x1_nonmedial),axis = None)
@@ -715,10 +715,20 @@ corr_x2_nonmedial = corr_x2.to_numpy()
 corr_x3_nonmedial = corr_x3.to_numpy()
 corr_t_nonmedial = corr_total.to_numpy()
 
-corrx1_value = np.concatenate((corr_x1_nonmedial,append_zero),axis = None)
-corrx2_value = np.concatenate((corr_x2_nonmedial,append_zero),axis = None)
-corrx3_value = np.concatenate((corr_x3_nonmedial,append_zero),axis = None)
-corr_t_value = np.concatenate((corr_t_nonmedial,append_zero),axis = None)
+if len(medial_node) != 0:
+    index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
+    weight_zero = np.zeros((weight_x3_nonmedial.shape[0], len(medial_node)) # insert medial = 0
+    corrx1_value = np.concatenate((corr_x1_nonmedial,append_zero),axis = None)
+    corrx2_value = np.concatenate((corr_x2_nonmedial,append_zero),axis = None)
+    corrx3_value = np.concatenate((corr_x3_nonmedial,append_zero),axis = None)
+    corr_t_value = np.concatenate((corr_t_nonmedial,append_zero),axis = None)
+elif len(medial_node) == 0:
+    index_chunk = np.concatenate((ind_nonmedial), axis = None)
+    corrx1_value = np.concatenate((corr_x1_nonmedial),axis = None)
+    corrx2_value = np.concatenate((corr_x2_nonmedial),axis = None)
+    corrx3_value = np.concatenate((corr_x3_nonmedial),axis = None)
+    corr_t_value = np.concatenate((corr_t_nonmedial),axis = None)
+    print("weightx1_value shape", weightx1_value.shape[0])
 
 zipped_corrx1 = zip(index_chunk.astype(float), corrx1_value.astype(float))
 zipped_corrx2 = zip(index_chunk.astype(float), corrx2_value.astype(float))
