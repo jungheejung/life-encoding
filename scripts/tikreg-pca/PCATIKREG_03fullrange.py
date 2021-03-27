@@ -645,7 +645,7 @@ if len(medial_node) != 0:
 elif len(medial_node) == 0:
     index_chunk =ind_nonmedial
     weightx1_value = weight_x1_nonmedial
-    weightx2_value = =weight_x2_nonmedial
+    weightx2_value = weight_x2_nonmedial
     weightx3_value = weight_x3_nonmedial
     weightj_value =weights_joint_nonmedial
     print("weightx1_value shape: {0}".format(weightx1_value.shape))
