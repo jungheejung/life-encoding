@@ -45,7 +45,7 @@ n_samples = 1509
 n_vertices = 40962
 n_proc = 32     # how many cores do we have?
 n_medial = {'lh': 3486, 'rh': 3491}
-increment = 5# 8 hr instead of 30 min
+increment = 100# 8 hr instead of 30 min
 
 
 # 1. parameters from JOBSUBMIT script  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
@@ -567,9 +567,9 @@ weights_x3 = np.linalg.multi_dot(
 
 weights_joint = np.vstack((weights_x1, weights_x2, weights_x3))
 teststim_joint = np.hstack((X1test_stim, X2test_stim, X3test_stim))
-print("Feature 1 weight shape: {0}".format(weights_x1.shape)) #(120, 5)
-print("Feature 2 weight shape: {0}".format(weights_x2.shape))
-print("Feature 3 weight shape: {0}".format(weights_x3.shape))
+print("Feature 1 weight shape: {0}".format(weights_x1.shape)) #(120, 1)
+print("Feature 2 weight shape: {0}".format(weights_x2.shape)) #(120, 1)
+print("Feature 3 weight shape: {0}".format(weights_x3.shape)) #(120, 1)
 print("weights type: {0}".format(type(weights_x1)))
 print("Joint weights shape: {0}".format(weights_joint.shape))
 print("Joint stim shape: {0}".format(teststim_joint.shape))
@@ -637,17 +637,17 @@ if len(medial_node) != 0:
     index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
     weight_zero = np.zeros((weight_x3_nonmedial.shape[0], len(medial_node))) # insert medial = 0
     print("weight_zero shape: {0}".format(weight_x3_nonmedial.shape[0]))
-    weightx1_value = np.concatenate((weight_x1_nonmedial,weight_zero),axis = None)
-    weightx2_value = np.concatenate((weight_x2_nonmedial,weight_zero),axis = None)
-    weightx3_value = np.concatenate((weight_x3_nonmedial,weight_zero),axis = None)
-    weightj_value = np.concatenate((weights_joint_nonmedial,weight_zero),axis = None)
+    weightx1_value = np.stack((weight_x1_nonmedial,weight_zero))
+    weightx2_value = np.stack((weight_x2_nonmedial,weight_zero))
+    weightx3_value = np.stack((weight_x3_nonmedial,weight_zero))
+    weightj_value = np.stack((weights_joint_nonmedial,weight_zero))
     print("weightx1_value shape: {0}".format(weightx1_value.shape[0])) # 600
 elif len(medial_node) == 0:
     index_chunk = np.concatenate((ind_nonmedial), axis = None)
-    weightx1_value = np.concatenate((weight_x1_nonmedial),axis = None)
-    weightx2_value = np.concatenate((weight_x2_nonmedial),axis = None)
-    weightx3_value = np.concatenate((weight_x3_nonmedial),axis = None)
-    weightj_value = np.concatenate((weights_joint_nonmedial),axis = None)
+    weightx1_value = np.concatenate((weight_x1_nonmedial))
+    weightx2_value = np.concatenate((weight_x2_nonmedial))
+    weightx3_value = np.concatenate((weight_x3_nonmedial))
+    weightj_value = np.concatenate((weights_joint_nonmedial))
     print("weightx1_value shape: {0}".format(weightx1_value.shape[0]))
 
 zipped_weightx1 = zip(index_chunk.astype(float), weightx1_value.astype(float))
