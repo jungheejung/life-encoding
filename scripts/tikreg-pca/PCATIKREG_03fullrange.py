@@ -600,7 +600,7 @@ print("\n6-4. alphas")
 ind_nonmedial = np.array(selected_node) # insert nonmedial index
 print("ind_nonmedial: {0}".format(ind_nonmedial))
 ind_medial = np.array(medial_node) # insert medial index
-print("ind_medial: {0}", .format(ind_medial))
+print("ind_medial: {0}".format(ind_medial))
 append_zero = np.zeros(len(medial_node)) # insert medial = 0
 alpha_nonmedial = np.array(new_alphas) # insert nonmedial alpha
 print("append_zero: {0}", .format(append_zero))
