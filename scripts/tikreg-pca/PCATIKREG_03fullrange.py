@@ -603,8 +603,8 @@ ind_medial = np.array(medial_node) # insert medial index
 print("ind_medial: {0}".format(ind_medial))
 append_zero = np.zeros(len(medial_node)) # insert medial = 0
 alpha_nonmedial = np.array(new_alphas) # insert nonmedial alpha
-print("append_zero: {0}", .format(append_zero))
-print("alpha_nonmedial: {0}", .format(alpha_nonmedial))
+print("append_zero: {0}".format(append_zero))
+print("alpha_nonmedial: {0}".format(alpha_nonmedial))
 weight_x1_nonmedial = np.array(weights_x1)
 weight_x2_nonmedial = np.array(weights_x2)
 weight_x3_nonmedial = np.array(weights_x3) # (120, 5)
