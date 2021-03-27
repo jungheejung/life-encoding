@@ -634,7 +634,7 @@ print("weights nonmedial shape: {0}".format(weight_x3_nonmedial.shape[0])) #(120
 print("length of medial nodes: {0}".format(len(medial_node)))
 
 if len(medial_node) != 0:
-    index_chunk = np.concatenate((ind_nonmedial,ind_medial))
+    index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
     weight_zero = np.zeros((weight_x3_nonmedial.shape[0], len(medial_node))) # insert medial = 0
     print("weight_zero shape: {0}".format(weight_x3_nonmedial.shape))
     weightx1_value = np.stack((weight_x1_nonmedial,weight_zero))
