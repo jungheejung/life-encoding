@@ -634,7 +634,7 @@ print("weights nonmedial shape: {0}".format(weight_x3_nonmedial.shape[0])) #(120
 print("length of medial nodes: {0}".format(len(medial_node)))
 
 if len(medial_node) != 0:
-    index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
+    index_chunk = np.concatenate((ind_nonmedial,ind_medial))
     weight_zero = np.zeros((weight_x3_nonmedial.shape[0], len(medial_node))) # insert medial = 0
     print("weight_zero shape: {0}".format(weight_x3_nonmedial.shape))
     weightx1_value = np.stack((weight_x1_nonmedial,weight_zero))
@@ -643,11 +643,11 @@ if len(medial_node) != 0:
     weightj_value = np.stack((weights_joint_nonmedial,weight_zero))
     print("weightx1_value shape: {0}".format(weightx1_value.shape)) # 600
 elif len(medial_node) == 0:
-    index_chunk = np.stack((ind_nonmedial), axis = None)
-    weightx1_value = np.stack((weight_x1_nonmedial))
-    weightx2_value = np.stack((weight_x2_nonmedial))
-    weightx3_value = np.stack((weight_x3_nonmedial))
-    weightj_value = np.stack((weights_joint_nonmedial))
+    index_chunk =ind_nonmedial
+    weightx1_value = weight_x1_nonmedial
+    weightx2_value = =weight_x2_nonmedial
+    weightx3_value = weight_x3_nonmedial
+    weightj_value =weights_joint_nonmedial
     print("weightx1_value shape: {0}".format(weightx1_value.shape))
 
 zipped_weightx1 = zip(index_chunk.astype(float), weightx1_value.astype(float))
@@ -704,16 +704,16 @@ corr_t_nonmedial = corr_total.to_numpy()
 if len(medial_node) != 0:
     index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
     weight_zero = np.zeros((weight_x3_nonmedial.shape[0], len(medial_node))) # insert medial = 0
-    corrx1_value = np.concatenate((corr_x1_nonmedial,append_zero),axis = None)
-    corrx2_value = np.concatenate((corr_x2_nonmedial,append_zero),axis = None)
-    corrx3_value = np.concatenate((corr_x3_nonmedial,append_zero),axis = None)
-    corr_t_value = np.concatenate((corr_t_nonmedial,append_zero),axis = None)
+    corrx1_value = np.stack((corr_x1_nonmedial,append_zero))
+    corrx2_value = np.stack((corr_x2_nonmedial,append_zero))
+    corrx3_value = np.stack((corr_x3_nonmedial,append_zero))
+    corr_t_value = np.stack((corr_t_nonmedial,append_zero))
 elif len(medial_node) == 0:
-    index_chunk = np.concatenate((ind_nonmedial), axis = None)
-    corrx1_value = np.concatenate((corr_x1_nonmedial),axis = None)
-    corrx2_value = np.concatenate((corr_x2_nonmedial),axis = None)
-    corrx3_value = np.concatenate((corr_x3_nonmedial),axis = None)
-    corr_t_value = np.concatenate((corr_t_nonmedial),axis = None)
+    index_chunk = ind_nonmedial
+    corrx1_value = corr_x1_nonmedial
+    corrx2_value = corr_x2_nonmedial
+    corrx3_value = corr_x3_nonmedial
+    corr_t_value = corr_t_nonmedial
     print("weightx1_value shape: {0}".format( weightx1_value.shape[0]))
 
 zipped_corrx1 = zip(index_chunk.astype(float), corrx1_value.astype(float))
