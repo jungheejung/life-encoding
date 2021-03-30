@@ -45,7 +45,7 @@ n_samples = 1509
 n_vertices = 40962
 n_proc = 32     # how many cores do we have?
 n_medial = {'lh': 3486, 'rh': 3491}
-increment = 100# 8 hr instead of 30 min
+increment = 20# 8 hr instead of 30 min
 
 
 # 1. parameters from JOBSUBMIT script  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
