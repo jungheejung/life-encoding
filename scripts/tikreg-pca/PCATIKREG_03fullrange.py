@@ -113,6 +113,13 @@ print("node shape: {0}".format(selected_node.shape))
 # ridge_or_not = True
 # functions from Cara Van Uden Ridge Regression  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
+class NumpyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, np.ndarray):
+            return obj.tolist()
+        return json.JSONEncoder.default(self, obj)
+
+
 def PCA_analysis(train_stim, test_stim, n_components, pca_dim=0):
     assert pca_dim == 0 or pca_dim == 1, 'pca_dim should be 0 or 1, but got {}'.format(
         pca_dim)
@@ -629,6 +636,11 @@ with open(alpha_savename, 'w') as f:
 # 6-3. save primal weights _________________________________________________
 # [ ] TO DO: primal weights. make sure to grab the shape and create numpy zeros of that shape
 # [ ] save tuple index and numpy array
+#
+# weights nonmedial shape: 120
+# length of medial nodes: 6
+# weight_zero shape: (120, 14)
+# weightx1_value shape: (20, 120)
 print("\n6-3.save primal weights")
 print("weights nonmedial shape: {0}".format(weight_x3_nonmedial.shape[0])) #(120, 5)
 print("length of medial nodes: {0}".format(len(medial_node)))
@@ -636,13 +648,17 @@ print("length of medial nodes: {0}".format(len(medial_node)))
 if len(medial_node) != 0:
     index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
     weight_zero = np.zeros((weight_x3_nonmedial.shape[0], len(medial_node))) # 120, 6# insert medial = 0
-    weight_j = np.zeros((weight_x3_nonmedial.shape[0]*3, len(medial_node)))
-    print("weight_zero shape: {0}".format(weight_x3_nonmedial.shape)) # 120, 14
+    weight_jzero = np.zeros((weight_x3_nonmedial.shape[0]*3, len(medial_node)))
+    print("weight_nonmedial shape: {0}".format(weight_x3_nonmedial.shape)) # 120, 14
+    print("weight_zero shape: {0}".format(weight_zero.shape)) # 120, 14
+    print("weight_jzero shape: {0}".format(weight_jzero.shape)) # 120, 14
     weightx1_value = np.transpose(np.hstack((weight_x1_nonmedial,weight_zero)))
     weightx2_value = np.transpose(np.hstack((weight_x2_nonmedial,weight_zero)))
     weightx3_value = np.transpose(np.hstack((weight_x3_nonmedial,weight_zero)))
-    weightj_value  = np.transpose(np.hstack((weights_joint_nonmedial,weight_j))) #360, 14, 360, 5
+    weightj_value  = np.transpose(np.hstack((weights_joint_nonmedial,weight_jzero))) #360, 14, 360, 5
     print("weightx1_value shape: {0}".format(weightx1_value.shape)) # 600
+    # weight_zero shape: (120, 14)
+# weightx1_value shape: (20, 120)
 elif len(medial_node) == 0:
     index_chunk    = ind_nonmedial
     weightx1_value = np.transpose(weight_x1_nonmedial)
@@ -657,6 +673,7 @@ w_x2_dict = {e: weightx2_value[i] for i, e in enumerate(index_chunk)}
 w_x3_dict = {e: weightx3_value[i] for i, e in enumerate(index_chunk)}
 w_xj_dict = {e: weightj_value[i] for i, e in enumerate(index_chunk)}
 
+print("type of weight x1 dictionary: {0}".format(type(w_x1_dict)))
 # zipped_weightx1 = zip(index_chunk.astype(float), weightx1_value.astype(float))
 # sorted_weightx1 = sorted(zipped_weightx1)
 # zipped_weightx2 = zip(index_chunk.astype(float), weightx2_value.astype(float))
@@ -676,14 +693,18 @@ weightj_savename = os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{
         test_p, model, align, fold_shifted, hemi, node_start, node_end))
 
 with open(weightx1_savename, 'w') as f:
-     json.dump(w_x1_dict, f)
+     json.dump(w_x1_dict, f, sort_keys=True, indent=4, cls=NumpyEncoder)
 with open(weightx2_savename, 'w') as f:
-     json.dump(w_x2_dict, f)
+     json.dump(w_x2_dict, f, sort_keys=True, indent=4, cls=NumpyEncoder)
 with open(weightx3_savename, 'w') as f:
-     json.dump(w_x3_dict, f)
+     json.dump(w_x3_dict, f, sort_keys=True, indent=4, cls=NumpyEncoder)
 with open(weightj_savename, 'w') as f:
-     json.dump(w_xj_dict, f)
+     json.dump(w_xj_dict, f, sort_keys=True, indent=4, cls=NumpyEncoder)
 
+# later use: to load this "jsonify"-ed numpy array
+# obj_text = codecs.open(w_xj_dict, 'r', encoding='utf-8').read()
+# b_new = json.loads(obj_text)
+# a_new = np.array(b_new)
 # 7. [ banded ridge ] correlation coefficient between actual Y and estimated Y _ _ _ _ _ _ _
 
 actual_df = pd.DataFrame(data=Ytest)
@@ -721,7 +742,7 @@ elif len(medial_node) == 0:
     corrx2_value = corr_x2_nonmedial
     corrx3_value = corr_x3_nonmedial
     corr_t_value = corr_t_nonmedial
-    print("weightx1_value shape: {0}".format( weightx1_value.shape[0]))
+    print("weightx1_value shape: {0}".format( weightx1_value.shape[0])) # (20, 120)
 
 zipped_corrx1 = zip(index_chunk.astype(float), corrx1_value.astype(float))
 zipped_corrx2 = zip(index_chunk.astype(float), corrx2_value.astype(float))
