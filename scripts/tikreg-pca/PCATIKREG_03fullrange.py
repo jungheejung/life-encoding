@@ -641,7 +641,7 @@ if len(medial_node) != 0:
     weightx1_value = np.transpose(np.hstack((weight_x1_nonmedial,weight_zero)))
     weightx2_value = np.transpose(np.hstack((weight_x2_nonmedial,weight_zero)))
     weightx3_value = np.transpose(np.hstack((weight_x3_nonmedial,weight_zero)))
-    weightj_value  = np.transpose(np.hstack((weights_joint_nonmedial,weight_zero))) #360, 14, 360, 5
+    weightj_value  = np.transpose(np.hstack((weights_joint_nonmedial,weight_j))) #360, 14, 360, 5
     print("weightx1_value shape: {0}".format(weightx1_value.shape)) # 600
 elif len(medial_node) == 0:
     index_chunk    = ind_nonmedial
@@ -657,14 +657,14 @@ w_x2_dict = {e: weightx2_value[i] for i, e in enumerate(index_chunk)}
 w_x3_dict = {e: weightx3_value[i] for i, e in enumerate(index_chunk)}
 w_xj_dict = {e: weightj_value[i] for i, e in enumerate(index_chunk)}
 
-zipped_weightx1 = zip(index_chunk.astype(float), weightx1_value.astype(float))
-sorted_weightx1 = sorted(zipped_weightx1)
-zipped_weightx2 = zip(index_chunk.astype(float), weightx2_value.astype(float))
-sorted_weightx2 = sorted(zipped_weightx2)
-zipped_weightx3 = zip(index_chunk.astype(float), weightx3_value.astype(float))
-sorted_weightx3 = sorted(zipped_weightx3)
-zipped_weightj = zip(index_chunk.astype(float), weightj_value.astype(float))
-sorted_weightj = sorted(zipped_weightj)
+# zipped_weightx1 = zip(index_chunk.astype(float), weightx1_value.astype(float))
+# sorted_weightx1 = sorted(zipped_weightx1)
+# zipped_weightx2 = zip(index_chunk.astype(float), weightx2_value.astype(float))
+# sorted_weightx2 = sorted(zipped_weightx2)
+# zipped_weightx3 = zip(index_chunk.astype(float), weightx3_value.astype(float))
+# sorted_weightx3 = sorted(zipped_weightx3)
+# zipped_weightj = zip(index_chunk.astype(float), weightj_value.astype(float))
+# sorted_weightj = sorted(zipped_weightj)
 
 weightx1_savename = os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}-{7}.json'.format(
         test_p, model, align, stimfile1, fold_shifted, hemi,node_start, node_end))
@@ -676,13 +676,13 @@ weightj_savename = os.path.join(directory, 'primal-weights_{0}_model-{1}_align-{
         test_p, model, align, fold_shifted, hemi, node_start, node_end))
 
 with open(weightx1_savename, 'w') as f:
-     json.dump(sorted_weightx1, f)
+     json.dump(w_x1_dict, f)
 with open(weightx2_savename, 'w') as f:
-     json.dump(sorted_weightx2, f)
+     json.dump(w_x2_dict, f)
 with open(weightx3_savename, 'w') as f:
-     json.dump(sorted_weightx3, f)
+     json.dump(w_x3_dict, f)
 with open(weightj_savename, 'w') as f:
-     json.dump(sorted_weightj, f)
+     json.dump(w_xj_dict, f)
 
 # 7. [ banded ridge ] correlation coefficient between actual Y and estimated Y _ _ _ _ _ _ _
 
