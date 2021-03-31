@@ -617,8 +617,12 @@ weight_x2_nonmedial = np.array(weights_x2)
 weight_x3_nonmedial = np.array(weights_x3) # (120, 5)
 weights_joint_nonmedial = np.array(weights_joint)
 
-index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
-alpha_value = np.concatenate((alpha_nonmedial,append_zero),axis = None)
+if len(medial_node) != 0:
+    index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
+    alpha_value = np.concatenate((alpha_nonmedial,append_zero),axis = None)
+else:
+    index_chunk = ind_nonmedial
+    alpha_value = alpha_nonmedial
 
 zipped_alphas = zip(index_chunk.astype(float), alpha_value.astype(float))
 sorted_alphas = sorted(zipped_alphas)
@@ -732,12 +736,16 @@ print("corr_x1_nonmedial shape: {0}".format(corr_x1_nonmedial.shape))
 print("corr_t_nonmedial shape: {0}".format(corr_t_nonmedial.shape))
 if len(medial_node) != 0:
     index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
-    append_zero = np.zeros((corr_x1_nonmedial.shape[0], len(medial_node))) # insert medial = 0
-    appendj_zero = np.zeros((corr_t_nonmedial.shape[0], len(medial_node))) # insert medial = 0
-    corrx1_value = np.stack((corr_x1_nonmedial,append_zero))
-    corrx2_value = np.stack((corr_x2_nonmedial,append_zero))
-    corrx3_value = np.stack((corr_x3_nonmedial,append_zero))
-    corr_t_value = np.stack((corr_t_nonmedial,appendj_zero))
+    append_zero = np.zeros(len(medial_node))
+    # append_zero = np.zeros((corr_x1_nonmedial.shape[0], len(medial_node))) # insert medial = 0
+    # appendj_zero = np.zeros((corr_t_nonmedial.shape[0], len(medial_node))) # insert medial = 0
+    #index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
+    # alpha_value = np.concatenate((alpha_nonmedial,append_zero),axis = None)
+
+    corrx1_value = np.concatenate((corr_x1_nonmedial,append_zero))
+    corrx2_value = np.concatenate((corr_x2_nonmedial,append_zero))
+    corrx3_value = np.concatenate((corr_x3_nonmedial,append_zero))
+    corr_t_value = np.concatenate((corr_t_nonmedial,appendj_zero))
 elif len(medial_node) == 0:
     index_chunk = ind_nonmedial
     corrx1_value = corr_x1_nonmedial
