@@ -737,6 +737,7 @@ print("corr_t_nonmedial shape: {0}".format(corr_t_nonmedial.shape))
 if len(medial_node) != 0:
     index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
     append_zero = np.zeros(len(medial_node))
+    appendj_zero = np.zeros(len(medial_node)*3)
     # append_zero = np.zeros((corr_x1_nonmedial.shape[0], len(medial_node))) # insert medial = 0
     # appendj_zero = np.zeros((corr_t_nonmedial.shape[0], len(medial_node))) # insert medial = 0
     #index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
