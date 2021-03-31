@@ -728,14 +728,16 @@ corr_x1_nonmedial = corr_x1.to_numpy()
 corr_x2_nonmedial = corr_x2.to_numpy()
 corr_x3_nonmedial = corr_x3.to_numpy()
 corr_t_nonmedial = corr_total.to_numpy()
-
+print("corr_x1_nonmedial shape: {0}".format(corr_x1_nonmedial.shape))
+print("corr_t_nonmedial shape: {0}".format(corr_t_nonmedial.shape))
 if len(medial_node) != 0:
     index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
-    weight_zero = np.zeros((weight_x3_nonmedial.shape[0], len(medial_node))) # insert medial = 0
+    append_zero = np.zeros((corr_x1_nonmedial.shape[0], len(medial_node))) # insert medial = 0
+    appendj_zero = np.zeros((corr_t_nonmedial.shape[0], len(medial_node))) # insert medial = 0
     corrx1_value = np.stack((corr_x1_nonmedial,append_zero))
     corrx2_value = np.stack((corr_x2_nonmedial,append_zero))
     corrx3_value = np.stack((corr_x3_nonmedial,append_zero))
-    corr_t_value = np.stack((corr_t_nonmedial,append_zero))
+    corr_t_value = np.stack((corr_t_nonmedial,appendj_zero))
 elif len(medial_node) == 0:
     index_chunk = ind_nonmedial
     corrx1_value = corr_x1_nonmedial
