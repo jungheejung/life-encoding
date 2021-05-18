@@ -4,7 +4,7 @@
 #PBS -l nodes=1:ppn=16
 #PBS -l walltime=12:00:00
 #PBS -A DBIC
-#PBS -t 1:20
+#PBS -t 1-20
 #PBS -l mem=50gb,vmem=60gb
 
 cd $PBS_O_WORKDIR
