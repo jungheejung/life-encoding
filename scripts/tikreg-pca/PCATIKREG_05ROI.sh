@@ -36,4 +36,4 @@ SUB="sub-rid000024"
 RUN=3
 HEMI="lh"
 
-python ./PCATIKREG_04fullrange_10000.py ${MODEL} ${ALIGN} ${STIM1} ${STIM2} ${STIM3} ${RUN} ${HEMI} ${SUB} ${NODE}
+python ./PCATIKREG_05ROI_fullrange_10000.py ${MODEL} ${ALIGN} ${STIM1} ${STIM2} ${STIM3} ${RUN} ${HEMI} ${SUB} ${NODE}
