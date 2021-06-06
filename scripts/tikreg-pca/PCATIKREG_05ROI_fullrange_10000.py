@@ -111,7 +111,7 @@ selected_node = np.intersect1d(nonmedial, ROI_dict[roi])
 medial_node = np.intersect1d(medial, ROI_dict[roi])
 print("2. node - medial & nonmedial")
 print("node name: {0}".format(roi))
-print("node range: {0}-{1}".format(ROI_dict[roi]))
+print("node range: {0}".format(ROI_dict[roi]))
 print("node shape: {0}".format(selected_node.shape))
 
 # functions from Cara Van Uden Ridge Regression  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
@@ -795,6 +795,9 @@ y2_pred = r2_score(Ytest, estimated_y2)
 y3_pred = r2_score(Ytest, estimated_y3)
 yt_pred = r2_score(Ytest, estimated_ytotal)
 
+print(y1_pred)
+print(y1_pred.shape)
+print(yt_pred)
 if len(medial_node) != 0:
     index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
     append_zero = np.zeros(len(medial_node))
