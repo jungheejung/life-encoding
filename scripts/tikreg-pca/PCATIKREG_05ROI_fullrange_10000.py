@@ -789,51 +789,51 @@ with open(corrt_savename, 'w') as f:
      json.dump(sorted_corrjoint, f)
 
 
-# [ 8. r-squared ] _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-y1_pred = r2_score(Ytest, estimated_y1)
-y2_pred = r2_score(Ytest, estimated_y2)
-y3_pred = r2_score(Ytest, estimated_y3)
-yt_pred = r2_score(Ytest, estimated_ytotal)
-
-print(y1_pred)
-print(y1_pred.shape)
-print(yt_pred)
-if len(medial_node) != 0:
-    index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
-    append_zero = np.zeros(len(medial_node))
-    appendj_zero = np.zeros(len(medial_node)*3)
-    r2_y1 = np.concatenate((y1_pred,append_zero));    r2_y2 = np.concatenate((y2_pred,append_zero));    r2_y3 = np.concatenate((y3_pred,append_zero));    r2_yt = np.concatenate((yt_pred,appendj_zero))
-elif len(medial_node) == 0:
-    index_chunk = ind_nonmedial
-    r2_y1 = y1_pred;    r2_y2 = y2_pred;    r2_y3 = y3_pred;    r2_yt = yt_pred
-
-zipped_r2_y1 = zip(index_chunk.astype(float), r2_y1.astype(float))
-zipped_r2_y2 = zip(index_chunk.astype(float), r2_y2.astype(float))
-zipped_r2_y3 = zip(index_chunk.astype(float), r2_y3.astype(float))
-zipped_r2_yt = zip(index_chunk.astype(float), r2_yt.astype(float))
-
-sorted_r2_y1 = sorted(zipped_r2_y1)
-sorted_r2_y2 = sorted(zipped_r2_y2)
-sorted_r2_y3 = sorted(zipped_r2_y3)
-sorted_r2_yt = sorted(zipped_r2_yt)
-
-r2_feat1_fname = os.path.join(directory, 'rsquared_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.json'.format(
-        test_p, model, align, stimfile1, fold_shifted, hemi,roi))
-r2_feat2_fname = os.path.join(directory, 'rsquared_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.json'.format(
-        test_p, model, align, stimfile2, fold_shifted, hemi,roi))
-r2_feat3_fname = os.path.join(directory, 'rsquared_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.json'.format(
-        test_p, model, align, stimfile3, fold_shifted, hemi,roi))
-r2_featt_fname = os.path.join(directory, 'rsquared_{0}_model-{1}_align-{2}_feature-total_foldshifted-{3}_hemi-{4}_range-{5}.json'.format(
-        test_p, model, align, fold_shifted, hemi, roi))
-
-with open(r2_feat1_fname, 'w') as f:
-     json.dump(sorted_r2_y1, f)
-with open(r2_feat2_fname, 'w') as f:
-     json.dump(sorted_r2_y2, f)
-with open(r2_feat3_fname, 'w') as f:
-     json.dump(sorted_r2_y3, f)
-with open(r2_featt_fname, 'w') as f:
-     json.dump(sorted_r2_yt, f)
+# # [ 8. r-squared ] _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+# y1_pred = r2_score(Ytest, estimated_y1)
+# y2_pred = r2_score(Ytest, estimated_y2)
+# y3_pred = r2_score(Ytest, estimated_y3)
+# yt_pred = r2_score(Ytest, estimated_ytotal)
+#
+# print(y1_pred)
+# print(y1_pred.shape)
+# print(yt_pred)
+# if len(medial_node) != 0:
+#     index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
+#     append_zero = np.zeros(len(medial_node))
+#     appendj_zero = np.zeros(len(medial_node)*3)
+#     r2_y1 = np.concatenate((y1_pred,append_zero));    r2_y2 = np.concatenate((y2_pred,append_zero));    r2_y3 = np.concatenate((y3_pred,append_zero));    r2_yt = np.concatenate((yt_pred,appendj_zero))
+# elif len(medial_node) == 0:
+#     index_chunk = ind_nonmedial
+#     r2_y1 = y1_pred;    r2_y2 = y2_pred;    r2_y3 = y3_pred;    r2_yt = yt_pred
+#
+# zipped_r2_y1 = zip(index_chunk.astype(float), r2_y1.astype(float))
+# zipped_r2_y2 = zip(index_chunk.astype(float), r2_y2.astype(float))
+# zipped_r2_y3 = zip(index_chunk.astype(float), r2_y3.astype(float))
+# zipped_r2_yt = zip(index_chunk.astype(float), r2_yt.astype(float))
+#
+# sorted_r2_y1 = sorted(zipped_r2_y1)
+# sorted_r2_y2 = sorted(zipped_r2_y2)
+# sorted_r2_y3 = sorted(zipped_r2_y3)
+# sorted_r2_yt = sorted(zipped_r2_yt)
+#
+# r2_feat1_fname = os.path.join(directory, 'rsquared_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.json'.format(
+#         test_p, model, align, stimfile1, fold_shifted, hemi,roi))
+# r2_feat2_fname = os.path.join(directory, 'rsquared_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.json'.format(
+#         test_p, model, align, stimfile2, fold_shifted, hemi,roi))
+# r2_feat3_fname = os.path.join(directory, 'rsquared_{0}_model-{1}_align-{2}_feature-{3}_foldshifted-{4}_hemi-{5}_range-{6}.json'.format(
+#         test_p, model, align, stimfile3, fold_shifted, hemi,roi))
+# r2_featt_fname = os.path.join(directory, 'rsquared_{0}_model-{1}_align-{2}_feature-total_foldshifted-{3}_hemi-{4}_range-{5}.json'.format(
+#         test_p, model, align, fold_shifted, hemi, roi))
+#
+# with open(r2_feat1_fname, 'w') as f:
+#      json.dump(sorted_r2_y1, f)
+# with open(r2_feat2_fname, 'w') as f:
+#      json.dump(sorted_r2_y2, f)
+# with open(r2_feat3_fname, 'w') as f:
+#      json.dump(sorted_r2_y3, f)
+# with open(r2_featt_fname, 'w') as f:
+#      json.dump(sorted_r2_yt, f)
 ## add medial wall back in
 # copy files and remove files _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 subprocess_cmd('cp -rf /scratch/f0042x1/PCA_tikreg-loro_fullrange-10000-ROI/ /dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results; rm -rf /scratch/f0042x1/*')
