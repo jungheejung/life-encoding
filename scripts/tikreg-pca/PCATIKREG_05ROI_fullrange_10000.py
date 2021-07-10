@@ -87,7 +87,7 @@ for half in ['lh', 'rh']:
     cortical_vertices[half][np.sum(
         test_ds.samples[1:, :] != 0, axis=0) == 0] = 0
 print("\n1. analysis parameters")
-print('Model: {0}\nStim file: {1}, {2}, {3}\nHemi: {3}\nRuns in training: {4}\nRun in test: {5}\nParticipant: {6}'.format(
+print('Model: {0}\nStim file: {1}, {2}, {3}\nHemi: {4}\nRuns in training: {5}\nRun in test: {6}\nParticipant: {7}'.format(
     model, stimfile1, stimfile2, stimfile3, hemi, included, fold_shifted, test_p))
 
 #nonmedial = cortical_vertices[hemi] == 1
