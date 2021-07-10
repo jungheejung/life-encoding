@@ -5,11 +5,11 @@
 #SBATCH --ntasks=16
 #SBATCH --mem-per-cpu=8gb
 #SBATCH --time=12:00:00
-#SBATCH -o ./log_roi/tikreg_%A_%a.o
-#SBATCH -e ./log_roi/tikreg_%A_%a.e
+#SBATCH -o ./log_roi/ROI_tikreg_%A_%a.o
+#SBATCH -e ./log_roi/ROI_tikreg_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
-#SBATCH --array=1-4%2
+#SBATCH --array=3-40%2
 
 module load python/2.7-Anaconda
 source /optnfs/common/miniconda3/etc/profile.d/conda.sh
@@ -18,7 +18,10 @@ conda activate haxby_mvpc
 MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/tikreg-pca
 
 echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
-INFILE=`awk "NR==${SLURM_ARRAY_TASK_ID}" ./node_test.txt`
+IND=$((SLURM_ARRAY_TASK_ID-1))
+#INFILE=`awk "NR==${IND}" ./roi_ips.txt`
+INFILE=`awk -v RS='\r\n' "NR==${SLURM_ARRAY_TASK_ID}" roi_ips.txt`
+echo $INFILE
 SUB=$(echo $INFILE | cut -f1 -d,)
 RUN=$(echo $INFILE | cut -f2 -d,)
 HEMI=$(echo $INFILE | cut -f3 -d,)
