@@ -67,16 +67,38 @@ pca_or_not = True
 n_components = 30
 pca_dim = 1
 
-ROI_dict = {"loc": [28438, 31878, 40237, 10001, 10002, 10003, 10004, 10005, 10006, 28439, 28440,
-28444, 28445, 28446, 22450, 40248, 22436, 22437, 22438, 551, 22440, 22442, 22443,
-22444, 22445, 22446, 22447, 22448, 22449, 2482, 2483, 40244, 40245, 13238, 13239,
-13240, 40249, 5562, 40255, 40246, 5558, 5559, 5560, 40238, 40250, 40247, 40243, 22439, 28437],
-"ips": [3715, 3716, 16905, 16906, 16907, 23255, 33510, 7698, 11395, 11396, 25119,
-25120, 25121, 2678, 29303, 5972, 5973, 5974, 5975, 13793, 13794, 13795, 13796,
-13797, 13798, 13799, 33513, 33511, 29302, 29294, 29295, 29296, 29297, 29298,
-29299, 29300, 29301, 758, 759],
-"vt": [14016, 2753, 22567, 40, 22569, 10026, 14014, 10431, 10432, 833, 10053,
-10054, 40393, 40394, 40395, 40396, 40397, 40398, 23386, 23387, 10433, 22568, 40314]}
+ROI_dict = {
+	"lh": {
+		"loc": [28438, 31878, 40237, 10001, 10002, 10003, 10004, 10005, 10006, 28439, 28440,
+			28444, 28445, 28446, 22450, 40248, 22436, 22437, 22438, 551, 22440, 22442, 22443,
+			22444, 22445, 22446, 22447, 22448, 22449, 2482, 2483, 40244, 40245, 13238, 13239,
+			13240, 40249, 5562, 40255, 40246, 5558, 5559, 5560, 40238, 40250, 40247, 40243, 22439, 28437
+		],
+		"ips": [3715, 3716, 16905, 16906, 16907, 23255, 33510, 7698, 11395, 11396, 25119,
+			25120, 25121, 2678, 29303, 5972, 5973, 5974, 5975, 13793, 13794, 13795, 13796,
+			13797, 13798, 13799, 33513, 33511, 29302, 29294, 29295, 29296, 29297, 29298,
+			29299, 29300, 29301, 758, 759
+		],
+		"vt": [14016, 2753, 22567, 40, 22569, 10026, 14014, 10431, 10432, 833, 10053,
+			10054, 40393, 40394, 40395, 40396, 40397, 40398, 23386, 23387, 10433, 22568, 40314
+		]
+	},
+
+	"rh": {
+		"loc": [26304, 4374, 26305, 4375, 26306, 4376, 26307, 24725, 12054, 12055, 12056, 32677, 32678, 32679,
+			32680, 3497, 32682, 32683, 32684, 18879, 18880, 18881, 18882, 18883, 26308, 207, 7392, 7393, 7394, 35964,
+			35965, 1523, 1524, 8565, 35958, 32681, 16248, 16249, 16250, 16251, 16252, 16253
+		],
+		"ips": [21640, 21641, 21642, 21643, 21644, 32585, 23596, 39312, 39313, 39314, 39315, 39311, 21664, 21665, 21666, 21667,
+			21668, 21669, 23593, 23595, 16172, 16173, 16174, 16175, 16176, 2867, 10548, 2869, 10550, 10551, 32583, 7355,
+			7356, 32586, 10549, 32582, 2375, 32584, 10547, 2378, 2871, 76, 9682, 9683, 39310, 9691, 9692, 9693,
+			1506, 24681, 39308, 39281, 39283, 39284, 39285, 39286, 39287, 39316
+		],
+		"vt": [40448, 11014, 156, 17569, 17570, 17571, 17572, 3334, 34353, 34354, 34355, 22587, 22588, 22589,
+			22590, 8008, 8009, 10061, 10062, 17573, 40416, 40418, 40419, 40420, 40421, 40422, 1787, 40447
+		]
+	}
+}
 
 # 2-1) First let's create mask of cortical vertices excluding medial wall __
 cortical_vertices = {}
@@ -106,11 +128,11 @@ medial = np.where(cortical_vertices[hemi] == 0)[0]
 # node_start = node_range[0]
 # node_end = node_range[-1]
 # selected_node = node_range
-selected_node = np.intersect1d(nonmedial, np.array(ROI_dict[roi]))
-medial_node = np.intersect1d(medial, np.array(ROI_dict[roi]))
+selected_node = np.intersect1d(nonmedial, np.array(ROI_dict[hemi][roi]))
+medial_node = np.intersect1d(medial, np.array(ROI_dict[hemi][roi]))
 print("2. node - medial & nonmedial")
 print("node name: {0}".format(roi))
-print("node range: {0}".format(ROI_dict[roi]))
+print("node range: {0}".format(ROI_dict[hemi][roi]))
 print("node shape: {0}".format(selected_node.shape))
 
 # functions from Cara Van Uden Ridge Regression  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
@@ -553,14 +575,17 @@ fit_banded_polar = models.estimate_stem_wmvnp([X1train, X2train, X3train], Ytrai
                                               performance=True, weights=True, verbosity=False)
 
 voxelwise_optimal_hyperparameters = fit_banded_polar['optima']
-print('\nVoxelwise optimal hyperparameter shape: {0}'.format(voxelwise_optimal_hyperparameters.shape))
+print('\nVoxelwise optimal hyperparameter shape: {0}'.format(voxelwise_optimal_hyperparameters.shape)) # (23, 5)
 
 # Faster conversion of kernel weights to primal weights via matrix multiplication
 # each vector (new_alphas, lamda_ones, lamda_twos) contains v number of entries (e.g. voxels)
-new_alphas = voxelwise_optimal_hyperparameters[:, -1]
+new_alphas = voxelwise_optimal_hyperparameters[:, -1] # 4
 lambda_ones = voxelwise_optimal_hyperparameters[:, 1]
 lambda_twos = voxelwise_optimal_hyperparameters[:, 2]
 lambda_threes = voxelwise_optimal_hyperparameters[:, 3]
+# what is voxelwise_optimal_hyperparameters[:, 0]?
+with open('./hyperparameter.npy', 'wb') as f:
+    np.save(voxelwise_optimal_hyperparameters)
 
 
 # 6. [ banded ridge ] calculating primal weights from kernel weights _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
