@@ -48,7 +48,6 @@ def write_gifti(data, output_fn, template_fn):
     gii.add_gifti_data_array(gda)
     nib.gifti.giftiio.write(gii, output_fn)
 
-
 # Loop through hemispheres and runs to apply mappers
 for hemisphere in hemispheres:
     for test_run in test_runs:
@@ -71,18 +70,25 @@ for hemisphere in hemispheres:
             for run in runs:
 	        tproject_gii = os.path.join(fmri_dir,'{0}_task-life_acq-{1}vol_run-0{2}.{3}.tproject.gii'.format( subject, fmri_durs[run], run, hemisphere)) 
                 run_data = gifti_dataset(tproject_gii)
-
+		print("life 74: initial run_data {0}".format(run_data.shape))
+                print("check nans initial run_data: {0}".format(np.sum(np.all(np.isnan(np.squeeze(run_data)), axis=0))))
                 # Z-score run data before hyperalignment just to make sure
-                run_data = zscore(run_data, axis=0)
-
-                # Project training subjects into common space
+                run_data = np.nan_to_num(zscore(run_data, axis=0))
+		print("life 77: z-scored run_data {0}".format(run_data.shape))
+		print("check nans zscored run_data {0}".format(np.sum(np.all(np.isnan(np.squeeze(run_data)), axis=0))))
+                
+		# Project training subjects into common space
                 run_common = mappers[subject].forward(run_data)
-
+		# print()
+		print("life 80: mappers {0}".format(run_common.shape))
+		print("check nans initial mappers {0}".format(np.sum(np.all(np.isnan(np.squeeze(run_common)), axis=0))))
                 # Z-score run data before hyperalignment just to make sure
                 run_common = zscore(run_common, axis=0)
-
+		print("life 83: z-scored mappers {0}".format(run_common.shape))
+		print("check nans zscored mappers {0}".format(np.sum(np.all(np.isnan(np.squeeze(run_common)), axis=0))))
                 # Hold onto all subjects in common space
                 common_data[subject][run] = run_common
+		#print("life 86: common data {0}".format(common_data.shape))
                                 
                 # Save training subjects in common space
                 write_gifti(run_common, os.path.join(fmri_dir,
@@ -105,7 +111,8 @@ for hemisphere in hemispheres:
 		# TODO add [run] for every eleemnt
                 # Reverse-project training subject into test subject space
                     run_test = mappers[test_subject].reverse(common_data[train_subject][run])
-                
+                    #print("life 109: run_test {0}".format(run_test.shape))
+		    print("check nans run_test mappers {0}".format(np.sum(np.all(np.isnan(np.squeeze(run_test)), axis=0))))
                 #TODO: NEED TEST SUBJECT LABEL IN FILENAME????
                 # Save training subjects in test subject space
                     write_gifti(run_test, os.path.join(fmri_dir,
