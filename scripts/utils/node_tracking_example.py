@@ -1,16 +1,14 @@
-# 1) get medial vs. non-medial indices
+# 1) get medial vs. non-medial indices ________________________________________________________
 nonmedial = np.where(cortical_vertices[hemi] == 1)[0]
 medial = np.where(cortical_vertices[hemi] == 0)[0]
 
-# 2) get intersection of ROI vertices and medial/non-medial indices
+# 2) get intersection of ROI vertices and medial/non-medial indices  __________________________
 selected_node = np.intersect1d(nonmedial, np.array(ROI_dict[hemi][roi]))
 medial_node = np.intersect1d(medial, np.array(ROI_dict[hemi][roi]))
 
 # 3) one example of dataloader, with "selected node"
 def get_ws_data(test_p, fold_shifted, included, hemi, selected_node):
     print("4. within subject data")
-    print(
-        'Loading fMRI GIFTI data for HA in test subj space and using {0} as test participant...'.format(test_p))
     train_resp = []
     for run in included:
         avg = []
@@ -43,13 +41,13 @@ def get_ws_data(test_p, fold_shifted, included, hemi, selected_node):
     return train_resp, test_resp
 
 
-# 4) convert node indices into numpy arrays
+# 4) convert node indices into numpy arrays ____________________________________________________
 ind_nonmedial = np.array(selected_node) # insert nonmedial index
 ind_medial = np.array(medial_node) # insert medial index
 append_zero = np.zeros(len(medial_node)) # insert medial = 0
 alpha_nonmedial = np.array(new_alphas) # insert nonmedial alpha
 
-# 5) concatenate medial & non-medial indices
+# 5) concatenate medial & non-medial indices ___________________________________________________
 #    concatenate alpha values from non-medial nodes and zero vales (if medial nodes exist.)
 if len(medial_node) != 0:
     index_chunk = np.concatenate((ind_nonmedial,ind_medial), axis = None)
@@ -58,11 +56,11 @@ else:
     index_chunk = ind_nonmedial
     alpha_value = alpha_nonmedial
 
-# 6) zip medial & non-medial index and alpha values - sort. 
+# 6) zip medial & non-medial index and alpha values - sort _____________________________________
 zipped_alphas = zip(index_chunk.astype(float), alpha_value.astype(float))
 sorted_alphas = sorted(zipped_alphas)
 
-# 6-4. save alpha
+# 7) save alpha ________________________________________________________________________________
 alpha_savename = os.path.join(directory, 'hyperparam-alpha_{0}_model-{1}_align-{2}_foldshifted-{3}_hemi-{4}_range-{5}.json'.format(
         test_p, model, align,  fold_shifted, hemi,roi))
 with open(alpha_savename, 'w') as f:
