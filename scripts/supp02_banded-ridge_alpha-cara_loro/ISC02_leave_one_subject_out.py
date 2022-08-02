@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 import numpy as np
 from scipy.stats import pearsonr
 import matplotlib; matplotlib.use('agg')
@@ -13,7 +12,6 @@ import glob
 sam_data_dir = '/idata/DBIC/snastase/life'
 data_dir = '/idata/DBIC/cara/life/ridge/models'
 mvpa_dir = '/idata/DBIC/cara/life/pymvpa/'
-
 result_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/banded-ridge_alpha-cara_loro'
 
 # parameter ___________________________________________________________________________
@@ -105,25 +103,6 @@ for align in aligns:
                 output[cortical_vertices[hemi] == 1] = triu_corrs
                 mv.niml.write(os.path.join(result_dir,align, 'isc_0104','{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi)), output[None,:])
 
-        #
-        #
-        # np.save(os.path.join(directory, '{0}.npy'.format(corrtype)), corrs)
-        # med_wall_ind = np.where(cortical_vertices[hemi] == 0)[0]
-        # out = np.zeros((corrs.shape[0]+med_wall_ind.shape[0]),dtype= corrs.dtype)
-        # out[cortical_vertices[hemi] == 1] = corrs
-        # mv.niml.write(os.path.join(directory, '{0}.{1}.niml.dset'.format(corrtype, hemi)), out[None,:])
-        #
-        #
-            # at the end of run loop - stack files _________________________________________
+                # at the end of run loop - stack files _________________________________________
                 avg_stack[run-1] = output
             mv.niml.write(os.path.join(result_dir,align, 'isc_0104', 'group_{0}_isc_vsmean.{1}.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])
-
-            #
-            #
-            # for run in range(1,5):
-            #     # print(mv.niml.read(os.path.join(result_dir,align,'isc', '{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi))).shape)
-            #     dset = mv.niml.read(os.path.join(result_dir, align, 'isc', '{0}_isc_run{1}_vsmean.{2}.niml.dset'.format(model, run, hemi)))
-            #     avg_stack[run-1] = dset
-            #     # Save it with niml.write
-            # # print(avg_stack.shape, np.mean(avg_stack, axis=0).shape)
-            # mv.niml.write(os.path.join(result_dir,align, 'isc', 'group_{0}_isc_vsmean.{1}.niml.dset'.format(model, hemi)), np.mean(avg_stack, axis=0)[None,:])
