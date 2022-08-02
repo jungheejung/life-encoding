@@ -4,7 +4,7 @@
 #PBS -l nodes=1:ppn=16
 #PBS -l walltime=24:00:00
 #PBS -A DBIC
-#PBS -t 1-4
+#PBS -t 1
 #PBS -l mem=50gb,vmem=60gb
 
 cd $PBS_O_WORKDIR
@@ -34,4 +34,19 @@ STIM2="actions"
 STIM3="agents"
 
 
-python ./PCATIKREG_03fullrange.py ${MODEL} ${ALIGN} ${STIM1} ${STIM2} ${STIM3} ${RUN} ${HEMI} ${SUB} ${NODE}
+
+MODEL="visual"
+#ALIGN="ha_testsubj"  #"ws"
+ALIGN="ws"
+STIM1="bg"
+STIM2="actions"
+STIM3="agents"
+
+# COMMENT OUT
+SUB="sub-rid000024"
+RUN=3
+HEMI="lh"
+NODE=32
+
+
+python ./PCATIKREG_04fullrange_10000.py ${MODEL} ${ALIGN} ${STIM1} ${STIM2} ${STIM3} ${RUN} ${HEMI} ${SUB} ${NODE}
