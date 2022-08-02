@@ -25,12 +25,12 @@ from sklearn.metrics import r2_score
 import json
 
 # directories _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-if not os.path.exists('/scratch/f0042x1'):
-    os.makedirs('/scratch/f0042x1')
+if not os.path.exists('/dartfs-hpc/scratch/f0042x1'):
+    os.makedirs('/dartfs-hpc/scratch/f0042x1')
 mvpa_dir = '/dartfs/rc/lab/D/DBIC/DBIC/life_data/hyperalign_mapper' # '/idata/DBIC/cara/life/pymvpa/'
 sam_data_dir = '/dartfs/rc/lab/D/DBIC/DBIC/life_data/life_dataset' # '/idata/DBIC/snastase/life'
 npy_dir = '/dartfs/rc/lab/D/DBIC/DBIC/life_data/w2v_feature' # '/idata/DBIC/cara/w2v/w2v_features'
-scratch_dir = '/scratch/f0042x1'
+scratch_dir = '/dartfs-hpc/scratch/f0042x1'
 
 participants = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006', 'sub-rid000009', 'sub-rid000012',
                 'sub-rid000014', 'sub-rid000017', 'sub-rid000019', 'sub-rid000024', 'sub-rid000027',
@@ -104,7 +104,6 @@ ROI_dict = {
 cortical_vertices = {}
 for half in ['lh', 'rh']:
     test_ds = mv.niml.read('/dartfs/rc/lab/D/DBIC/DBIC/life_data/niml/ws.{0}.niml.dset'.format(half))
-       # '/idata/DBIC/cara/life/ridge/models/niml/ws.{0}.niml.dset'.format(half))
     cortical_vertices[half] = np.ones((n_vertices))
     cortical_vertices[half][np.sum(
         test_ds.samples[1:, :] != 0, axis=0) == 0] = 0
@@ -112,7 +111,6 @@ print("\n1. analysis parameters")
 print('Model: {0}\nStim file: {1}, {2}, {3}\nHemi: {4}\nRuns in training: {5}\nRun in test: {6}\nParticipant: {7}'.format(
     model, stimfile1, stimfile2, stimfile3, hemi, included, fold_shifted, test_p))
 
-#nonmedial = cortical_vertices[hemi] == 1
 
 nonmedial = np.where(cortical_vertices[hemi] == 1)[0]
 medial = np.where(cortical_vertices[hemi] == 0)[0]
@@ -547,7 +545,9 @@ print("\nRatios: {0}".format(ratios))
 train_id = np.arange(X1train.shape[0])
 dur1, dur2, dur3 = tr_movie[included[0]] - \
     3, tr_movie[included[1]] - 3, tr_movie[included[2]] - 3
-
+print("\ndur1: {0}".format(dur1))
+print("\ndur2: {0}".format(dur2))
+print("\ndur3: {0}".format(dur3))
 
 # 4. [ banded ridge ] setting up loro and priors _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 
@@ -583,9 +583,13 @@ new_alphas = voxelwise_optimal_hyperparameters[:, -1] # 4
 lambda_ones = voxelwise_optimal_hyperparameters[:, 1]
 lambda_twos = voxelwise_optimal_hyperparameters[:, 2]
 lambda_threes = voxelwise_optimal_hyperparameters[:, 3]
-# what is voxelwise_optimal_hyperparameters[:, 0]?
-with open('./hyperparameter.npy', 'wb') as f:
-    np.save(voxelwise_optimal_hyperparameters)
+print("\nhyperparameter_0: {0}".format(voxelwise_optimal_hyperparameters[:, 0]))
+# TODO: what is voxelwise_optimal_hyperparameters[:, 0]?
+
+directory = os.path.join(scratch_dir, 'PCA_tikreg-loro_fullrange-10000-ROI','{0}/{1}/{2}_{3}_{4}/leftout_run_{5}'.format(align, model, stimfile1, stimfile2, stimfile3, fold_shifted), test_p, hemi)
+hyperparameter_file = os.path.join(directory, 'hyperparameter.npy') 
+with open(hyperparameter_file, 'wb') as f:
+    np.save(f, voxelwise_optimal_hyperparameters)
 
 
 # 6. [ banded ridge ] calculating primal weights from kernel weights _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _

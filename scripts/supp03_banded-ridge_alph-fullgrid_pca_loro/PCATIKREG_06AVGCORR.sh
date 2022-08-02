@@ -9,7 +9,7 @@
 #SBATCH -e ./log_avg/ROI_tikreg_vt_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=preemptable
-#SBATCH --array=1
+#SBATCH --array=1-20%6
 
 module load python/2.7-Anaconda
 source /optnfs/common/miniconda3/etc/profile.d/conda.sh
@@ -18,9 +18,10 @@ conda activate haxby_mvpc
 MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/tikreg-pca
 
 echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
-IND=$((SLURM_ARRAY_TASK_ID-1))
-INFILE=`awk -v RS='\r\n' "NR==${SLURM_ARRAY_TASK_ID}" corr.txt`
+IND=$((SLURM_ARRAY_TASK_ID+1))
+INFILE=`awk -v RS='\r\n' "NR==${IND}" ./corr.txt`
 echo $INFILE
+echo
 FEATURE=$(echo $INFILE | cut -f1 -d,)
 HEMI=$(echo $INFILE | cut -f2 -d,)
 ROI=$(echo $INFILE | cut -f3 -d,)
