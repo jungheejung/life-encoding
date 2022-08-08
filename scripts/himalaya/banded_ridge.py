@@ -47,7 +47,6 @@ model_durs = {1: 369, 2: 341, 3: 372, 4: 406}
 fmri_durs = {1: 374, 2: 346, 3: 377, 4: 412}
 n_samples = np.sum(list(fmri_durs.values()))
 n_vertices = 40962
-n_proc = 32 # how many cores do we have?
 n_medial = {'lh': 3486, 'rh': 3491}
 n_blocks = 3 #20# 8 hr instead of 30 min ... break up n_vertices
 model_ndim = 300
