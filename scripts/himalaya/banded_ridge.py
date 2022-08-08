@@ -565,7 +565,7 @@ assert len(run_folds) == train_bands[0].shape[0]
 loro = PredefinedSplit(run_folds)
 
 # Parameters for banded ridge model
-n_iter = 10
+n_iter = 1000
 print(f"Fitting banded ridge with {n_iter} iterations")
 print(f"Feature space(s): {', '.join(features)}")
 
