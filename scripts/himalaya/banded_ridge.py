@@ -74,14 +74,14 @@ parser.add_argument("--roi", default=None, type=str,
                     help="ROI label from rois.json")
 args = parser.parse_args()
 
-#alignment = 'ha_common' #args.alignment # 'ws', 'aa', 'ha_test', 'ha_common'
-#hemisphere = 'lh' #args.hemisphere # 'lh' or 'rh'
-#test_run = 1 #args.test_run # 1, 2, 3, or 4
-#test_run_id = test_run - 1 # zero-indexed test run
-#train_runs = [r for r in run_labels if r != test_run] 
-#test_subject = 'sub-rid000005' #args.test_subject # e.g. 'sub-rid000005'
-#features = ['bg', 'actions', 'agents'] #args.features # e.g. ['bg']
-#roi = '0' #args.roi e.g. 'vt', '0'
+alignment = args.alignment # 'ws', 'aa', 'ha_test', 'ha_common'
+hemisphere = args.hemisphere # 'lh' or 'rh'
+test_run = args.test_run # 1, 2, 3, or 4
+test_run_id = test_run - 1 # zero-indexed test run
+train_runs = [r for r in run_labels if r != test_run] 
+test_subject = args.test_subject # e.g. 'sub-rid000005'
+features = args.features # e.g. ['bg', 'actions', 'agents'] 
+roi = args.roi # e.g. 'vt', '0'
 
 
 # Create mask of cortical vertices excluding medial wall    
