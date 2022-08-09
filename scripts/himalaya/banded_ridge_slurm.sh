@@ -18,20 +18,18 @@ conda activate himalaya
 
 ### FIX THIS
 MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/tikreg-pca
-
+MAINDIR="/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya"
 echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 
 # Subtract one to get python indexing
 ID=$((SLURM_ARRAY_TASK_ID-1))
 
 # Set command line arguments for banded_ridge.py
-alignment="ws" # ws, aa, ha_common, ha_test
+alignment="ha_common" # ws, aa, ha_common, ha_test
 hemisphere="lh" # lh, rh
-test_run="1" # 1, 2, 3, 4
+test_run="2" # 1, 2, 3, 4
 test_subject="sub-rid000005"
 features="bg actions agents"
 roi=$ID
 
-hostname -s
-python banded_ridge.py -a $alignment --hemisphere $hemisphere -r $test_run \
-                       -s $test_subject -f $features -r $roi
+python ${MAINDIR}/banded_ridge.py -a ${alignment} --hemisphere ${hemisphere} --test-run ${test_run} -s ${test_subject} -f ${features} --roi ${roi}
