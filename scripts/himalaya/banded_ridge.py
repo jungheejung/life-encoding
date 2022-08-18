@@ -22,13 +22,9 @@ scratch_dir = os.path.join('/dartfs-hpc/scratch', user_dir)
 data_dir = '/dartfs/rc/lab/D/DBIC/DBIC/life_data/'
 current_dir = os.getcwd()
 main_dir = pathlib.Path(current_dir).parents[1]
-save_dir = os.path.join(main_dir, 'results', 'himalaya')
 # Create scratch directory if it doesn't exist
 if not os.path.exists(scratch_dir):
     os.makedirs(scratch_dir)
-# Create save directory if it doesn't exist
-if not os.path.exists(save_dir):
-    os.makedirs(save_dir)
 
 # Hyperalignment directory (/idata/DBIC/cara/life/pymvpa/)
 hyper_dir = os.path.join(data_dir, 'hyperalign_mapper')
@@ -88,6 +84,11 @@ test_subject = args.test_subject # e.g. 'sub-rid000005'
 features = args.features # e.g. ['bg', 'actions', 'agents'] 
 roi = args.roi # e.g. 'vt', '0'
 
+# Created save dir based on alignment
+save_dir = os.path.join(main_dir, 'results', 'himalaya', alignment)
+# Create save directory if it doesn't exist
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
 
 # Create mask of cortical vertices excluding medial wall    
 medial_mask = np.load(os.path.join(data_dir, 'niml',
