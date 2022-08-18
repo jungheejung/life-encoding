@@ -14,16 +14,21 @@ from himalaya.scoring import correlation_score, r2_score
 import nibabel as nib
 import matplotlib.pyplot as plt
 import json
-
+import pathlib
 
 # Assign/create directories
 user_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f000fb6'
 scratch_dir = os.path.join('/dartfs-hpc/scratch', user_dir)
 data_dir = '/dartfs/rc/lab/D/DBIC/DBIC/life_data/'
-
+current_dir = os.getcwd()
+main_dir = pathlib.Path(current_dir).parents[1]
+save_dir = os.path.join(main_dir, 'results', 'himalaya')
 # Create scratch directory if it doesn't exist
 if not os.path.exists(scratch_dir):
     os.makedirs(scratch_dir)
+# Create save directory if it doesn't exist
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
 
 # Hyperalignment directory (/idata/DBIC/cara/life/pymvpa/)
 hyper_dir = os.path.join(data_dir, 'hyperalign_mapper')
@@ -100,8 +105,9 @@ if roi:
     
     roi_coords = np.where(cortical_vertices[roi_vertices])[0]
     cortical_vertices = np.intersect1d(np.where(cortical_vertices)[0],
-                                       np.array(rois[hemisphere][roi]))
-                         
+                                       roi_vertices) # np.array(rois[hemisphere][roi]))
+    print(f"* roi_coords: {roi_coords}")
+    print(f"* roi_coords shape: {roi_coords.shape}")           
 # Print critical analysis parameters
 print("1. Analysis parameters")
 print(f"Test run: {test_run} (train runs: {train_runs})\n"
@@ -583,7 +589,7 @@ print(f"Weight matrix shape: {ridge.coef_.shape}")
 if roi:
     ridge_coef = reinsert_vertices(ridge_coef, roi_shape, roi_coords)
 
-np.save(f'ridge-coef_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/ridge-coef_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         ridge_coef)
 
@@ -592,7 +598,6 @@ print("Predicting left-out test run")
 test_comb = ridge.predict(test_bands)
 test_split = ridge.predict(test_bands, split=True)
 print(f"Predicted test run {test_run} shape: {test_comb.shape}")
-
 # Duplicate model predictions for for saving
 test_comb_save = test_comb.copy()
 test_split_save = {f: t for f, t in zip(features, test_split)}
@@ -601,11 +606,10 @@ if roi:
     test_comb_save = reinsert_vertices(test_comb, roi_shape, roi_coords)
     test_split_save = {f: reinsert_vertices(s, roi_shape, roi_coords)
                        for f, s in test_split_save.items()}
-
-np.save(f'comb-pred_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/comb-pred_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         test_comb_save)
-np.save(f'split-pred_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/split-pred_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         test_split_save)
 
@@ -619,10 +623,10 @@ if roi:
     split_r = {f: reinsert_vertices(s, roi_shape, roi_coords)
                for f, s in split_r.items()}
 
-np.save(f'comb-r_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/comb-r_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         comb_r)
-np.save(f'split-r_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/split-r_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         split_r)
 
@@ -636,10 +640,10 @@ if roi:
     split_r2 = {f: reinsert_vertices(s, roi_shape, roi_coords)
                 for f, s in split_r2.items()}
 
-np.save(f'comb-r2_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/comb-r2_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         comb_r2)
-np.save(f'split-r2_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/split-r2_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         split_r2)
         
