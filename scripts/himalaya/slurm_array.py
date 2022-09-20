@@ -16,6 +16,7 @@ test_runs = [1, 2, 3, 4]
 rois = np.arange(40).astype(str)
 
 params = list(product(subjects, hemispheres, test_runs, rois))
+print(f"total number of jobs: {len(params)}")
 
 with open('slurm_array.txt', 'w') as f:
     f.writelines([f'{s},{h},{t},{r}\n' for s, h, t, r in params])
