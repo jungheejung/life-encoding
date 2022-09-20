@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-import os, sys, shutil
+import os, sys, shutil, time
 import argparse
 import subprocess
 import numpy as np
@@ -15,6 +15,8 @@ import nibabel as nib
 import matplotlib.pyplot as plt
 import json
 import pathlib
+
+start = time.time()
 
 # Assign/create directories
 user_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f000fb6'
@@ -107,8 +109,6 @@ if roi:
     roi_coords = np.where(cortical_vertices[roi_vertices])[0]
     cortical_vertices = np.intersect1d(np.where(cortical_vertices)[0],
                                        roi_vertices) # np.array(rois[hemisphere][roi]))
-    print(f"* roi_coords: {roi_coords}")
-    print(f"* roi_coords shape: {roi_coords.shape}")           
 # Print critical analysis parameters
 print("1. Analysis parameters")
 print(f"Test run: {test_run} (train runs: {train_runs})\n"
@@ -651,5 +651,7 @@ np.save(f'{save_dir}/split-r2_align-{alignment}_{test_subject}_'
 print('\nFinished running banded ridge regression!')
 print(f'Mean test r: {np.nanmean(comb_r):.03f}')
 print(f'Mean test R2: {np.nanmean(comb_r2):.03f}')
-    
+end = time.time()
+total_time = end - start
+print(f"total_time: {total_time}")    
 # TODO: SAVE ALPHAS?
