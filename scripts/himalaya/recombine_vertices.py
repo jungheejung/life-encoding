@@ -24,28 +24,28 @@ for test_subject in subjects:
             if 'split' in result:
                 stack_data = {'bg': [], 'actions': [], 'agents': []}
                 for split in np.arange(n_splits):
-				    split_data = np.load(f'{stack_dir}/{result}_align-{alignment}_{test_subject}_'
-				                f'run-{test_run}_roi-{split}_hemi-{hemisphere}.npy', allow_pickle=True).item()
-				for feature in stack_data:
-			        stack_data[feature].append(split_data[feature])
+                    split_data = np.load(f'{stack_dir}/{result}_align-{alignment}_{test_subject}_'
+                                f'run-{test_run}_roi-{split}_hemi-{hemisphere}.npy', allow_pickle=True).item()
+                for feature in stack_data:
+                    stack_data[feature].append(split_data[feature])
 
-			    for feature in stack_data:
-				    split_result = f"{feature}-{result.split('-')[1]}"
-				    split_f = (f'{stack_dir}/{split_result}_align-{alignment}_{test_subject}_'
-				               f'run-{test_run}_hemi-{hemisphere}.npy')
-				    stack_result = np.concatenate(stack_data[feature], axis=1)
-			        print(f"stack_data shape: {stack_result.shape}")
-			        np.save(split_f, stack_result)
+                for feature in stack_data:
+                    split_result = f"{feature}-{result.split('-')[1]}"
+                    split_f = (f'{stack_dir}/{split_result}_align-{alignment}_{test_subject}_'
+                               f'run-{test_run}_hemi-{hemisphere}.npy')
+                    stack_result = np.concatenate(stack_data[feature], axis=1)
+                    print(f"stack_data shape: {stack_result.shape}")
+                    np.save(split_f, stack_result)
 
-			else:
+            else:
                 stack_data = []
-			    for split in np.arange(n_splits):
-				    split_data = np.load(f'{stack_dir}/{result}_align-{alignment}_{test_subject}_'
-					            f'run-{test_run}_roi-{split}_hemi-{hemisphere}.npy')
-				    stack_data.append(split_data)
+                for split in np.arange(n_splits):
+                    split_data = np.load(f'{stack_dir}/{result}_align-{alignment}_{test_subject}_'
+                                f'run-{test_run}_roi-{split}_hemi-{hemisphere}.npy')
+                    stack_data.append(split_data)
                 stack_data = np.concatenate(stack_data, axis =1) #check this for multidim data
-			    print(f"stack_data shape: {stack_data.shape}")
-			    np.save(f"{stack_dir}/{result}_align-{alignment}_{test_subject}_run-{test_run}_hemi-{hemisphere}.npy", stack_data)
+                print(f"stack_data shape: {stack_data.shape}")
+                np.save(f"{stack_dir}/{result}_align-{alignment}_{test_subject}_run-{test_run}_hemi-{hemisphere}.npy", stack_data)
 
-			## SAVE AS NP ARRAY AND GIFTI
-			print(f"finished recomining vertices: {test_subject} testrun-{test_run} {hemisphere}")
+            ## SAVE AS NP ARRAY AND GIFTI
+            print(f"finished recomining vertices: {test_subject} testrun-{test_run} {hemisphere}")
