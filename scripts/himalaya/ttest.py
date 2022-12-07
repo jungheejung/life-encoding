@@ -8,7 +8,7 @@ from statsmodels.stats.multitest import multipletests
 import nibabel as nib
 from pathlib import Path
 
-# %% parameters
+# %% NOTE: functions
 def write_gifti(data, output_fn, template_fn):
     gii = nib.load(template_fn)
     for i in np.arange(gii.numDA):
@@ -17,7 +17,7 @@ def write_gifti(data, output_fn, template_fn):
     gii.add_gifti_data_array(gda)
     nib.gifti.giftiio.write(gii, output_fn)
 
-# %%parameters
+# %% parameters
 suma_dir = '/Users/h/suma-fsaverage6'
 main_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding'
 main_dir = '/Volumes/life-encoding'
@@ -38,17 +38,7 @@ subjects = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006',
             'sub-rid000027', 'sub-rid000031', 'sub-rid000032',
             'sub-rid000033', 'sub-rid000034', 'sub-rid000036',
             'sub-rid000037', 'sub-rid000038', 'sub-rid000041']
-# subjects = ['sub-rid000005']
-# %% 4. cortical vertices
-# Create mask of cortical vertices excluding medial wall    
-# medial_mask = np.load(os.path.join(main_dir, 'data', f'fsaverage6_medial_{hemisphere}.npy'))
-# assert np.sum(medial_mask) == n_medial[hemisphere]
-# cortical_vertices = ~medial_mask # boolean (true for non-medials, false for medials)
-# cortical_coords = np.where(cortical_vertices)[0] # returns indices of non-medials
-# print(f"number of non-medial vertices: {len(cortical_coords)}")
-# print(f"all data shape (before removing medial): {run_data.shape}")
-# # cortical_data = run_data[..., cortical_coords]
-# print(f"cortical data shape (after removing medial): {cortical_data.shape}")
+
 # %% NOTE 1. Fisher z transform per run per participant (np.arctanh)
 # np.save(f"{output_dir}/{result}_align-{alignment}_sub-mean_run-{test_run}_hemi-{hemisphere}.npy", avg_run)
     
@@ -78,30 +68,21 @@ for hemisphere in hemis:
 
     # NOTE: 3. Scipy ttest_1samp to get t-value and p-value
     t, p = scipy.stats.ttest_1samp(fisherz_all, popmean=0,axis=0, alternative='greater')
-    # t, p = scipy.stats.ttest_1samp(fisherz_all.reshape(18, 40962).T, popmean=0,axis=0, alternative='one-sided')
     hemi_t.append(t)
     hemi_p.append(p)
     hemi_mean.append(np.tanh(np.nanmean(fisherz_all, axis = 0)))
 
 # %% 4-1. concatenate (np.hstack) the two hemispheres p-values (and exclude medial wall) prior to computing FDR (load in cortical_vertices.npy)
 left_vert = hemi_p[0].shape[0]
-
 t_all = np.hstack(hemi_t)
 p_all = np.hstack(hemi_p)
-# NOTE: keep track of non-medial indices and hemisphere to stick back into dictionary
-# dictionary
-# hemisphere, vertexindex, t 
-# pandas? 
-# %% 5. use statsmodels multipletests for FDR correction (‘bh’)
-# FDR correction yields FDR-adjusted p-values (q-values)
-# significant voxels
+
+# %% NOTE: 5. use statsmodels multipletests for FDR correction (‘bh’)
 reject, q_all, _, _ = multipletests(p_all, method = 'fdr_bh')
-# t_all[left_vert:]
-# t_all[:left_vert]
+
 
 
 # %%
-# TODO:
 q_both = [q_all[:left_vert], q_all[left_vert:]]
 
 hemilabels = ['lh', 'rh']
@@ -147,4 +128,4 @@ def plot_infl(gii_dir, key, cmap):
 
 # %%
 plot_infl(gii_dir, 'bg-r2', 'inferno')
-# %%
+
