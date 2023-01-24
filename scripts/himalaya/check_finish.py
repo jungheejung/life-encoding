@@ -14,16 +14,16 @@ subjects = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006',
 hemispheres = ['lh', 'rh']
 test_runs = [1, 2, 3, 4]
 rois = np.arange(40).astype(str)
-alignment = 'ha_common'
+alignment = 'ws'# 'ws' #'aa' #'ha_common'
 params = list(product(subjects, hemispheres, test_runs, rois))
 print(f"total number of jobs: {len(params)}")
 
 # TODO: if file not exist, print
 # 
 job_nums = []
-save_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/himalaya/ha_common'
+save_dir = f'/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/results/himalaya/{alignment}'
 for job_num, (subject, hemisphere, test_run, roi) in enumerate(params):
-    fname = (f'{save_dir}/split-r2_align-{alignment}_{subject}_'
+    fname = (f'{save_dir}/bg-r2_align-{alignment}_{subject}_'
              f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy')
     if not exists(fname):
         print(f"job: {job_num}, {(subject, hemisphere, test_run, roi)}")
