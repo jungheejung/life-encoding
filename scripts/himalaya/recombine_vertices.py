@@ -1,14 +1,15 @@
 import numpy as np
-import os
+import os, sys
 
 main_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding'
-stack_dir = os.path.join(main_dir, 'results', 'himalaya', 'ha_common')
+alignment = sys.argv[2]
+stack_dir = os.path.join(main_dir, 'results', 'himalaya', alignment)
 n_splits = 40
-result = "split-r" # ridge-coef comb-r split-r comb-r2 split-r2 comb-pred split-pred
-alignment = 'ha_common'
-#test_subject = 'sub-rid000005'
-#test_run = 1
-#hemispheres = 'lh'
+index = int(sys.argv[1])
+result_list = [ 'ridge-coef', 'split-r',  'comb-r', 'comb-r2', 'comb-pred', 'split-pred']#'split-r2'
+result = result_list[index]
+#result = 'ridge-coef' #"split-r" # ridge-coef comb-r split-r comb-r2 split-r2 comb-pred split-pred
+print(result)
 subjects = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006',
             'sub-rid000009', 'sub-rid000012', 'sub-rid000014',
             'sub-rid000017', 'sub-rid000019', 'sub-rid000024',
@@ -24,19 +25,17 @@ for test_subject in subjects:
             if 'split' in result:
                 stack_data = {'bg': [], 'actions': [], 'agents': []}
                 for split in np.arange(n_splits):
-                    split_data = np.load(f'{stack_dir}/{result}_align-{alignment}_{test_subject}_'
-                                f'run-{test_run}_roi-{split}_hemi-{hemisphere}.npy', allow_pickle=True).item()
-                for feature in stack_data:
-                    stack_data[feature].append(split_data[feature])
+                    split_data = np.load(f'{stack_dir}/{result}_align-{alignment}_{test_subject}_run-{test_run}_roi-{split}_hemi-{hemisphere}.npy', allow_pickle=True).item()
+                    for feature in stack_data:
+                        stack_data[feature].append(split_data[feature])
 
                 for feature in stack_data:
                     split_result = f"{feature}-{result.split('-')[1]}"
                     split_f = (f'{stack_dir}/{split_result}_align-{alignment}_{test_subject}_'
-                               f'run-{test_run}_hemi-{hemisphere}.npy')
+                                   f'run-{test_run}_hemi-{hemisphere}.npy')
                     stack_result = np.concatenate(stack_data[feature], axis=1)
                     print(f"stack_data shape: {stack_result.shape}")
                     np.save(split_f, stack_result)
-
             else:
                 stack_data = []
                 for split in np.arange(n_splits):
