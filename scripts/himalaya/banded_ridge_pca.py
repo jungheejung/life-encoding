@@ -57,8 +57,8 @@ run_labels = [1, 2, 3, 4]
 roi_json = os.path.join(user_dir, 'rois.json')
 
 # Parameters for optional PCA
-run_pca = False
-n_components = 30
+run_pca = True
+n_components = 60
 
 # Parameters from job submission script
 parser = argparse.ArgumentParser()
@@ -87,7 +87,7 @@ features = args.features # e.g. ['bg', 'actions', 'agents']
 roi = args.roi # e.g. 'vt', '0'
 
 # Created save dir based on alignment
-save_dir = os.path.join(main_dir, 'results', 'himalaya', alignment)
+save_dir = os.path.join(main_dir, 'results', 'himalaya', f'alignment_pca-{n_components}')
 # Create save directory if it doesn't exist
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
