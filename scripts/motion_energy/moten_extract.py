@@ -5,8 +5,8 @@ import numpy as np
 for run in [1,2,3,4]:
     # Stream and convert the RGB video into a sequence of luminance images
     video_file = f'/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/data/stimuli/video-{run}_fps-30.mp4'
-    luminance_images = moten.io.video2luminance(video_file) #, nimages=100)
-
+    #video_file = f'/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/data/stimuli/video-1_fps-30_trim.mp4'
+    luminance_images = moten.io.video2luminance(video_file, size = (192,108)) #, nimages=100)
     # Create a pyramid of spatio-temporal gabor filters
     nimages, vdim, hdim = luminance_images.shape
     print(nimages, vdim, hdim)
