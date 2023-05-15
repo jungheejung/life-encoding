@@ -88,6 +88,7 @@ roi = args.roi # e.g. 'vt', '0'
 
 # Created save dir based on alignment
 save_dir = os.path.join(main_dir, 'results', 'himalaya', 'moten', f'{alignment}_pca-{n_components}')
+#save_dir = os.path.join(main_dir, 'results', 'himalaya', alignment)
 # Create save directory if it doesn't exist
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
@@ -136,7 +137,7 @@ def write_gifti(data, output_fn, template_fn):
 def model_pca(train_model, test_model, n_components):
     
     # Z-score train data and apply to test data
-    scaler = StandardScaler() 
+    scaler = StandardScaler()
     train_model = scaler.fit_transform(train_model)
     test_model = scaler.transform(test_model)
 
@@ -173,6 +174,7 @@ def load_model(model_f, train_runs, test_run, model_durs,
         train_model = np.concatenate(train_model, axis=0)
         print(f"train_model: {train_model.shape[1]}, test_model:{test_model.shape[1]}, model_ndim: {model_ndim}")
         assert train_model.shape[1] == test_model.shape[1] #== model_ndim NOTE: confirm that it is correct to just check the train/model shape without the model ndim
+
         train_model, test_model = model_pca(train_model,
                                             test_model,
                                             n_components)
@@ -591,6 +593,7 @@ if roi:
     ridge_coef = reinsert_vertices(ridge_coef, roi_shape, roi_coords)
 
 np.save(f'{save_dir}/ridge-coef_pca-{n_components}_align-{alignment}_{test_subject}_'
+#np.save(f'{save_dir}/ridge-coef_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         ridge_coef)
 
