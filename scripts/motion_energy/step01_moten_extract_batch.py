@@ -11,7 +11,7 @@ run = args.run
 #for run in [1,2,3,4]:
 # Stream and convert the RGB video into a sequence of luminance images
 video_file = f'/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/data/stimuli/video-{run}_fps-30.mp4'
-luminance_images = moten.io.video2luminance(video_file, size = (192, 108)) #, nimages=100)
+luminance_images = moten.io.video2luminance(video_file, size = (108,192)) #, nimages=100)
 print('luminance complete', flush=True)
 
 # Create a pyramid of spatio-temporal gabor filters
