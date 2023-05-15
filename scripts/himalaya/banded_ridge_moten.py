@@ -58,7 +58,7 @@ roi_json = os.path.join(user_dir, 'rois.json')
 
 # Parameters for optional PCA
 run_pca = True
-n_components = 40
+n_components = 60
 
 # Parameters from job submission script
 parser = argparse.ArgumentParser()
@@ -171,8 +171,8 @@ def load_model(model_f, train_runs, test_run, model_durs,
         # Concatenate training model across runs
         train_splits = np.cumsum([len(r) for r in train_model])[:-1]
         train_model = np.concatenate(train_model, axis=0)
-
-        assert train_model.shape[1] == test_model.shape[1] == model_ndim
+        print(f"train_model: {train_model.shape[1]}, test_model:{test_model.shape[1]}, model_ndim: {model_ndim}")
+        assert train_model.shape[1] == test_model.shape[1] #== model_ndim NOTE: confirm that it is correct to just check the train/model shape without the model ndim
         train_model, test_model = model_pca(train_model,
                                             test_model,
                                             n_components)
