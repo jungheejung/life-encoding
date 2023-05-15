@@ -58,7 +58,7 @@ roi_json = os.path.join(user_dir, 'rois.json')
 
 # Parameters for optional PCA
 run_pca = True
-n_components = 40
+n_components = 60
 
 # Parameters from job submission script
 parser = argparse.ArgumentParser()

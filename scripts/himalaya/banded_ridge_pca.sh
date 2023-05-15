@@ -5,8 +5,8 @@
 #SBATCH --ntasks=8
 #SBATCH --mem-per-cpu=8gb
 #SBATCH --time=01:00:00
-#SBATCH -o ./log_roi/ws_%A_%a.o
-#SBATCH -e ./log_roi/ws_%A_%a.e
+#SBATCH -o ./log_pca/hac_%A_%a.o
+#SBATCH -e ./log_pca/hac_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
 #SBATCH --array=1-5750%50
