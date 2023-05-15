@@ -37,6 +37,7 @@ n_trs = 2.5
 moten_trs = []
 for onset in np.arange(0, n_frames * n_trs, n_frames):
     moten_trs.append(np.mean(moten[onset:onset + n_frames], axis=0))
+TODO: moten_trs[:-1]
 print(np.array(moten_trs).shape)
 fig, axes = plt.subplots(ncols = 1, figsize = (30, 10))
 plt.plot(np.array(moten_trs))
