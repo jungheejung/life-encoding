@@ -58,7 +58,7 @@ roi_json = os.path.join(user_dir, 'rois.json')
 
 # Parameters for optional PCA
 run_pca = True
-n_components = 40
+n_components = 60
 
 # Parameters from job submission script
 parser = argparse.ArgumentParser()
@@ -87,7 +87,8 @@ features = args.features # e.g. ['bg', 'actions', 'agents']
 roi = args.roi # e.g. 'vt', '0'
 
 # Created save dir based on alignment
-save_dir = os.path.join(main_dir, 'results', 'himalaya', alignment)
+save_dir = os.path.join(main_dir, 'results', 'himalaya', 'moten', f'{alignment}_pca-{n_components}')
+#save_dir = os.path.join(main_dir, 'results', 'himalaya', alignment)
 # Create save directory if it doesn't exist
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
@@ -171,8 +172,9 @@ def load_model(model_f, train_runs, test_run, model_durs,
         # Concatenate training model across runs
         train_splits = np.cumsum([len(r) for r in train_model])[:-1]
         train_model = np.concatenate(train_model, axis=0)
+        print(f"train_model: {train_model.shape[1]}, test_model:{test_model.shape[1]}, model_ndim: {model_ndim}")
+        assert train_model.shape[1] == test_model.shape[1] #== model_ndim NOTE: confirm that it is correct to just check the train/model shape without the model ndim
 
-        assert train_model.shape[1] == test_model.shape[1] == model_ndim
         train_model, test_model = model_pca(train_model,
                                             test_model,
                                             n_components)
@@ -590,7 +592,8 @@ print(f"Weight matrix shape: {ridge.coef_.shape}")
 if roi:
     ridge_coef = reinsert_vertices(ridge_coef, roi_shape, roi_coords)
 
-np.save(f'{save_dir}/ridge-coef_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/ridge-coef_pca-{n_components}_align-{alignment}_{test_subject}_'
+#np.save(f'{save_dir}/ridge-coef_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         ridge_coef)
 
@@ -607,10 +610,10 @@ if roi:
     test_comb_save = reinsert_vertices(test_comb, roi_shape, roi_coords)
     test_split_save = {f: reinsert_vertices(s, roi_shape, roi_coords)
                        for f, s in test_split_save.items()}
-np.save(f'{save_dir}/comb-pred_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/comb-pred_pca-{n_components}_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         test_comb_save)
-np.save(f'{save_dir}/split-pred_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/split-pred_pca-{n_components}_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         test_split_save)
 
@@ -624,10 +627,10 @@ if roi:
     split_r = {f: reinsert_vertices(s, roi_shape, roi_coords)
                for f, s in split_r.items()}
 
-np.save(f'{save_dir}/comb-r_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/comb-r_pca-{n_components}_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         comb_r)
-np.save(f'{save_dir}/split-r_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/split-r_pca-{n_components}_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         split_r)
 
@@ -641,10 +644,10 @@ if roi:
     split_r2 = {f: reinsert_vertices(s, roi_shape, roi_coords)
                 for f, s in split_r2.items()}
 
-np.save(f'{save_dir}/comb-r2_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/comb-r2_pca-{n_components}_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         comb_r2)
-np.save(f'{save_dir}/split-r2_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/split-r2_pca-{n_components}_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         split_r2)
         
@@ -655,3 +658,6 @@ end = time.time()
 total_time = end - start
 print(f"total_time: {total_time}")    
 # TODO: SAVE ALPHAS?
+# np.save(f'{save_dir}/split-r2_pca-{n_components}_align-{alignment}_{test_subject}_'
+#         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
+#         split_r2)
