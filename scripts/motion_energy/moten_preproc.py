@@ -75,5 +75,5 @@ model_durs = {1: 369, 2: 341, 3: 372, 4: 406}
 resample_remedy = resample_all[:-1]
 assert np.sum(list(model_durs.values())) == resample_remedy.shape[0]
 
-np.save(os.path.join(model_dir, 'visual_moten.npy'), resample_all)
+np.save(os.path.join(model_dir, 'visual_moten.npy'), resample_remedy)
 # %%
