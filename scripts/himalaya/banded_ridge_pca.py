@@ -87,7 +87,7 @@ features = args.features # e.g. ['bg', 'actions', 'agents']
 roi = args.roi # e.g. 'vt', '0'
 
 # Created save dir based on alignment
-save_dir = os.path.join(main_dir, 'results', 'himalaya', f'alignment_pca-{n_components}')
+save_dir = os.path.join(main_dir, 'results', 'himalaya', 'pca', f'{alignment}_pca-{n_components}')
 # Create save directory if it doesn't exist
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
@@ -136,7 +136,7 @@ def write_gifti(data, output_fn, template_fn):
 def model_pca(train_model, test_model, n_components):
     
     # Z-score train data and apply to test data
-    scaler = StandardScaler() #
+    scaler = StandardScaler() 
     train_model = scaler.fit_transform(train_model)
     test_model = scaler.transform(test_model)
 
