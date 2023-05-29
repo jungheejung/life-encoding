@@ -29,7 +29,7 @@ alignment_pca = f'{alignment}_pca-{pca}'
 stack_dir = os.path.join(main_dir, 'results', 'himalaya', analysis_type, alignment_pca)
 n_splits = 40
 # index = int(sys.argv[1])
-result_list = [ 'ridge-coef', 'split-r',  'comb-r', 'comb-r2', 'comb-pred', 'split-pred']#'split-r2'
+result_list = [ 'ridge-coef', 'split-r',  'comb-r', 'comb-r2', 'comb-pred', 'split-pred','split-r2']
 result = result_list[index]
 #result = 'ridge-coef' #"split-r" # ridge-coef comb-r split-r comb-r2 split-r2 comb-pred split-pred
 print(result)
@@ -46,18 +46,15 @@ for test_subject in subjects:
     for test_run in runs:
         for hemisphere in hemis:
             if 'split' in result:
-                stack_data = {'bg': [], 'actions': [], 'agents': []}
+                stack_data = {'bg': [], 'actions': [], 'agents': [], 'moten': []}
                 for split in np.arange(n_splits):
                     split_data = np.load(f'{stack_dir}/{result}_pca-{pca}_align-{alignment}_{test_subject}_run-{test_run}_roi-{split}_hemi-{hemisphere}.npy', allow_pickle=True).item()
-                    # split_data = np.load(f'{stack_dir}/{result}_align-{alignment}_{test_subject}_run-{test_run}_roi-{split}_hemi-{hemisphere}.npy', allow_pickle=True).item()
                     for feature in stack_data:
                         stack_data[feature].append(split_data[feature])
 
                 for feature in stack_data:
                     split_result = f"{feature}-{result.split('-')[1]}"
                     split_f = (f'{stack_dir}/{split_result}_pca-{pca}_align-{alignment}_{test_subject}_run-{test_run}_hemi-{hemisphere}.npy')
-                    # split_f = (f'{stack_dir}/{split_result}align-{alignment}_{test_subject}_'
-                                #    f'run-{test_run}_hemi-{hemisphere}.npy')
                     stack_result = np.concatenate(stack_data[feature], axis=1)
                     print(f"stack_data shape: {stack_result.shape}")
                     np.save(split_f, stack_result)
@@ -65,8 +62,6 @@ for test_subject in subjects:
                 stack_data = []
                 for split in np.arange(n_splits):
                     split_data = np.load(f'{stack_dir}/{result}_pca-{pca}_align-{alignment}_{test_subject}_run-{test_run}_roi-{split}_hemi-{hemisphere}.npy')
-                    # split_data = np.load(f'{stack_dir}/{result}_align-{alignment}_{test_subject}_'
-                    #             f'run-{test_run}_roi-{split}_hemi-{hemisphere}.npy')
                     stack_data.append(split_data)
                 stack_data = np.concatenate(stack_data, axis =1) #check this for multidim data
                 print(f"stack_data shape: {stack_data.shape}")
