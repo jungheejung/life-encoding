@@ -4,14 +4,14 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=8
 #SBATCH --mem-per-cpu=8gb
-#SBATCH --time=01:00:00
+#SBATCH --time=00:30:00
 #SBATCH -o ./log_moten/hac_%A_%a.o
 #SBATCH -e ./log_moten/hac_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
-#SBATCH --array=1-5750%50
+#SBATCH --array=1-50%50
+###SBATCH --array=1-5750%50
 # Vertices are split into chunks 0-39
-###SBATCH --array=1-5760%50 
 
 
 conda activate himalaya
@@ -21,8 +21,11 @@ MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya
 echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 
 # Subtract one to get python indexing
-ID=$((SLURM_ARRAY_TASK_ID-1))
-
+#ID=$((SLURM_ARRAY_TASK_ID-1))
+NUMBERS=$(sed -n "1p" output_moten_pca-40_align-ha_common_v2.txt)
+IFS=',' read -ra NUMBER_ARRAY <<< "$NUMBERS"
+ID=$((NUMBER_ARRAY[${SLURM_ARRAY_TASK_ID}]-1))
+echo ${ID}
 # Use slurm_array.sh file to set parameters
 ARRAY_FILE=${MAINDIR}/slurm_array.txt
 echo ${ARRAY_FILE}
