@@ -19,7 +19,7 @@ echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 
 # Subtract one to get python indexing
 ID=$((SLURM_ARRAY_TASK_ID-1))
-ALIGN="ws" #aa'
+ALIGN="ha_common" #aa ws
 
 
 python ${MAINDIR}/average_maps.py ${ID} ${ALIGN} 

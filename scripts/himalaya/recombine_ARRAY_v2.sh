@@ -2,9 +2,9 @@
 
 #SBATCH --job-name=life-himalaya
 #SBATCH --nodes=1
-#SBATCH --ntasks=8
-#SBATCH --mem-per-cpu=8gb
-#SBATCH --time=01:00:00
+#SBATCH --ntasks=5
+#SBATCH --mem-per-cpu=6gb
+#SBATCH --time=05:00:00
 #SBATCH -o ./output/recombine_ws_%A_%a.o
 #SBATCH -e ./output/recombine_ws_%A_%a.e
 #SBATCH --account=DBIC
