@@ -35,4 +35,7 @@ for job_num, (subject, hemisphere, test_run, roi) in enumerate(params):
         print(fname)
         job_nums.append(job_num)
 
-print(",".join([str(s + 2) for s in job_nums]))
+# print(",".join([str(s + 2) for s in job_nums]))
+import sys
+sys.stdout = open(f'output_{model_type}_pca-{pc}_align-{alignment}_v2.txt','wt')
+print (",".join([str(s + 2) for s in job_nums]))
