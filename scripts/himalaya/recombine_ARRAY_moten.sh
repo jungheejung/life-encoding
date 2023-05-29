@@ -22,7 +22,7 @@ ALIGN="ha_common" # "ws" "ha_common"
 ANALYSIS="moten"  # 'moten', 'base', 'pca'
 PC=40
 
-python ${MAINDIR}/recombine_vertices_v2.py \
+python ${MAINDIR}/recombine_vertices_moten.py \
 --slurm-id ${ID} \
 --align ${ALIGN} \
 --analysis ${ANALYSIS} \
