@@ -27,7 +27,7 @@ output_dir = os.path.join(main_dir, 'results', 'himalaya', analysis, f"{alignmen
 print(output_dir)
 n_splits = 40
 index = int(sys.argv[1])
-result_list = [ 'bg-r', 'agents-r', 'actions-r', 'ridge-coef', 'comb-r','comb-r2', 'split-pred', 'split-r2', 'bg-r2', 'agents-r2', 'actions-r2', 'comb-pred'
+result_list = [ 'bg-r', 'agents-r', 'actions-r', 'ridge-coef', 'comb-r','comb-r2', 'split-pred', 'split-r2', 'bg-r2', 'agents-r2', 'actions-r2', 'comb-pred']
 result = result_list[index]
 subjects = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006',
             'sub-rid000009', 'sub-rid000012', 'sub-rid000014',
