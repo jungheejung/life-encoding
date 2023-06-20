@@ -21,13 +21,14 @@ def write_gifti(data, output_fn, template_fn):
 alignment = sys.argv[2]
 pca_comp = int(sys.argv[3])
 analysis = sys.argv[4]
+print(f"{alignment} {pca_comp} {analysis}")
 suma_dir = '/Users/h/suma-fsaverage6'
 main_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding'
 output_dir = os.path.join(main_dir, 'results', 'himalaya', analysis, f"{alignment}_pca-{pca_comp}")
 print(output_dir)
 n_splits = 40
 index = int(sys.argv[1])
-result_list = [ 'bg-r', 'agents-r', 'actions-r', 'ridge-coef', 'comb-r','comb-r2', 'split-pred', 'split-r2', 'bg-r2', 'agents-r2', 'actions-r2', 'comb-pred'
+result_list = [ 'bg-r', 'agents-r', 'actions-r','moten-r', 'ridge-coef', 'comb-r','comb-r2', 'split-pred', 'split-r2', 'bg-r2', 'agents-r2', 'actions-r2', 'moten-r2', 'comb-pred']
 result = result_list[index]
 subjects = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006',
             'sub-rid000009', 'sub-rid000012', 'sub-rid000014',
