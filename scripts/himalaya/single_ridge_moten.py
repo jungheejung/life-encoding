@@ -87,7 +87,7 @@ features = args.features # e.g. ['bg', 'actions', 'agents']
 roi = args.roi # e.g. 'vt', '0'
 
 # Created save dir based on alignment
-save_dir = os.path.join(main_dir, 'results', 'himalaya', 'single', f'{alignment}_pca-{n_components}')
+save_dir = os.path.join(main_dir, 'results', 'himalaya', f'single-{"".join(features)}', f'{alignment}_pca-{n_components}')
 #save_dir = os.path.join(main_dir, 'results', 'himalaya', alignment)
 # Create save directory if it doesn't exist
 if not os.path.exists(save_dir):

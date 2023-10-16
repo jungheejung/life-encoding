@@ -5,11 +5,11 @@
 #SBATCH --ntasks=5
 #SBATCH --mem-per-cpu=6gb
 #SBATCH --time=05:00:00
-#SBATCH -o ./recombine/recombine_ha_%A_%a.o
-#SBATCH -e ./recombine/recombine_ha_%A_%a.e
+#SBATCH -o ./output/recombine_ws_%A_%a.o
+#SBATCH -e ./output/recombine_ws_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
-#SBATCH --array=1-8
+#SBATCH --array=1
 
 conda activate himalaya
 
@@ -20,10 +20,12 @@ echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 ID=$((SLURM_ARRAY_TASK_ID-1))
 ALIGN="ha_common" # "ws" "ha_common"
 ANALYSIS="single"  # 'moten', 'base', 'pca'
+features="bg moten" # "actions moten" "agents moten"
 PC=40
 
 python ${MAINDIR}/recombine_vertices_single.py \
 --slurm-id ${ID} \
 --align ${ALIGN} \
 --analysis ${ANALYSIS} \
+-f ${features} \
 --pca ${PC}
