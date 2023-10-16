@@ -592,8 +592,7 @@ print(f"Weight matrix shape: {ridge.coef_.shape}")
 if roi:
     ridge_coef = reinsert_vertices(ridge_coef, roi_shape, roi_coords)
 
-np.save(f'{save_dir}/ridge-coef_pca-{n_components}_align-{alignment}_{test_subject}_'
-#np.save(f'{save_dir}/ridge-coef_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/ridge-coef_feature-{''.join(features)}_pca-{n_components}_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         ridge_coef)
 
@@ -610,10 +609,10 @@ if roi:
     test_comb_save = reinsert_vertices(test_comb, roi_shape, roi_coords)
     test_split_save = {f: reinsert_vertices(s, roi_shape, roi_coords)
                        for f, s in test_split_save.items()}
-np.save(f'{save_dir}/comb-pred_pca-{n_components}_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/comb-pred_feature-{''.join(features)}_pca-{n_components}_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         test_comb_save)
-np.save(f'{save_dir}/split-pred_pca-{n_components}_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/split-pred_feature-{''.join(features)}_pca-{n_components}_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         test_split_save)
 
@@ -627,10 +626,10 @@ if roi:
     split_r = {f: reinsert_vertices(s, roi_shape, roi_coords)
                for f, s in split_r.items()}
 
-np.save(f'{save_dir}/comb-r_pca-{n_components}_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/comb-r_feature-{''.join(features)}_pca-{n_components}_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         comb_r)
-np.save(f'{save_dir}/split-r_pca-{n_components}_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/split-r_feature-{''.join(features)}_pca-{n_components}_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         split_r)
 
@@ -644,10 +643,10 @@ if roi:
     split_r2 = {f: reinsert_vertices(s, roi_shape, roi_coords)
                 for f, s in split_r2.items()}
 
-np.save(f'{save_dir}/comb-r2_pca-{n_components}_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/comb-r2_feature-{''.join(features)}_pca-{n_components}_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         comb_r2)
-np.save(f'{save_dir}/split-r2_pca-{n_components}_align-{alignment}_{test_subject}_'
+np.save(f'{save_dir}/split-r2_feature-{''.join(features)}_pca-{n_components}_align-{alignment}_{test_subject}_'
         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
         split_r2)
         
