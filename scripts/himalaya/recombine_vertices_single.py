@@ -12,21 +12,25 @@ parser.add_argument("--align", choices=['aa', 'ws', 'ha_common'],
                     type=str, help="specify alignment of anatomical, within subject, or hyperalignment common")
 parser.add_argument("--analysis",  choices=['moten', 'base', 'pca', 'single'],
                     type=str, help="features: 1) using base 300 features 2) PC extracted features 3) PC extracted features + motion energy")
+parser.add_argument("-f", "--features", nargs="*", type=str,
+                    default=['bg', 'actions', 'agents'],
+                    help="specify one or more feature spaces")
 parser.add_argument("--pca", choices=[40, 60],
                     type=int, help="number of pcs")
 args = parser.parse_args()
 
 index = args.slurm_id # 'ws', 'aa', 'ha_test', 'ha_common'
 alignment = args.align # 'lh' or 'rh'
+features = args.features # e.g. ['bg', 'actions', 'agents', 'moten'] 
 analysis_type = args.analysis
-pca = args.pca
-
+n_components = args.pca
+pca = n_components
 
 # alignment = sys.argv[2]
 # analysis_type = 'moten' # 'moten', 'base', 'pca'
-# pca = 40
-alignment_pca = f'{alignment}_pca-{pca}'
-stack_dir = os.path.join(main_dir, 'results', 'himalaya', analysis_type, alignment_pca)
+
+# stack_dir = os.path.join(main_dir, 'results', 'himalaya', analysis_type, alignment_pca)
+stack_dir = os.path.join(main_dir, 'results', 'himalaya', f'single-{"".join(features)}', f'{alignment}_pca-{n_components}')
 n_splits = 40
 # index = int(sys.argv[1])
 result_list = [ 'ridge-coef', 'split-r',  'comb-r', 'comb-r2', 'comb-pred', 'split-pred','split-r2']
@@ -46,26 +50,27 @@ for test_subject in subjects:
     for test_run in runs:
         for hemisphere in hemis:
             if 'split' in result:
-                stack_data = {'bg': [], 'moten': []} #  'actions': [], 'agents': [],
+                stack_data = {k: [] for k in features}
+                # stack_data = {'bg': [], 'moten': []} #  'actions': [], 'agents': [],
                 for split in np.arange(n_splits):
-                    split_data = np.load(f'{stack_dir}/{result}_pca-{pca}_align-{alignment}_{test_subject}_run-{test_run}_roi-{split}_hemi-{hemisphere}.npy', allow_pickle=True).item()
-                    for feature in stack_data:
+                    split_data = np.load(f'{stack_dir}/{result}_feature-{"".join(features)}_pca-{pca}_align-{alignment}_{test_subject}_run-{test_run}_roi-{split}_hemi-{hemisphere}.npy', allow_pickle=True).item()
+                    for feature in features:
                         stack_data[feature].append(split_data[feature])
 
-                for feature in stack_data:
+                for feature in features:
                     split_result = f"{feature}-{result.split('-')[1]}"
-                    split_f = (f'{stack_dir}/{split_result}_feature-{##stack_data.keys join}_pca-{pca}_align-{alignment}_{test_subject}_run-{test_run}_hemi-{hemisphere}.npy')
+                    split_f = (f'{stack_dir}/{split_result}_feature-{"".join(features)}_pca-{pca}_align-{alignment}_{test_subject}_run-{test_run}_hemi-{hemisphere}.npy')
                     stack_result = np.concatenate(stack_data[feature], axis=1)
                     print(f"stack_data shape: {stack_result.shape}")
                     np.save(split_f, stack_result)
             else:
                 stack_data = []
                 for split in np.arange(n_splits):
-                    split_data = np.load(f'{stack_dir}/{result}_pca-{pca}_align-{alignment}_{test_subject}_run-{test_run}_roi-{split}_hemi-{hemisphere}.npy')
+                    split_data = np.load(f'{stack_dir}/{result}_feature-{"".join(features)}_pca-{pca}_align-{alignment}_{test_subject}_run-{test_run}_roi-{split}_hemi-{hemisphere}.npy')
                     stack_data.append(split_data)
                 stack_data = np.concatenate(stack_data, axis =1) #check this for multidim data
                 print(f"stack_data shape: {stack_data.shape}")
-                np.save(f"{stack_dir}/{result}_pca-{pca}_align-{alignment}_{test_subject}_run-{test_run}_hemi-{hemisphere}.npy", stack_data)
+                np.save(f"{stack_dir}/{result}_feature-{''.join(features)}_pca-{pca}_align-{alignment}_{test_subject}_run-{test_run}_hemi-{hemisphere}.npy", stack_data)
 
             ## SAVE AS NP ARRAY AND GIFTI
-            print(f"finished recomining vertices: {test_subject} testrun-{test_run} {hemisphere}")
+            print(f"finished recombining vertices {''.join(features)}: {test_subject} testrun-{test_run} {hemisphere}")
