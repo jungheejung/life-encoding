@@ -9,7 +9,7 @@
 #SBATCH -e ./output/recombine_ws_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
-#SBATCH --array=1
+#SBATCH --array=1-50
 
 conda activate himalaya
 
