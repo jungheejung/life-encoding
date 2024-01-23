@@ -23,7 +23,7 @@ ANALYSIS="moten"  # 'moten', 'base', 'pca'
 features="bg moten" # "actions moten" "agents moten"
 PC=40
 
-python ${MAINDIR}/recombine_vertices_moten.py \
+python ${MAINDIR}/recombine_vertices_single.py \
 --slurm-id ${ID} \
 --align ${ALIGN} \
 --analysis ${ANALYSIS} \
