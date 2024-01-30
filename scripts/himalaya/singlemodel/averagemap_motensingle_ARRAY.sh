@@ -16,13 +16,12 @@ MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya
 echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 
 # Subtract one to get python indexing
-# ID=$((SLURM_ARRAY_TASK_ID-1))
+ID=$((SLURM_ARRAY_TASK_ID-1))
 ALIGN="ha_common"
-#"/moten/ha_common_pca-40" #aa ws
 PCA=40
-# ANALYSIS="moten" # "pca"
 FEATURES="bg moten" # "actions moten" "agents moten"
 python ${MAINDIR}/singlemodel/average_maps_motensingle.py \
+--index ${ID} \
 --align ${ALIGN} \
 --pca ${PCA} \
 -f ${FEATURES} \
