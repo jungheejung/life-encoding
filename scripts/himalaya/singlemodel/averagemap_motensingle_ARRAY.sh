@@ -22,7 +22,7 @@ ALIGN="ha_common"
 PCA=40
 # ANALYSIS="moten" # "pca"
 FEATURES="bg moten" # "actions moten" "agents moten"
-python ${MAINDIR}/average_maps_motensingle.py \
+python ${MAINDIR}/singlemodel/average_maps_motensingle.py \
 --align ${ALIGN} \
 --pca ${PCA} \
 -f ${FEATURES} \
