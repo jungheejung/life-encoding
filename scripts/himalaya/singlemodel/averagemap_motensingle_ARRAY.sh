@@ -9,7 +9,7 @@
 #SBATCH -e ./output/moten40_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
-
+#SBATCH --array=1-20
 conda activate himalaya
 
 MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya
