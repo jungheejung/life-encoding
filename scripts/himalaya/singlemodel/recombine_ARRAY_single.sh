@@ -23,7 +23,7 @@ ANALYSIS="single"  # 'moten', 'base', 'pca'
 features="agents moten" # "actions moten" "agents moten"
 PC=40
 
-python ${MAINDIR}/recombine_vertices_single.py \
+python ${MAINDIR}/singlemodel/recombine_vertices_single.py \
 --slurm-id ${ID} \
 --align ${ALIGN} \
 --analysis ${ANALYSIS} \
