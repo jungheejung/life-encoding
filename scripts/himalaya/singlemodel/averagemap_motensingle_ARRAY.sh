@@ -1,6 +1,6 @@
 #!/bin/bash -l
 
-#SBATCH --job-name=life-himalaya
+#SBATCH --job-name=averagefeature
 #SBATCH --nodes=1
 #SBATCH --ntasks=8
 #SBATCH --mem-per-cpu=8gb
@@ -9,7 +9,7 @@
 #SBATCH -e ./output/moten40_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
-#SBATCH --array=1-20
+#SBATCH --array=1-50
 conda activate himalaya
 
 MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya
@@ -19,9 +19,9 @@ echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 ID=$((SLURM_ARRAY_TASK_ID-1))
 ALIGN="ha_common"
 PCA=40
-FEATURES="bg moten" # "actions moten" "agents moten"
+FEATURES="agents moten" # "actions moten" "agents moten"
 python ${MAINDIR}/singlemodel/average_maps_motensingle.py \
---index ${ID} \
+--slurm-id ${ID} \
 --align ${ALIGN} \
 --pca ${PCA} \
 -f ${FEATURES} \
