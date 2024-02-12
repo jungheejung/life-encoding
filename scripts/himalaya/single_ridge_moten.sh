@@ -1,15 +1,16 @@
 #!/bin/bash -l
 
-#SBATCH --job-name=single_bg
+#SBATCH --job-name=single_agents
 #SBATCH --nodes=1
 #SBATCH --ntasks=8
 #SBATCH --mem-per-cpu=8gb
 #SBATCH --time=00:30:00
-#SBATCH -o ./log_bgmoten/hac_%A_%a.o
-#SBATCH -e ./log_bgmoten/hac_%A_%a.e
+#SBATCH -o ./log_agentsmoten/hac_%A_%a.o
+#SBATCH -e ./log_agentsmoten/hac_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
-#SBATCH --array=1-5750%50
+#SBATCH --array=4129,4139,4142
+###SBATCH --array=1-5750%50
 # Vertices are split into chunks 0-39
 
 
@@ -36,7 +37,7 @@ roi=$(echo $INFILE | cut -f4 -d,)
 
 # Set command line arguments for banded_ridge.py
 alignment="ha_common" # ws, aa, ha_common, ha_test
-features="bg moten" # "actions moten" "agents moten"
+features="agents moten" # "actions moten" "agents moten" "bg moten"
 
 echo ${subject} ${hemisphere} ${test_run} ${roi}
 python ${MAINDIR}/single_ridge_moten.py -a ${alignment} --hemisphere ${hemisphere} --test-run ${test_run} -s ${subject} -f ${features} --roi ${roi}
