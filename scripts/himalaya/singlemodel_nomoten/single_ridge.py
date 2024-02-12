@@ -88,7 +88,7 @@ roi = args.roi # e.g. 'vt', '0'
 
 # Created save dir based on alignment
 save_dir = os.path.join(main_dir, 'results', 'himalaya', f'single-{"".join(features)}', f'{alignment}_pca-{n_components}')
-#save_dir = os.path.join(main_dir, 'results', 'himalaya', alignment)
+
 # Create save directory if it doesn't exist
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
@@ -656,7 +656,4 @@ print(f'Mean test R2: {np.nanmean(comb_r2):.03f}')
 end = time.time()
 total_time = end - start
 print(f"total_time: {total_time}")    
-# TODO: SAVE ALPHAS?
-# np.save(f'{save_dir}/split-r2_pca-{n_components}_align-{alignment}_{test_subject}_'
-#         f'run-{test_run}_roi-{roi}_hemi-{hemisphere}.npy',
-#         split_r2)
+

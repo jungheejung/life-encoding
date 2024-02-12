@@ -36,7 +36,7 @@ roi=$(echo $INFILE | cut -f4 -d,)
 
 # Set command line arguments for banded_ridge.py
 alignment="ha_common" # ws, aa, ha_common, ha_test
-features="bg moten" # "actions moten" "agents moten"
+features="agents" # "actions moten" "agents moten"
 
 echo ${subject} ${hemisphere} ${test_run} ${roi}
-python ${MAINDIR}/single_ridge_moten.py -a ${alignment} --hemisphere ${hemisphere} --test-run ${test_run} -s ${subject} -f ${features} --roi ${roi}
+python ${MAINDIR}/single_ridge.py -a ${alignment} --hemisphere ${hemisphere} --test-run ${test_run} -s ${subject} -f ${features} --roi ${roi}
