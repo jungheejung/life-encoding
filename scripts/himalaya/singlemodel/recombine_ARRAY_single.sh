@@ -20,7 +20,7 @@ echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 ID=$((SLURM_ARRAY_TASK_ID-1))
 ALIGN="ha_common" # "ws" "ha_common"
 ANALYSIS="single"  # 'moten', 'base', 'pca'
-features="agents moten" # "actions moten" "agents moten"
+features="agents moten" # "actions moten" "agents moten" "bg moten"
 PC=40
 
 python ${MAINDIR}/singlemodel/recombine_vertices_single.py \
