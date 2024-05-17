@@ -47,8 +47,8 @@ subjects = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006',
             'sub-rid000037', 'sub-rid000038', 'sub-rid000041']
 
 tr = 2.5
-# model_durs = {1: 369, 2: 341, 3: 372, 4: 406}
-model_durs = {1: 369, 2: 341, 3: 372, 4: 381} 
+model_durs = {1: 369, 2: 341, 3: 372, 4: 406}
+# model_durs = {1: 369, 2: 341, 3: 372, 4: 381} 
 fmri_durs = {1: 374, 2: 346, 3: 377, 4: 412} # 385 8< 
 n_samples = np.sum(list(fmri_durs.values()))
 n_vertices = 40962
@@ -103,10 +103,10 @@ test_run = 1
 test_run_id = 0
 train_runs = [2,3,4]
 test_subject = 'sub-rid000005'
-model_dir = '/dartfs/rc/lab/D/DBIC/DBIC/life_data/cara/cara/w2v/new_annotations'
+# model_dir = '/dartfs/rc/lab/D/DBIC/DBIC/life_data/cara/cara/w2v/new_annotations'
 features = ['bg', 'actions', 'agents', 'moten'] 
 roi = 'MT_one' #'AIP_one' # MT_one AIP_one FFC_one
-save_dir = os.path.join(main_dir, 'results', 'himalaya', f"roitest_{roi}_newannot_3tr", f'{alignment}_pca-{n_components}')
+save_dir = os.path.join(main_dir, 'results', 'himalaya', f"roitest_{roi}_data", f'{alignment}_pca-{n_components}')
 # Create save directory if it doesn't exist
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
@@ -215,14 +215,20 @@ def load_model(model_f, train_runs, test_run, model_durs,
         n_wide = train_run.shape[1]
 
         train_cat = np.full((n_trs + lags[-1], n_wide * len(lags)), np.nan)
-        train_cat[lags[0]:n_trs + lags[0], n_wide * (lags[0] - 1):n_wide * lags[0]] = train_run
-        train_cat[lags[1]:n_trs + lags[1], n_wide * (lags[1] - 1):n_wide * lags[1]] = train_run
-        train_cat[lags[2]:n_trs + lags[2], n_wide * (lags[2] - 1):n_wide * lags[2]] = train_run
-        train_cat[lags[3]:n_trs + lags[3], n_wide * (lags[3] - 1):n_wide * lags[3]] = train_run   
-
+        # train_cat[lags[0]:n_trs + lags[0], n_wide * (lags[0] - 1):n_wide * lags[0]] = train_run
+        # train_cat[lags[1]:n_trs + lags[1], n_wide * (lags[1] - 1):n_wide * lags[1]] = train_run
+        # train_cat[lags[2]:n_trs + lags[2], n_wide * (lags[2] - 1):n_wide * lags[2]] = train_run
+        # train_cat[lags[3]:n_trs + lags[3], n_wide * (lags[3] - 1):n_wide * lags[3]] = train_run   
+        train_cat[lags[0]:n_trs + lags[0], n_wide * 0:n_wide * 1] = train_run
+        train_cat[lags[1]:n_trs + lags[1], n_wide * 1:n_wide * 2] = train_run
+        train_cat[lags[2]:n_trs + lags[2], n_wide * 2:n_wide * 3] = train_run
+        train_cat[lags[3]:n_trs + lags[3], n_wide * 3:n_wide * 4] = train_run 
         # TODO: standard scaler
-
+        # train_cats = train_cat
+        train_cat = train_cat[:-1]
         train_cats.append(train_cat)
+        # train_cats.append(train_cat[:-2])
+        # train_cats.append(train_cat)
         train_durs[r] = train_cat.shape[0]
         print(f"Train model run {r} shape:"
               f"\n\toriginal {train_run.shape} -> lagged {train_cat.shape}")
@@ -237,14 +243,21 @@ def load_model(model_f, train_runs, test_run, model_durs,
     #                              test_model[lags[-4] - 1:-lags[3]]), axis=1)
     n_trs = test_model.shape[0]
     test_cat = np.full((n_trs + lags[-1], n_wide * len(lags)), np.nan)
-    test_cat[lags[0]:n_trs + lags[0], n_wide * (lags[0] - 1):n_wide * lags[0]] = test_model
-    test_cat[lags[1]:n_trs + lags[1], n_wide * (lags[1] - 1):n_wide * lags[1]] = test_model
-    test_cat[lags[2]:n_trs + lags[2], n_wide * (lags[2] - 1):n_wide * lags[2]] = test_model
-    test_cat[lags[3]:n_trs + lags[3], n_wide * (lags[3] - 1):n_wide * lags[3]] = test_model
+    # test_cat[lags[0]:n_trs + lags[0], n_wide * (lags[0] - 1):n_wide * lags[0]] = test_model
+    # test_cat[lags[1]:n_trs + lags[1], n_wide * (lags[1] - 1):n_wide * lags[1]] = test_model
+    # test_cat[lags[2]:n_trs + lags[2], n_wide * (lags[2] - 1):n_wide * lags[2]] = test_model
+    # test_cat[lags[3]:n_trs + lags[3], n_wide * (lags[3] - 1):n_wide * lags[3]] = test_model
+    test_cat[lags[0]:n_trs + lags[0], n_wide * 0:n_wide * 1] = test_model
+    test_cat[lags[1]:n_trs + lags[1], n_wide * 1:n_wide * 2] = test_model
+    test_cat[lags[2]:n_trs + lags[2], n_wide * 2:n_wide * 3] = test_model
+    test_cat[lags[3]:n_trs + lags[3], n_wide * 3:n_wide * 4] = test_model
     # Z-score each model run separately
     # test_model = zscore(test_model, axis=0)
     # test_model = zscore(test_cat, axis=0)
+    test_cat = test_cat[:-1]
     test_model = np.nan_to_num(scaler.transform(test_cat))
+    # test_model = np.nan_to_num(scaler.transform(test_cat[:-2]))
+    # test_model = np.nan_to_num(scaler.transform(test_cat))
     print("Concatenated training model shape:", train_model.shape,
           f"\nTest model run {test_run} shape:", test_model.shape)
 
@@ -348,8 +361,8 @@ def load_aa_data(test_subject, test_run, train_runs,
             
             # Populating training subjects for averaging
             train_mean.append(run_data)
-            print(f"Loaded training run {train_run} for training "
-                  f"subject {train_subject}")
+            # print(f"Loaded training run {train_run} for training "
+                #   f"subject {train_subject}")
 
         # Average training subjects and z-score
         train_mean = np.mean(train_mean, axis=0)
@@ -500,7 +513,8 @@ def load_ha_common_data(test_subject, test_run, train_runs,
                                f'{fmri_durs[train_run]}vol_run-'
                                f'{train_run:02d}_'
                                f'desc-HAcommon{test_run}.'
-                               f'{hemisphere}.gii')))[0, 2:-25, :]
+                               f'{hemisphere}.gii')))[0, 2:-1, :]
+                            #    f'{hemisphere}.gii')))[0, 2:-26, :]
                             #    f'{hemisphere}.gii')))[0, :-27, :]
                             #    f'{hemisphere}.gii')))[0, :-2, :]
                             #    f'{hemisphere}.gii')))[0, 3:-7, :]
@@ -546,7 +560,8 @@ def load_ha_common_data(test_subject, test_run, train_runs,
                        f'{fmri_durs[test_run]}vol_run-'
                        f'{test_run:02d}_'
                        f'desc-HAcommon{test_run}.'
-                       f'{hemisphere}.gii')))[0, 2:-25, :]
+                       f'{hemisphere}.gii')))[0, 2:-1, :]
+                    #    f'{hemisphere}.gii')))[0, 2:-26, :]
                     #    f'{hemisphere}.gii')))[0, :-27, :]
                     #    f'{hemisphere}.gii')))[0, :-2, :]
                     #    f'{hemisphere}.gii')))[0, 3:-7, :]
