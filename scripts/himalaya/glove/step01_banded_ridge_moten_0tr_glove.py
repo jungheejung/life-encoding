@@ -91,12 +91,13 @@ test_subject = args.test_subject # e.g. 'sub-rid000005'
 features = args.features # e.g. ['bg', 'actions', 'agents'] 
 roi = args.roi # e.g. 'vt', '0'
 # lag_test = args.lag
-save_dir = os.path.join(main_dir, 'results', 'himalaya', f"glove", f'{alignment}_pca-{n_components}')
+save_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove', f'{alignment}_pca-{n_components}')
 # Create save directory if it doesn't exist
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 # Created save dir based on alignment
 
+print(f"saved here: {save_dir}")
 ###############################
 # main_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding'
 # alignment = 'ha_common'
