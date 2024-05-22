@@ -14,6 +14,7 @@ from himalaya.scoring import correlation_score, r2_score
 import nibabel as nib
 import matplotlib.pyplot as plt
 import json
+from os.path import join
 import pathlib
 
 start = time.time()
@@ -36,8 +37,8 @@ hyper_dir = os.path.join(data_dir, 'hyperalign_mapper')
 fmri_dir = os.path.join(data_dir, 'life_dataset')
 
 # Semantic model directory (/idata/DBIC/cara/w2v/w2v_features)
-model_dir = os.path.join(data_dir, 'w2v_feature')
-
+# model_dir = os.path.join(data_dir, 'w2v_feature')
+model_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/data/annotations/glove'
 # Set up some hard-coded experiment variables
 subjects = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006',
             'sub-rid000009', 'sub-rid000012', 'sub-rid000014',
@@ -47,8 +48,8 @@ subjects = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006',
             'sub-rid000037', 'sub-rid000038', 'sub-rid000041']
 
 tr = 2.5
-# model_durs = {1: 369, 2: 341, 3: 372, 4: 406}
-model_durs = {1: 369, 2: 341, 3: 372, 4: 381} 
+model_durs = {1: 369, 2: 341, 3: 372, 4: 406}
+# model_durs = {1: 369, 2: 341, 3: 372, 4: 381} 
 fmri_durs = {1: 374, 2: 346, 3: 377, 4: 412} # 385 8< 
 n_samples = np.sum(list(fmri_durs.values()))
 n_vertices = 40962
@@ -103,10 +104,10 @@ test_run = 1
 test_run_id = 0
 train_runs = [2,3,4]
 test_subject = 'sub-rid000005'
-model_dir = '/dartfs/rc/lab/D/DBIC/DBIC/life_data/cara/cara/w2v/new_annotations'
+model_dir = join(main_dir, 'data/annotations/glove')
 features = ['bg', 'actions', 'agents', 'moten'] 
-roi = 'MT_one' #'AIP_one' # MT_one AIP_one FFC_one
-save_dir = os.path.join(main_dir, 'results', 'himalaya', f"roitest_{roi}_newannot_3tr", f'{alignment}_pca-{n_components}')
+roi = 'FFC_one' # MT_one AIP_one FFC_one
+save_dir = os.path.join(main_dir, 'results', 'himalaya', f"roitest_{roi}_glove", f'{alignment}_pca-{n_components}')
 # Create save directory if it doesn't exist
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
@@ -500,10 +501,8 @@ def load_ha_common_data(test_subject, test_run, train_runs,
                                f'{fmri_durs[train_run]}vol_run-'
                                f'{train_run:02d}_'
                                f'desc-HAcommon{test_run}.'
-                               f'{hemisphere}.gii')))[0, 2:-25, :]
-                            #    f'{hemisphere}.gii')))[0, :-27, :]
-                            #    f'{hemisphere}.gii')))[0, :-2, :]
-                            #    f'{hemisphere}.gii')))[0, 3:-7, :]
+                               f'{hemisphere}.gii')))[0, :-2, :]
+
             
             else:
                 run_data = read_gifti(os.path.join(
@@ -511,9 +510,8 @@ def load_ha_common_data(test_subject, test_run, train_runs,
                                f'{fmri_durs[train_run]}vol_run-'
                                f'{train_run:02d}_'
                                f'desc-HAcommon{test_run}.'
-                               f'{hemisphere}.gii')))[0, 2:, :]
-                            #    f'{hemisphere}.gii')))[0, :-1, :]
-                            #    f'{hemisphere}.gii')))[0, 3:-6, :]
+                               f'{hemisphere}.gii')))[0, :-1, :]
+
 
             # Extract cortical vertices (or ROI) for training runs
             run_data = run_data[:, cortical_vertices]
@@ -546,10 +544,8 @@ def load_ha_common_data(test_subject, test_run, train_runs,
                        f'{fmri_durs[test_run]}vol_run-'
                        f'{test_run:02d}_'
                        f'desc-HAcommon{test_run}.'
-                       f'{hemisphere}.gii')))[0, 2:-25, :]
-                    #    f'{hemisphere}.gii')))[0, :-27, :]
-                    #    f'{hemisphere}.gii')))[0, :-2, :]
-                    #    f'{hemisphere}.gii')))[0, 3:-7, :]
+                       f'{hemisphere}.gii')))[0, :-2, :]
+
         
     else:
         test_data = read_gifti(os.path.join(
@@ -557,9 +553,8 @@ def load_ha_common_data(test_subject, test_run, train_runs,
                        f'{fmri_durs[test_run]}vol_run-'
                        f'{test_run:02d}_'
                        f'desc-HAcommon{test_run}.'
-                       f'{hemisphere}.gii')))[0, 2:, :]
-                    #    f'{hemisphere}.gii')))[0, :-1, :]
-                    #    f'{hemisphere}.gii')))[0, 3:-6, :]
+                       f'{hemisphere}.gii')))[0, :-1, :]
+
 
     # Extract cortical vertices (or ROI) for test run
     test_data = test_data[:, cortical_vertices]
