@@ -16,17 +16,17 @@
 conda activate himalaya
 
 ### FIX THIS
-MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya
+MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding
 echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 
 # Subtract one to get python indexing
 ID=$((SLURM_ARRAY_TASK_ID-1))
-NUMBERS=$(sed -n "1p" ${MAINDIR}/slurm_array.txt)
+NUMBERS=$(sed -n "1p" ${MAINDIR}/scripts/himalaya/slurm_array.txt)
 IFS=',' read -ra NUMBER_ARRAY <<< "$NUMBERS"
 #ID=$((NUMBER_ARRAY[${SLURM_ARRAY_TASK_ID}]-1))
 echo ${ID}
 # Use slurm_array.sh file to set parameters
-ARRAY_FILE="${MAINDIR}/slurm_array.txt"
+ARRAY_FILE="${MAINDIR}/scripts/himalaya/slurm_array.txt"
 echo ${ARRAY_FILE}
 INFILE=`awk -F "," -v RS="\n" "NR==${ID}" ${ARRAY_FILE}`
 subject=$(echo $INFILE | cut -f1 -d,)
@@ -39,7 +39,7 @@ alignment="ha_common" # ws, aa, ha_common, ha_test
 features="bg actions agents moten"
 
 echo ${subject} ${hemisphere} ${test_run} ${roi}
-python ${MAINDIR}/glove/step01_banded_ridge_moten_0tr_glove.py \
+python ${MAINDIR}/scripts/himalaya/glove/step01_banded_ridge_moten_0tr_glove.py \
 --maindir ${MAINDIR} \
 -a ${alignment} \
 --hemisphere ${hemisphere} \
