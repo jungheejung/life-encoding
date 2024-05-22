@@ -106,7 +106,7 @@ train_runs = [2,3,4]
 test_subject = 'sub-rid000005'
 model_dir = join(main_dir, 'data/annotations/glove')
 features = ['bg', 'actions', 'agents', 'moten'] 
-roi = 'FFC_one' # MT_one AIP_one FFC_one
+roi = 'VMV_one' # MT_one AIP_one FFC_one PHG_one V1_one VMV_one
 save_dir = os.path.join(main_dir, 'results', 'himalaya', f"roitest_{roi}_glove", f'{alignment}_pca-{n_components}')
 # Create save directory if it doesn't exist
 if not os.path.exists(save_dir):
