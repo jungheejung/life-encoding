@@ -56,7 +56,7 @@ n_medial = {'lh': 3486, 'rh': 3491}
 n_blocks = 3 #20# 8 hr instead of 30 min ... break up n_vertices
 model_ndim = 300
 run_labels = [1, 2, 3, 4]
-roi_json = os.path.join('/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya', 'rois_test.json')
+roi_json = os.path.join('/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya', 'rois.json')
 
 # Parameters for optional PCA
 run_pca = True

@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 import gensim.downloader
 from nltk.corpus import stopwords
+from pathlib import Path
+from os.path import join
 
 # cara_data_dir = '/idata/DBIC/cara/life'
 tr_dict = {1:369, 2:341, 3:372, 4:406}
@@ -55,6 +57,14 @@ class TextLabeler():
         for _dict in lod:
             self.text = self.replace_kv(_dict)
         return self.text
+
+def make_list(file):
+    with open(file, 'rb') as f:
+        # reader = csv.reader(f)
+        reader = pd.read_csv(f, header=None)
+        nested = list(reader[0])
+    return nested #[word for f in nested for word in f]
+
 
 # lod = [{'deer':'dear'}, {'squawking':'squaking'}, {'highspeed':'high-speed'}, {'birdcall':'bird noise'}, {'':'noises'}, {'':'noise'}, \
 #     {'':'vocalizations'}, {'':'vocalization'}, {'':'sound'}, {'':'narration'}, \
@@ -171,20 +181,18 @@ for word in filtered_unique:
 goog = create_w2v(filtered_words)
 
 np.save('/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/data/annotations/glove/visual_all.npy', goog)
-def make_list(file):
-    with open(file, 'rb') as f:
-        # reader = csv.reader(f)
-        reader = pd.read_csv(f, header=None)
-        nested = list(reader[0])
-    return nested #[word for f in nested for word in f]
 
 
 print('Data through initial processing, see proc')
+stim_savedir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/data/annotations/filtered_stim'
+Path(stim_savedir).mkdir(parents=True, exist_ok=True)
 for cat in os.listdir(cat_dir):
     if 'csv' in cat:
         filt = make_list(os.path.join(cat_dir, cat))
         # filtered_stim = [[word for word in tr if word in filt] for tr in proc]
         filtered_stim = [[word for word in tr if word in filt] for tr in filtered_words]
+
+        pd.DataFrame(filtered_stim).to_csv(join(stim_savedir, cat))
         glove_features = create_w2v(filtered_stim)
         # np.save('/idata/DBIC/cara/w2v/new_annotations/{0}.npy'.format(cat.split('.')[0]), goog)
         np.save('/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/data/annotations/glove/{0}.npy'.format(cat.split('.')[0]), glove_features)
