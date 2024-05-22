@@ -9,7 +9,8 @@
 #SBATCH -e ./log_glove/hac_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
-#SBATCH --array=1-5750%50
+#SBATCH --array=1-5
+##750%50
 # Vertices are split into chunks 0-39
 
 
