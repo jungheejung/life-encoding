@@ -5,8 +5,8 @@
 #SBATCH --ntasks=8
 #SBATCH --mem-per-cpu=8gb
 #SBATCH --time=01:00:00
-#SBATCH -o ./output/moten40_%A_%a.o
-#SBATCH -e ./output/moten40_%A_%a.e
+#SBATCH -o ./log_glove/moten40_%A_%a.o
+#SBATCH -e ./log_glove/moten40_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
 #SBATCH --array=1-20%5 
@@ -14,7 +14,7 @@
 
 conda activate himalaya
 
-MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya
+MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya/glove
 echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 
 # Subtract one to get python indexing
