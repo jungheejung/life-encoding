@@ -9,14 +9,14 @@
 #SBATCH -e ./log_agents/hac_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
-#SBATCH --array=1-5750%50
+#SBATCH --array=4-5750%50
 # Vertices are split into chunks 0-39
 
 
 conda activate himalaya
 
 ### FIX THIS
-MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya
+MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding
 echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 
 # Subtract one to get python indexing
@@ -26,7 +26,7 @@ ID=$((SLURM_ARRAY_TASK_ID-1))
 #ID=$((NUMBER_ARRAY[${SLURM_ARRAY_TASK_ID}]-1))
 echo ${ID}
 # Use slurm_array.sh file to set parameters
-ARRAY_FILE=${MAINDIR}/slurm_array.txt
+ARRAY_FILE="${MAINDIR}/scripts/himalaya/singlemodel_nomoten/slurm_array.txt"
 echo ${ARRAY_FILE}
 INFILE=`awk -F "," -v RS="\n" "NR==${ID}" ${ARRAY_FILE}`
 subject=$(echo $INFILE | cut -f1 -d,)
@@ -39,4 +39,4 @@ alignment="ha_common" # ws, aa, ha_common, ha_test
 features="agents" # "actions moten" "agents moten"
 
 echo ${subject} ${hemisphere} ${test_run} ${roi}
-python ${MAINDIR}/single_ridge.py -a ${alignment} --hemisphere ${hemisphere} --test-run ${test_run} -s ${subject} -f ${features} --roi ${roi}
+python ${MAINDIR}/scripts/himalaya/singlemodel_nomoten/single_ridge.py -a ${alignment} --hemisphere ${hemisphere} --test-run ${test_run} -s ${subject} -f ${features} --roi ${roi}

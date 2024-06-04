@@ -23,7 +23,8 @@ user_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f000fb6'
 scratch_dir = os.path.join('/dartfs-hpc/scratch', user_dir)
 data_dir = '/dartfs/rc/lab/D/DBIC/DBIC/life_data/'
 current_dir = os.getcwd()
-main_dir = pathlib.Path(current_dir).parents[1]
+#main_dir = pathlib.Path(current_dir).parents[2]
+main_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding' 
 # Create scratch directory if it doesn't exist
 if not os.path.exists(scratch_dir):
     os.makedirs(scratch_dir)
