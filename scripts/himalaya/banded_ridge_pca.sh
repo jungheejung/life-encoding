@@ -9,7 +9,7 @@
 #SBATCH -e ./log_pca/hac_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
-#SBATCH --array=1-5750%50
+#SBATCH --array=1-2
 # Vertices are split into chunks 0-39
 ###SBATCH --array=1-5760%50 
 
@@ -21,7 +21,10 @@ MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya
 echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 
 # Subtract one to get python indexing
-ID=$((SLURM_ARRAY_TASK_ID-1))
+NUMBERS=$(sed -n "1p" output_pca_pca-40_align-ha_common.txt)
+IFS=',' read -ra NUMBER_ARRAY <<< "$NUMBERS"
+ID=$((NUMBER_ARRAY[${SLURM_ARRAY_TASK_ID}]-1))
+echo ${ID}
 
 # Use slurm_array.sh file to set parameters
 ARRAY_FILE=${MAINDIR}/slurm_array.txt
