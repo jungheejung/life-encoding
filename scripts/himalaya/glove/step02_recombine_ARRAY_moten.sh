@@ -13,7 +13,7 @@
 
 conda activate himalaya
 
-MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya
+MAINDIR="/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya/glove"
 echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 
 # Subtract one to get python indexing
@@ -22,7 +22,7 @@ ALIGN="ha_common" # "ws" "ha_common"
 ANALYSIS="glove"  # 'moten', 'base', 'pca' '0tr'
 PC=40
 
-python ${PWD}/s02_recombine_vertices_moten.py \
+python ${MAINDIR}/step02_recombine_vertices_moten.py \
 --slurm-id ${ID} \
 --align ${ALIGN} \
 --analysis ${ANALYSIS} \

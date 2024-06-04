@@ -5,8 +5,8 @@
 #SBATCH --ntasks=8
 #SBATCH --mem-per-cpu=8gb
 #SBATCH --time=01:00:00
-#SBATCH -o ./log_glove/moten40_%A_%a.o
-#SBATCH -e ./log_glove/moten40_%A_%a.e
+#SBATCH -o ./avg_glove/moten40_%A_%a.o
+#SBATCH -e ./avg_glove/moten40_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
 #SBATCH --array=1-20%5 
