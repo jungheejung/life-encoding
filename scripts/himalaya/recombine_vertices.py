@@ -4,7 +4,7 @@ import os, sys
 main_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding'
 alignment = sys.argv[2]
 stack_dir = os.path.join(main_dir, 'results', 'himalaya', alignment)
-n_splits = 40
+n_splits = 60
 index = int(sys.argv[1])
 result_list = [ 'ridge-coef', 'split-r',  'comb-r', 'comb-r2', 'comb-pred', 'split-pred']#'split-r2'
 result = result_list[index]

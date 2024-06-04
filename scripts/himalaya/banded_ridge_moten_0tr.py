@@ -94,16 +94,16 @@ save_dir = os.path.join(main_dir, 'results', 'himalaya', '0tr', f'{alignment}_pc
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 ###############################
-main_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding'
-alignment = 'ha_common'
-hemisphere = 'lh'
-test_run = 1
-test_run_id = 0
-train_runs = [2,3,4]
-test_subject = 'sub-rid000005'
-features = ['bg', 'actions', 'agents', 'moten'] 
-roi = 0
-save_dir = os.path.join(main_dir, 'results', 'himalaya', '0tr', f'{alignment}_pca-{n_components}')
+#main_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding'
+#alignment = 'ha_common'
+#hemisphere = 'lh'
+#test_run = 1
+#test_run_id = 0
+#train_runs = [2,3,4]
+#test_subject = 'sub-rid000005'
+#features = ['bg', 'actions', 'agents', 'moten'] 
+#roi = 0
+#save_dir = os.path.join(main_dir, 'results', 'himalaya', '0tr', f'{alignment}_pca-{n_components}')
 ###############################
 # Create mask of cortical vertices excluding medial wall    
 medial_mask = np.load(os.path.join(data_dir, 'niml',

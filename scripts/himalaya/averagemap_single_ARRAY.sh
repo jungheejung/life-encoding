@@ -22,5 +22,5 @@ ID=$((SLURM_ARRAY_TASK_ID-1))
 ALIGN="ha_common"
 #"/moten/ha_common_pca-40" #aa ws
 PCA=40
-ANALYSIS="pca" # "pca"
-python ${MAINDIR}/average_maps_moten.py ${ID} ${ALIGN} ${PCA} ${ANALYSIS}
+ANALYSIS="single" # "pca"
+python ${MAINDIR}/average_maps_single.py ${ID} ${ALIGN} ${PCA} ${ANALYSIS}
