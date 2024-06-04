@@ -9,6 +9,7 @@ import sys
 import nibabel as nib
 import numpy as np
 
+
 print("python version {0}".format(sys.version))
 # Assign/create directories
 user_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f000fb6'
@@ -20,7 +21,6 @@ hyper_dir = os.path.join(data_dir, 'hyperalign_mapper')
 
 # Life fMRI data directory (/idata/DBIC/snastase/life)
 fmri_dir = os.path.join(data_dir, 'life_dataset')
-
 # Set up some hard-coded experiment variables
 subjects = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006',
             'sub-rid000009', 'sub-rid000012', 'sub-rid000014',
@@ -28,7 +28,7 @@ subjects = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006',
             'sub-rid000027', 'sub-rid000031', 'sub-rid000032',
             'sub-rid000033', 'sub-rid000034', 'sub-rid000036',
             'sub-rid000037', 'sub-rid000038', 'sub-rid000041']
-hemispheres = ['lh', 'rh']
+hemispheres = [sys.argv[1]]# ['lh', 'rh']
 runs = [1, 2, 3, 4]
 test_runs = [1, 2, 3, 4]
 fmri_durs = {1: 374, 2: 346, 3: 377, 4: 412}
@@ -105,12 +105,12 @@ for hemisphere in hemispheres:
         for test_subject in subjects:
 
             # Get training runs excluding test run
-            train_subjects = [s for s in subjects if s != test_subject] 
-            for train_subject in train_subjects:       
+            #train_subjects = [s for s in subjects if s != test_subject] 
+            for subject in subjects:#train_subjects:       
 		for run in runs: 
 		# TODO add [run] for every eleemnt
                 # Reverse-project training subject into test subject space
-                    run_test = mappers[test_subject].reverse(common_data[train_subject][run])
+                    run_test = mappers[test_subject].reverse(common_data[subject][run])
                     #print("life 109: run_test {0}".format(run_test.shape))
 		    print("check nans run_test mappers {0}".format(np.sum(np.all(np.isnan(np.squeeze(run_test)), axis=0))))
                 #TODO: NEED TEST SUBJECT LABEL IN FILENAME????
@@ -118,6 +118,6 @@ for hemisphere in hemispheres:
                     write_gifti(run_test, os.path.join(fmri_dir,
                     ('{0}_task-life_acq-{1}vol_run-0{2}_'
                      'desc-HAtestR{3}{4}.{5}.gii').format(
-                        train_subject, fmri_durs[run], run,
+                        subject, fmri_durs[run], run,
                         test_run, test_subject.split('-')[-1], hemisphere)), tproject_gii)
-                print("finished projecting train_subject-{0} back to test-subject-{1}".format(train_subject, test_subject))
+                print("finished projecting train_subject-{0} back to test-subject-{1}".format(subject, test_subject))
