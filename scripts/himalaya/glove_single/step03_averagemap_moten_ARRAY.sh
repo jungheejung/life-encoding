@@ -23,4 +23,6 @@ ALIGN="ha_common"
 #"/moten/ha_common_pca-40" #aa ws
 PCA=40
 ANALYSIS="glove_single" # "0tr" # "pca"
-python ${MAINDIR}/step03_average_maps_moten.py ${ID} ${ALIGN} ${PCA} ${ANALYSIS}
+FEATURES="bg moten" # "actions moten" "agents moten" "bg moten"
+
+python ${MAINDIR}/step03_average_maps_moten.py ${ID} ${ALIGN} ${PCA} ${FEATURES} ${ANALYSIS}
