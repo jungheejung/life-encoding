@@ -12,6 +12,8 @@ parser.add_argument("--align", choices=['aa', 'ws', 'ha_common'],
                     type=str, help="specify alignment of anatomical, within subject, or hyperalignment common")
 parser.add_argument("--analysis",  choices=['moten', 'base', 'pca', '0tr'],
                     type=str, help="features: 1) using base 300 features 2) PC extracted features 3) PC extracted features + motion energy 4) full moten but shifted TR")
+parser.add_argument("--features",  choices=["actions moten","agents moten", "bg moten"],
+                    type=str, help="combined features")
 parser.add_argument("--pca", choices=[40, 60],
                     type=int, help="number of pcs")
 args = parser.parse_args()
@@ -19,14 +21,12 @@ args = parser.parse_args()
 index = args.slurm_id # 'ws', 'aa', 'ha_test', 'ha_common'
 alignment = args.align # 'lh' or 'rh'
 analysis_type = args.analysis
+features = args.features
 pca = args.pca
 
-
-# alignment = sys.argv[2]
-# analysis_type = 'moten' # 'moten', 'base', 'pca'
-# pca = 40
 alignment_pca = f'{alignment}_pca-{pca}'
-stack_dir = os.path.join(main_dir, 'results', 'himalaya', analysis_type, alignment_pca)
+stack_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove_single', f'{"-".join(features)}', f'{alignment}_pca-{pca}')
+
 n_splits = 40
 # index = int(sys.argv[1])
 result_list = [ 'ridge-coef', 'split-r',  'comb-r', 'comb-r2', 'comb-pred', 'split-pred','split-r2']
