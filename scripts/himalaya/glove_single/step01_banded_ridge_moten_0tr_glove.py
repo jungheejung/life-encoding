@@ -91,7 +91,8 @@ test_subject = args.test_subject # e.g. 'sub-rid000005'
 features = args.features # e.g. ['bg', 'actions', 'agents'] 
 roi = args.roi # e.g. 'vt', '0'
 # lag_test = args.lag
-save_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove_single', f'{alignment}_pca-{n_components}')
+
+save_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove_single', f'{"-".join(features)}', f'{alignment}_pca-{n_components}')
 # Create save directory if it doesn't exist
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
