@@ -2,7 +2,6 @@ import numpy as np
 import os, sys
 from os.path import join
 import nibabel as nib
-import argparse
 """
 avg_all: average across all 4 runs (within run, average across participants)
 avg_run: average within each run (across participants)
@@ -19,38 +18,16 @@ def write_gifti(data, output_fn, template_fn):
         gii.add_gifti_data_array(gda)
     nib.gifti.giftiio.write(gii, output_fn)
 
-parser = argparse.ArgumentParser()
-
-parser.add_argument("--slurm-id", 
-                    type=int, help="slurm id in numbers")
-parser.add_argument("--align", choices=['aa', 'ws', 'ha_common'],
-                    type=str, help="specify alignment of anatomical, within subject, or hyperalignment common")
-parser.add_argument("--analysis",  choices=['moten', 'base', 'pca', '0tr'],
-                    type=str, help="features: 1) using base 300 features 2) PC extracted features 3) PC extracted features + motion energy 4) full moten but shifted TR")
-parser.add_argument("--features",  choices=["actions moten","agents moten", "bg moten"],
-                    type=str, help="combined features")
-parser.add_argument("--pca", choices=[40, 60],
-                    type=int, help="number of pcs")
-args = parser.parse_args()
-
-index = args.slurm_id # 'ws', 'aa', 'ha_test', 'ha_common'
-alignment = args.align # 'lh' or 'rh'
-analysis = args.analysis
-features = args.features
-pca_comp = args.pca
-# index = int(sys.argv[1])
-# alignment = sys.argv[2]
-# pca_comp = int(sys.argv[3])
-# analysis = sys.argv[4]
+alignment = sys.argv[2]
+pca_comp = int(sys.argv[3])
+analysis = sys.argv[4]
 print(f"{alignment} {pca_comp} {analysis}")
 suma_dir = '/Users/h/suma-fsaverage6'
 main_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding'
-
-output_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove_single', f'{"-".join(features)}', f'{alignment}_pca-{pca_comp}')
-
+output_dir = os.path.join(main_dir, 'results', 'himalaya', analysis, f"{alignment}_pca-{pca_comp}")
 print(output_dir)
 n_splits = 40
-
+index = int(sys.argv[1])
 result_list = [ 'bg-r', 'agents-r', 'actions-r','moten-r', 'ridge-coef', 'comb-r','comb-r2', 'split-pred', 'split-r2', 'bg-r2', 'agents-r2', 'actions-r2', 'moten-r2', 'comb-pred']
 result = result_list[index]
 subjects = ['sub-rid000001', 'sub-rid000005', 'sub-rid000006',
