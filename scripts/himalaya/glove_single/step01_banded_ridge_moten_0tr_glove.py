@@ -94,8 +94,9 @@ roi = args.roi # e.g. 'vt', '0'
 
 save_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove_single', f'{"-".join(features)}', f'{alignment}_pca-{n_components}')
 # Create save directory if it doesn't exist
-if not os.path.exists(save_dir):
-    os.makedirs(save_dir)
+pathlib.Path(save_dir).mkdir(parents=True, exist_ok=True)
+# if not os.path.exists(save_dir):
+#     os.makedirs(save_dir)
 # Created save dir based on alignment
 
 print(f"saved here: {save_dir}")
