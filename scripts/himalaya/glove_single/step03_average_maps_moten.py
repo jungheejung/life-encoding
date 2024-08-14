@@ -19,6 +19,14 @@ def write_gifti(data, output_fn, template_fn):
         gii.add_gifti_data_array(gda)
     nib.gifti.giftiio.write(gii, output_fn)
 
+def format_features(items):
+    if len(items) == 2:
+        return f"{items[0]}-{items[1]}"
+    elif len(items) == 1:
+        return items[0]
+    else:
+        return ""
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("--slurm-id", 
@@ -36,17 +44,16 @@ args = parser.parse_args()
 index = args.slurm_id # 'ws', 'aa', 'ha_test', 'ha_common'
 alignment = args.align # 'lh' or 'rh'
 analysis = args.analysis
-features = args.features
+feature_args = args.features
 pca_comp = args.pca
-# index = int(sys.argv[1])
-# alignment = sys.argv[2]
-# pca_comp = int(sys.argv[3])
-# analysis = sys.argv[4]
+
 print(f"{alignment} {pca_comp} {analysis}")
 suma_dir = '/Users/h/suma-fsaverage6'
 main_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding'
 
-output_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove_single', f'{"-".join(features)}', f'{alignment}_pca-{pca_comp}')
+feature_args = args.features
+features = format_features(feature_args)
+output_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove_single', features, f'{alignment}_pca-{pca_comp}')
 
 print(output_dir)
 n_splits = 40

@@ -2,6 +2,15 @@ import numpy as np
 import os, sys
 import argparse
 
+def format_features(items):
+    if len(items) == 2:
+        return f"{items[0]}-{items[1]}"
+    elif len(items) == 1:
+        return items[0]
+    else:
+        return ""
+
+
 main_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding'
 
 parser = argparse.ArgumentParser()
@@ -21,11 +30,12 @@ args = parser.parse_args()
 index = args.slurm_id # 'ws', 'aa', 'ha_test', 'ha_common'
 alignment = args.align # 'lh' or 'rh'
 analysis_type = args.analysis
-features = args.features
+feature_args = args.features
 pca = args.pca
 
+features = format_features(feature_args)
 alignment_pca = f'{alignment}_pca-{pca}'
-stack_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove_single', f'{"-".join(features)}', f'{alignment}_pca-{pca}')
+stack_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove_single', features, f'{alignment}_pca-{pca}')
 
 n_splits = 40
 # index = int(sys.argv[1])
