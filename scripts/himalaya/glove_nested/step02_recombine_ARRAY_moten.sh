@@ -20,8 +20,8 @@ echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 ID=$((SLURM_ARRAY_TASK_ID-1))
 ALIGN="ha_common" # "ws" "ha_common"
 ANALYSIS="glove_nested_actions-bg-moten" # agents
-# "agents-bg-moten"
-# "actions-agents-moten"
+# "glove_nested_agents-bg-moten"
+# "glove_nested_actions-agents-moten"
 PC=40
 
 python ${PWD}/s02_recombine_vertices_moten.py \

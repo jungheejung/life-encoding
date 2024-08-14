@@ -10,8 +10,8 @@ parser.add_argument("--slurm-id",
                     type=int, help="slurm id in numbers")
 parser.add_argument("--align", choices=['aa', 'ws', 'ha_common'],
                     type=str, help="specify alignment of anatomical, within subject, or hyperalignment common")
-parser.add_argument("--analysis",  choices=['moten', 'base', 'pca', '0tr'],
-                    type=str, help="features: 1) using base 300 features 2) PC extracted features 3) PC extracted features + motion energy 4) full moten but shifted TR")
+parser.add_argument("--analysis",  #choices=['moten', 'base', 'pca', '0tr'],
+                    type=str, help="performance directory")
 parser.add_argument("--pca", choices=[40, 60],
                     type=int, help="number of pcs")
 args = parser.parse_args()
