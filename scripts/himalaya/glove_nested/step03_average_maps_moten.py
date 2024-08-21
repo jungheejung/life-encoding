@@ -24,7 +24,9 @@ analysis = sys.argv[4]
 print(f"{alignment} {pca_comp} {analysis}")
 suma_dir = '/Users/h/suma-fsaverage6'
 main_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding'
-output_dir = os.path.join(main_dir, 'results', 'himalaya', analysis, f"{alignment}_pca-{pca_comp}")
+
+output_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove_nested', analysis, f"{alignment}_pca-{pca_comp}")
+# output_dir = os.path.join(main_dir, 'results', 'himalaya', analysis, f"{alignment}_pca-{pca_comp}")
 print(output_dir)
 n_splits = 40
 index = int(sys.argv[1])

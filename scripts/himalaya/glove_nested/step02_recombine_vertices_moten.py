@@ -26,7 +26,9 @@ pca = args.pca
 # analysis_type = 'moten' # 'moten', 'base', 'pca'
 # pca = 40
 alignment_pca = f'{alignment}_pca-{pca}'
-stack_dir = os.path.join(main_dir, 'results', 'himalaya', analysis_type, alignment_pca)
+# save_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove_nested', f'{"-".join(features)}', f'{alignment}_pca-{n_components}')
+
+stack_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove_nested', analysis_type, alignment_pca)
 n_splits = 40
 # index = int(sys.argv[1])
 result_list = [ 'ridge-coef', 'split-r',  'comb-r', 'comb-r2', 'comb-pred', 'split-pred','split-r2']
