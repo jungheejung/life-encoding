@@ -14,7 +14,7 @@
 
 conda activate himalaya
 
-MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya/glove
+MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya/glove_nested
 echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 
 # Subtract one to get python indexing
@@ -22,7 +22,7 @@ ID=$((SLURM_ARRAY_TASK_ID-1))
 ALIGN="ha_common"
 #"/moten/ha_common_pca-40" #aa ws
 PCA=40
-ANALYSIS="glove_nested_actions-bg-moten" # agents
+ANALYSIS="actions-bg-moten" # agents
 # "agents-bg-moten"
 # "actions-agents-moten"
 python ${MAINDIR}/step03_average_maps_moten.py ${ID} ${ALIGN} ${PCA} ${ANALYSIS}
