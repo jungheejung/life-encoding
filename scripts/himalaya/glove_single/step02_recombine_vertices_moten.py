@@ -2,14 +2,22 @@ import numpy as np
 import os, sys
 import argparse
 
-def format_features(items):
-    if len(items) == 2:
-        return f"{items[0]}-{items[1]}"
-    elif len(items) == 1:
-        return items[0]
+#	def format_features(items):
+#	    if len(items) == 2:
+#	        return f"{items[0]}-{items[1]}"
+#	    elif len(items) == 1:
+#	        return items[0]
+#	    else:
+#	        return ""
+
+def format_features(item):
+    words = item.split()  # Split the string by spaces
+    if len(words) == 2:
+        return f"{words[0]}-{words[1]}"
+    elif len(words) == 1:
+        return words[0]
     else:
         return ""
-
 
 main_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding'
 
@@ -33,7 +41,10 @@ analysis_type = args.analysis
 feature_args = args.features
 pca = args.pca
 
+print(type(feature_args))
 features = format_features(feature_args)
+#print(features_args)
+print(features)
 alignment_pca = f'{alignment}_pca-{pca}'
 stack_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove_single', features, f'{alignment}_pca-{pca}')
 
