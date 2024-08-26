@@ -21,10 +21,13 @@ alignment = args.align # 'lh' or 'rh'
 analysis_type = args.analysis
 pca = args.pca
 
-
+def build_stack_data(keys):
+    stack_data = {key: [] for key in keys}
+    return stack_data
 # alignment = sys.argv[2]
 # analysis_type = 'moten' # 'moten', 'base', 'pca'
 # pca = 40
+feature_keys = analysis_type.split('-')
 alignment_pca = f'{alignment}_pca-{pca}'
 # save_dir = os.path.join(main_dir, 'results', 'himalaya', 'glove_nested', f'{"-".join(features)}', f'{alignment}_pca-{n_components}')
 
@@ -48,7 +51,7 @@ for test_subject in subjects:
     for test_run in runs:
         for hemisphere in hemis:
             if 'split' in result:
-                stack_data = {'bg': [], 'actions': [], 'agents': [], 'moten': []}
+                stack_data = build_stack_data(feature_keys) #{'bg': [], 'actions': [], 'agents': [], 'moten': []}
                 for split in np.arange(n_splits):
                     split_data = np.load(f'{stack_dir}/{result}_pca-{pca}_align-{alignment}_{test_subject}_run-{test_run}_roi-{split}_hemi-{hemisphere}.npy', allow_pickle=True).item()
                     for feature in stack_data:
