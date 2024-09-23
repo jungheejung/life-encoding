@@ -20,10 +20,10 @@ echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 ID=$((SLURM_ARRAY_TASK_ID-1))
 ALIGN="ha_common" # "ws" "ha_common"
 ANALYSIS="glove_single"  # 'moten', 'base', 'pca' '0tr'
-FEATURES="agents moten" # actions agents bg moten" # "actions moten" "agents moten" "bg moten"
+FEATURES="bg moten" # actions agents bg moten" # "actions moten" "agents moten" "bg moten"
 PC=40
 
-python ${PWD}/step02_recombine_vertices_moten.py \
+python /dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya/glove_single/step02_recombine_vertices_moten.py \
 --slurm-id ${ID} \
 --align ${ALIGN} \
 --analysis ${ANALYSIS} \

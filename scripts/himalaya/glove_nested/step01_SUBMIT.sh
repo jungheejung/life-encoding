@@ -1,16 +1,15 @@
 #!/bin/bash -l
 
-#SBATCH --job-name=life-nested
+#SBATCH --job-name=life-single
 #SBATCH --nodes=1
 #SBATCH --ntasks=8
 #SBATCH --mem-per-cpu=8gb
-#SBATCH --time=05:30:00
-#SBATCH -o ./log_nested_actionsagents/hac_%A_%a.o
-#SBATCH -e ./log_nested_actionsagents/hac_%A_%a.e
+#SBATCH --time=01:30:00
+#SBATCH -o ./log_nested_1ac/hac_%A_%a.o
+#SBATCH -e ./log_nested_1ac/hac_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
-#SBATCH --array=18,19,20,44,45,46,47,48,56,57,58,59,60,61,62,5751,5752,5753,5754,5755,5756,5757,5758,5759,5760,5761
-###i#1-5750%100
+#SBATCH --array=1-5750%100
 # Vertices are split into chunks 0-39
 
 
@@ -37,8 +36,18 @@ roi=$(echo $INFILE | cut -f4 -d,)
 
 # Set command line arguments for banded_ridge.py
 alignment="ha_common" # ws, aa, ha_common, ha_test
-features="actions agents moten" # agents
-# "actions bg moten"
+features="actions"
+# "actions agents bg"
+# "actions agents"
+# "actions bg"
+# "agents bg"
+# "actions" 
+# "bg" 
+# "agents" 
+# "moten"
+
+
+# "actions bg moten" # agents
 # "agents bg moten"
 # "actions agents moten"
 
