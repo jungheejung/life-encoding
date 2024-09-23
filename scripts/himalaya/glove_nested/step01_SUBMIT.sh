@@ -37,7 +37,17 @@ roi=$(echo $INFILE | cut -f4 -d,)
 
 # Set command line arguments for banded_ridge.py
 alignment="ha_common" # ws, aa, ha_common, ha_test
-features="actions bg moten" # agents
+features="actions agents bg"
+# "actions agents"
+# "actions bg"
+# "agents bg"
+# "actions" 
+# "bg" 
+# "agents" 
+# "moten"
+
+
+# "actions bg moten" # agents
 # "agents bg moten"
 # "actions agents moten"
 
