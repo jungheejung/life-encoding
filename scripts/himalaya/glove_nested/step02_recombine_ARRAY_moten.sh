@@ -5,8 +5,8 @@
 #SBATCH --ntasks=5
 #SBATCH --mem-per-cpu=6gb
 #SBATCH --time=05:00:00
-#SBATCH -o ./recombine/recombine_ha_%A_%a.o
-#SBATCH -e ./recombine/recombine_ha_%A_%a.e
+#SBATCH -o ./recombine_actionsagents/recombine_ha_%A_%a.o
+#SBATCH -e ./recombine_actionsagents/recombine_ha_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
 #SBATCH --array=1-8
@@ -19,12 +19,13 @@ echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 # Subtract one to get python indexing
 ID=$((SLURM_ARRAY_TASK_ID-1))
 ALIGN="ha_common" # "ws" "ha_common"
-ANALYSIS="actions-bg-moten" # agents
+ANALYSIS="actions-agents-moten" # agents
+# "actions-bg-moten"
 # "agents-bg-moten"
 # "actions-agents-moten"
 PC=40
 
-python ${PWD}/s02_recombine_vertices_moten.py \
+python ${MAINDIR}/glove_nested/step02_recombine_vertices_moten.py \
 --slurm-id ${ID} \
 --align ${ALIGN} \
 --analysis ${ANALYSIS} \

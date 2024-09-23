@@ -5,8 +5,8 @@
 #SBATCH --ntasks=8
 #SBATCH --mem-per-cpu=8gb
 #SBATCH --time=01:00:00
-#SBATCH -o ./log_glove/moten40_%A_%a.o
-#SBATCH -e ./log_glove/moten40_%A_%a.e
+#SBATCH -o ./log_s03_actionsagents/moten40_%A_%a.o
+#SBATCH -e ./log_s03_actionsagents/moten40_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
 #SBATCH --array=1-20%5 
@@ -22,7 +22,8 @@ ID=$((SLURM_ARRAY_TASK_ID-1))
 ALIGN="ha_common"
 #"/moten/ha_common_pca-40" #aa ws
 PCA=40
-ANALYSIS="actions-bg-moten" # agents
+ANALYSIS="actions-agents-moten" 
+# "actions-bg-moten"
 # "agents-bg-moten"
 # "actions-agents-moten"
 python ${MAINDIR}/step03_average_maps_moten.py ${ID} ${ALIGN} ${PCA} ${ANALYSIS}
