@@ -29,7 +29,7 @@ parser.add_argument("--align", choices=['aa', 'ws', 'ha_common'],
                     type=str, help="specify alignment of anatomical, within subject, or hyperalignment common")
 parser.add_argument("--analysis",  choices=['moten', 'base', 'pca', '0tr', 'glove_single'],
                     type=str, help="features: 1) using base 300 features 2) PC extracted features 3) PC extracted features + motion energy 4) full moten but shifted TR")
-parser.add_argument("--features",  choices=["actions moten","agents moten", "bg moten", "bg", "actions", "agents"],
+parser.add_argument("--features",  choices=["actions moten","agents moten", "bg moten", "bg", "actions", "agents", "moten"],
                     type=str, help="combined features")
 parser.add_argument("--pca", choices=[40, 60],
                     type=int, help="number of pcs")
