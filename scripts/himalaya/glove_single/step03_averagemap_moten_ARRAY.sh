@@ -5,8 +5,8 @@
 #SBATCH --ntasks=8
 #SBATCH --mem-per-cpu=8gb
 #SBATCH --time=01:00:00
-#SBATCH -o ./log_glove/moten40_%A_%a.o
-#SBATCH -e ./log_glove/moten40_%A_%a.e
+#SBATCH -o ./recombine/moten40_%A_%a.o
+#SBATCH -e ./recombine/moten40_%A_%a.e
 #SBATCH --account=DBIC
 #SBATCH --partition=standard
 #SBATCH --array=1-20%5 
@@ -14,7 +14,7 @@
 
 conda activate himalaya
 
-MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya/glove
+MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/himalaya/glove_single
 echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 
 # Subtract one to get python indexing
@@ -25,4 +25,9 @@ PCA=40
 ANALYSIS="glove_single" # "0tr" # "pca"
 FEATURES="bg moten" # "actions moten" "agents moten" "bg moten"
 
-python ${MAINDIR}/step03_average_maps_moten.py ${ID} ${ALIGN} ${PCA} ${FEATURES} ${ANALYSIS}
+python ${MAINDIR}/step03_average_maps_moten.py \
+--slurm-id ${ID} \
+--align ${ALIGN} \
+--analysis ${ANALYSIS} \
+--features ${FEATURES} \
+--pca ${PCA}
