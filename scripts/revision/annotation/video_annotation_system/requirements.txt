@@ -1,0 +1,44 @@
+# Core dependencies
+numpy>=1.19.0
+pandas>=1.0.0
+torch>=1.7.0
+torchvision>=0.8.0
+transformers>=4.0.0
+opencv-python>=4.5.0
+ffmpeg-python>=0.2.0
+av>=10.0.0  # Replacing decord with av
+pytorchvideo>=0.1.0
+scikit-learn>=0.24.0
+matplotlib>=3.3.0
+tqdm>=4.50.0
+pillow>=8.0.0
+requests>=2.25.0
+python-dotenv>=0.15.0
+pyyaml>=5.4.0
+
+# Video processing
+moviepy>=1.0.3
+av>=12.0.0
+
+# Deep learning frameworks
+timm>=0.5.4
+
+# Model-specific dependencies
+ftfy>=6.0.3  # For CLIP
+regex>=2021.8.3  # For CLIP
+einops>=0.4.1  # For ViT and SlowFast
+fvcore>=0.1.5  # For SlowFast
+iopath>=0.1.9  # For SlowFast
+
+# Audio and speech recognition
+librosa>=0.9.2  # Audio processing
+soundfile>=0.12.1  # Audio file reading
+pydub>=0.25.1  # Audio manipulation
+sentencepiece>=0.1.97  # Required for Whisper tokenization
+
+# Utilities
+scipy>=1.7.1
+
+# Testing
+pytest>=6.2.5
+

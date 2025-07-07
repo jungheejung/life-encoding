@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: video_annotation_system
+Version: 0.1.0
+Requires-Dist: numpy
+Requires-Dist: opencv-python
+Requires-Dist: torch
+Requires-Dist: transformers
+Requires-Dist: av
+Requires-Dist: tqdm
