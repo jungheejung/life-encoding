@@ -52,6 +52,7 @@ def parse_arguments():
     category_models.add_argument("--action-model", type=str, help="Model for action recognition")
     category_models.add_argument("--agent-model", type=str, help="Model for agent detection")
     category_models.add_argument("--scene-model", type=str, help="Model for scene classification")
+    category_models.add_argument("--object-model", type=str, help="Model for object classification")
     
     # Transcript options
     transcript_group = parser.add_argument_group("Transcript options")
