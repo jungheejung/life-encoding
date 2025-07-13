@@ -9,7 +9,7 @@ scripts/revision/annotation/video_annotation_system/models/annotation_generator.
 
 python /Users/h/Documents/projects_local/life-encoding/scripts/revision/annotation/video_annotation_system/video_annotator.py --input '/Users/h/Documents/projects_local/life-encoding/scripts/revision/videos/ses-01_run-01_order-02_content-wanderers.mp4' --output-dir /Users/h/Documents/projects_local/life-encoding/scripts/revision/annotation_output/
 
-python /Users/h/Documents/projects_local/life-encoding/scripts/revision/annotation/video_annotation_system/video_annotator.py --input /Users/h/Documents/projects_local/life-encoding/scripts/revision/videos/ses-01_run-03_order-04_content-dancewithdeath.mp4 \
+python /Users/h/Documents/projects_local/life-encoding/scripts/revision/annotation/video_annotation_system/video_annotator.py --input /Users/h/Documents/projects_local/life-encoding/scripts/revision/videos/ses-01_run-01_order-02_content-wanderers.mp4 \
  --action-model openai/clip-vit-base-patch32 \
  --agent-model openai/clip-vit-base-patch32 \
  --scene-model openai/clip-vit-base-patch32 \
