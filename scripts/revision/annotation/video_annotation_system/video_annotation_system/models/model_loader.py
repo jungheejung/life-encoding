@@ -150,6 +150,7 @@ def load_models(args) -> Dict:
                 models["action"] = model_dict
                 models["agent"] = model_dict
                 models["scene"] = model_dict
+                models["object"] = model_dict
         
         elif "vit" in args.model.lower():
             model_dict = load_vit_model(args.model, device)
@@ -157,6 +158,7 @@ def load_models(args) -> Dict:
                 models["action"] = model_dict
                 models["agent"] = model_dict
                 models["scene"] = model_dict
+                models["object"] = model_dict
         
         elif "slowfast" in args.model.lower():
             model_dict = load_slowfast_model(args.model, device)
@@ -164,6 +166,7 @@ def load_models(args) -> Dict:
                 models["action"] = model_dict
                 models["agent"] = model_dict
                 models["scene"] = model_dict
+                models["object"] = model_dict
         
         else:
             # Default to CLIP for unknown model types
@@ -173,6 +176,7 @@ def load_models(args) -> Dict:
                 models["action"] = model_dict
                 models["agent"] = model_dict
                 models["scene"] = model_dict
+                models["object"] = model_dict
     
     # If category-specific models are specified
     else:
@@ -215,8 +219,8 @@ def load_models(args) -> Dict:
             models["scene"] = load_vit_model("google/vit-base-patch16-224", device)
     
     # Check if all required models are loaded
-    if not all(k in models for k in ["action", "agent", "scene"]):
-        missing = [k for k in ["action", "agent", "scene"] if k not in models]
+    if not all(k in models for k in ["action", "agent", "scene", "object"]):
+        missing = [k for k in ["action", "agent", "scene", "object"] if k not in models]
         logger.error(f"Missing models for categories: {missing}")
         
         # Load defaults for missing models
@@ -226,7 +230,8 @@ def load_models(args) -> Dict:
             models["agent"] = load_clip_model("openai/clip-vit-base-patch32", device)
         if "scene" not in models:
             models["scene"] = load_vit_model("google/vit-base-patch16-224", device)
-    
+        if "object" not in models:
+            models["object"] = load_clip_model("openai/clip-vit-base-patch32", device)   
     return models
 
 
