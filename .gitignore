@@ -2,4 +2,5 @@
 *.pdf
 /dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/scripts/s03_banded_cara-alpha_loro/log_fullrange
 /results/himalaya/
-*.pyc
+*.pycscripts/revision/annotation_output/
+scripts/revision/word_corpus_code/captions/
