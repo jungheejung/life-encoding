@@ -4,3 +4,4 @@
 /results/himalaya/
 *.pycscripts/revision/annotation_output/
 scripts/revision/word_corpus_code/captions/
+scripts/revision/videos/*.mp4
