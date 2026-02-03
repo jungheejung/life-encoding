@@ -1,8 +1,3 @@
-
-
-
-python preproc_refactor.py
-
 #!/bin/bash
 #SBATCH --job-name=spacetop_resample
 #SBATCH --nodes=1
