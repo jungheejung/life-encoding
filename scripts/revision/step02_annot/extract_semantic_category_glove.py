@@ -1,3 +1,4 @@
+#%% 
 import nltk
 nltk.download('stopwords')
 import os, csv
@@ -7,7 +8,7 @@ import gensim.downloader
 from nltk.corpus import stopwords
 from pathlib import Path
 from os.path import join
-
+import json
 """
 From the annotations.json, we tranform this into glove embeddings
 
@@ -18,16 +19,67 @@ change paths
 
 
 """
-# cara_data_dir = '/idata/DBIC/cara/life'
-tr_dict = {1:369, 2:341, 3:372, 4:406}
+DUMMY = '/Users/h/Downloads/life/ses-01_run-01_order-02_content-wanderers_frames/analysis_results.json'
+END = 430
+with open(DUMMY, 'r') as f:
+        contents = f.read()
 
-# cat_dir = '/idata/DBIC/cara/w2v/semantic_categories/'
-cat_dir = '/dartfs/rc/lab/D/DBIC/DBIC/life_data/cara/cara/w2v/semantic_categories'
-# Load pretrained model (since intermediate data is not included, the model cannot be refined with additional data)
-# glove = KeyedVectors.load_word2vec_format('/idata/DBIC/cara/w2v/w2v_src/GoogleNews-vectors-negative300.bin', binary=True)
+data = json.loads(contents)
+# %%
+timestamps_list = []
+for item in data:
+#     print(item)
+    timestamps_list.append(item['timestamp'])
+#     # feature_list.append(item['agents'])
+# %% minimal difference
+tr_list = np.arange(0, 0.46*END, 0.46)
+feature_list = []; 
+# 1: loop through nparange
+
+for current_tr in tr_list:
+    #  2: find nearest number in json (timestamps)
+    nearest_ts = min(timestamps_list, key=lambda x: abs(x - current_tr))
+    json_index = timestamps_list.index(nearest_ts)
+    # 3: compile word list
+    feature_list.append(data[json_index]['agents'])
+
+
 glove = gensim.downloader.load('glove-wiki-gigaword-300')
 
+def create_w2v(stim):
 
+    glove_mean_vecs = []
+    for i, tr in enumerate(stim):
+        # if there are filtered words in this TR
+        if len(tr) > 0:
+            glove_vec = []
+            for word in tr:
+                # glove_vec.append(glove[word])
+                glove_vec.append(glove[word])
+            goog_mean = np.mean(np.column_stack(glove_vec), axis=1)[None, :]
+        # no relevant words in this TR, make empty vector
+        else:
+            goog_mean = np.zeros((1,300))
+            # goog_mean = avg_goog
+        glove_mean_vecs.append(goog_mean)
+    goog = np.concatenate(glove_mean_vecs, axis=0)
+    print('glove: {0}'.format(goog.shape))
+
+    return(goog)
+
+
+
+
+
+
+
+
+
+
+
+
+
+#########################################################
 def create_w2v(stim):
 
     glove_mean_vecs = []
@@ -74,25 +126,6 @@ def make_list(file):
         reader = pd.read_csv(f, header=None)
         nested = list(reader[0])
     return nested #[word for f in nested for word in f]
-
-
-# lod = [{'deer':'dear'}, {'squawking':'squaking'}, {'highspeed':'high-speed'}, {'birdcall':'bird noise'}, {'':'noises'}, {'':'noise'}, \
-#     {'':'vocalizations'}, {'':'vocalization'}, {'':'sound'}, {'':'narration'}, \
-#     {'black screen':'blackscreen'}, {'crab eating':'crab-eater'}, {'orcas':'killer whales'}, \
-#     {'orca':'killer whale'}, {'seal':'elephant seal'}, {'poison_dart_frog':'poison arrow frog'}, \
-#     {'tree_trunk':'tree trunk'}, {'tree_trunks':'tree trunks'}, {'dorsal_fins':'dorsal fins'}, \
-#     {'poison_dart_frog':'poison arrow        frog'}, {'dorsal_fin':'dorsal fin'}, {'':','}, {'chinstrap_penguin':'chinstrap penguin'}, \
-#     {'zoom':'zoomed in'},{'zoom':'zoomed out'}, {'blue_sky':'blue_sky'}, {'forked_tongue':'forked tongue'}, \
-#     {'rattlesnake':'rattle snake'}, {'areca_palm':'nut palm plant'}, {'tidepool':'tidal pool'}, \
-#     {'praying_mantis':'praying mantis'}, {'venus_flytrap':'venus fly trap'}, {'leopard_seal':'leopard seal'}, \
-#     {'spiderweb':'spider web'}, {'':' but'}, {'':'music'}, {'caging':'encaging'}, \
-#     {'seafloor':'sea_floor'}, {'silhouette':'silhoutte'}, {'swinging':'brachiating'}, {'lifelong':'life-long'}, \
-#     {'fast swimming':'fast-swimming'}, {'learned':'learnt'}, {'Madagascar':'madagascar'}, {'Bandhavgarh':'bandhavgarh'}, \
-#     {'defense':'defence'}, {'neighborhood':'neighbourhood'}, {'neighbor':'neighbour'}, {'Falkland':'falkland'}, \
-#     {'meters':'metres'}, {'favorite':'favourite'}, {'color':'colour'}, {'Luangwa':'luangwa'}, {'fertilized':'fertilised'}, \
-#     {'center':'centre'}, {'Oregon':'oregon'}, {'December':'december'}, {'India':'india'}, {'Gentoo':'gentoo'}, \
-#     {'Antarctic':'antarctic'}, {'California':'california'}, {'Florida':'florida'}, {'Antarctica':'antarctica'}, \
-#     {'Zambia':'zambia'}, {'Brazil':'brazil'}, {'Kenya':'kenya'}, {'Malaysia':'malaysia'}, {'Pacific':'pacific'}]
 
 
 
