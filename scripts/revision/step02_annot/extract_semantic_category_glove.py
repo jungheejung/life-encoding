@@ -10,6 +10,7 @@ from pathlib import Path
 from os.path import join
 import json
 from nltk.corpus import stopwords
+import matplotlib.pyplot as plt 
 """
 From the annotations.json, we tranform this into glove embeddings
 
@@ -185,9 +186,6 @@ for FNAME, TR in file_dict.items():
         plt.close()
 
 # %%
-import matplotlib.pyplot as plt 
-new_arr = np.squeeze(final_output, axis=1)
-plt.imshow(new_arr)
 
 # %% SANDBOX
 # import numpy as np
