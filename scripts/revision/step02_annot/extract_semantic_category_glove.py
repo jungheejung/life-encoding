@@ -9,6 +9,7 @@ from nltk.corpus import stopwords
 from pathlib import Path
 from os.path import join
 import json
+from nltk.corpus import stopwords
 """
 From the annotations.json, we tranform this into glove embeddings
 
@@ -17,225 +18,148 @@ change paths
 * Annotation path: /dartfs/rc/lab/H/HaxbyLab/heejung/annotation_spacetopLLM
 * .gii data: /dartfs/rc/lab/H/HaxbyLab/heejung/data_spacetoptrim
 
+TODO 02/09/2026:
+* empty list: vector of 0
+* more than 0 items: get embeddings -> average embeddings
+* deal with "person in spacesuit" -> split by space nested list. check if word is stop word. average items. 
+
+Check wanderer: 
+['astronaut', 'person in spacesuit'],
+
+
+# * empty list: vector of 0 create_w2v
+# * more than 0 items: get embeddings -> average embeddings
+# * deal with "person in spacesuit" -> split by space nested list. check if word is stop 
+# word. 
+# * Filter stop words (space in black) -> space black
 
 """
-DUMMY = '/Users/h/Downloads/life/ses-01_run-01_order-02_content-wanderers_frames/analysis_results.json'
-END = 430
-with open(DUMMY, 'r') as f:
-        contents = f.read()
-
-data = json.loads(contents)
-# %%
-timestamps_list = []
-for item in data:
-#     print(item)
-    timestamps_list.append(item['timestamp'])
-#     # feature_list.append(item['agents'])
-# %% minimal difference
-tr_list = np.arange(0, 0.46*END, 0.46)
-feature_list = []; 
-# 1: loop through nparange
-
-for current_tr in tr_list:
-    #  2: find nearest number in json (timestamps)
-    nearest_ts = min(timestamps_list, key=lambda x: abs(x - current_tr))
-    json_index = timestamps_list.index(nearest_ts)
-    # 3: compile word list
-    feature_list.append(data[json_index]['agents'])
 
 
+file_dict = {
+'ses-01_run-01_order-02_content-wanderers':430,
+'ses-01_run-02_order-02_content-HB':123,
+'ses-01_run-03_order-01_content-huggingpets':230,
+'ses-01_run-03_order-04_content-dancewithdeath':295,
+'ses-01_run-04_order-02_content-angrygrandpa':736,
+'ses-02_run-02_order-03_content-menrunning':441,
+'ses-02_run-03_order-01_content-unefille':252,
+'ses-02_run-03_order-04_content-war':134,
+'ses-03_run-02_order-01_content-planetearth':321,
+'ses-03_run-02_order-03_content-heartstop':426,
+'ses-03_run-03_order-01_content-normativeprosocial2':228,
+'ses-04_run-01_order-02_content-gockskumara':389
+}
+# DUMMY = '/Users/h/Downloads/life/ses-01_run-01_order-02_content-wanderers_frames/analysis_results.json'
+
+OUTPUT = '/Users/h/Downloads/life'
 glove = gensim.downloader.load('glove-wiki-gigaword-300')
-
-def create_w2v(stim):
-
-    glove_mean_vecs = []
-    for i, tr in enumerate(stim):
-        # if there are filtered words in this TR
-        if len(tr) > 0:
-            glove_vec = []
-            for word in tr:
-                # glove_vec.append(glove[word])
-                glove_vec.append(glove[word])
-            goog_mean = np.mean(np.column_stack(glove_vec), axis=1)[None, :]
-        # no relevant words in this TR, make empty vector
-        else:
-            goog_mean = np.zeros((1,300))
-            # goog_mean = avg_goog
-        glove_mean_vecs.append(goog_mean)
-    goog = np.concatenate(glove_mean_vecs, axis=0)
-    print('glove: {0}'.format(goog.shape))
-
-    return(goog)
-
-
-
-
-
-
-
-
-
-
-
-
-
-#########################################################
-def create_w2v(stim):
-
-    glove_mean_vecs = []
-    for i, tr in enumerate(stim):
-        # if there are filtered words in this TR
-        if len(tr) > 0:
-            glove_vec = []
-            for word in tr:
-                # glove_vec.append(glove[word])
-                glove_vec.append(glove[word])
-            goog_mean = np.mean(np.column_stack(glove_vec), axis=1)[None, :]
-        # no relevant words in this TR, make empty vector
-        else:
-            goog_mean = np.zeros((1,300))
-            # goog_mean = avg_goog
-        glove_mean_vecs.append(goog_mean)
-    goog = np.concatenate(glove_mean_vecs, axis=0)
-    print('glove: {0}'.format(goog.shape))
-
-    return(goog)
-
-class TextLabeler():
-    def __init__(self, text, lod):
-        self.text = text
-        self.iterate(lod)
-
-    def replace_kv(self, _dict):
-        """Replace any occurrence of a value with the key"""
-        # for key, value in _dict.iteritems():
-        for key, value in _dict.items():
-            label = """{0}""".format(key)
-            self.text = [[x.replace(value,label).strip() for x in l] for l in self.text]
-        return self.text
-
-    def iterate(self, lod):
-        """Iterate over each dict object in a given list of dicts, `lod` """
-        for _dict in lod:
-            self.text = self.replace_kv(_dict)
-        return self.text
-
-def make_list(file):
-    with open(file, 'rb') as f:
-        # reader = csv.reader(f)
-        reader = pd.read_csv(f, header=None)
-        nested = list(reader[0])
-    return nested #[word for f in nested for word in f]
-
-
-
-times = []
-durs = []
-flat_ca = []
-for i in range(1,5):
-    # with open('/idata/DBIC/cara/w2v/src/json_w2v/run{run}.json'.format(run=i), 'r') as f:
-    with open(f'/dartfs/rc/lab/D/DBIC/DBIC/life_data/cara/cara/w2v/src/json_w2v/run{i}.json', 'r') as f:
-            contents = f.read()
-
-    time = contents.split('Start_Time:')[1:]
-    time = [_.split('\n')[0] for _ in time]
-    time = [float(_.split(':')[0]) * 60 + float(_.split(':')[1:][0]) if ':' in _ else float(_) for _ in time]
-    time = np.array([_ for _ in time])
-    time = np.subtract(time, time[0])
-    times.append(time)
-
-    dur = contents.split('Duration:')[1:]
-    dur = [_.split('\n')[0] for _ in dur]
-    dur = [float(_.split(':')[0]) * 60 + float(_.split(':')[1:][0]) if ':' in _ else float(_) for _ in dur]
-    dur = np.array([_ for _ in dur])
-    durs.append(dur)
-
-    words = contents.split('Words')[1:]
-    words = [_.split('[')[1].split(']')[0] for _ in words]
-    words = [_.split(',') for _ in words]
-    words =[[_.strip(' ') for _ in sl] for sl in words]
-    words =[[_.strip('\'') for _ in sl] for sl in words]
-
-    print(i)
-    print(['{0}\n'.format(word) for word in words])
-    flat_ca.append(words)
-
-
-stim = []
-for i in range(4):
-    end = times[i][-1] + durs[i][-1]
-    print(f"end for each run {i}: {end}")
-    print(f"end for each run {i}: {end/2.5}")
-    tr_list = np.arange(0, end, 2.5)
-    stim_run = [[] for x in range(tr_list.shape[0])]
-    for t in range(tr_list.shape[0]):
-        ind = np.searchsorted(times[i], tr_list[t])
-        if ind == 0:
-            stim_run[t] = flat_ca[i][0]
-        else:
-
-            stim_run[t] = flat_ca[i][ind-1]#[item for sublist in flat_ca[i][ind] for item 
-    print('stim shape: {0} for run {1}'.format(len(stim_run), i))
-    stim.append(stim_run)
-
-print('Done loading runfiles')
-
-semantic_data = [item for sublist in stim for item in sublist]
-
-#### check which words are not part of Glove
-unique_values = set(item for sublist in semantic_data for item in sublist)
-error_list_test = []
-for word in unique_values:
+# %%
+def filter_nonexistent_words(word):
+            # glove_vec.append(glove[word])
     try:
-        glove[word]
-    except KeyError as e:
-        error_list_test.append(word)
-####
-filtered_words= []
-stopwords_list = stopwords.words('english')
-for tr in semantic_data:
-    word_list = []
-    for word in tr:
-        lower_word = word.lower()
-        if lower_word not in stopwords_list:
-        # if lower_word not in stopwords.words('english'):
-            if not lower_word[-1].isalpha():
-                word_list.append(lower_word[:-1])
-            elif lower_word[-2:] == '\'s':
-                word_list.append(lower_word[:-2])
-            elif '_' in lower_word:
-                word_list.extend(lower_word.split('_'))
+        emb = glove[word][np.newaxis, :]
+        print(emb.shape)
+    except KeyError:
+        # emb = np.zeros((300))
+        emb = np.full((1,300), np.nan)
+    return emb
+
+def create_glove(stim, remove_stopwords):
+        stop_words = set(stopwords.words('english')) 
+        if remove_stopwords:
+            stop_words.update(remove_stopwords)
+
+        glove_mean_vecs = []
+        for i, tr in enumerate(stim):
+            print(tr)
+            # if there are filtered words in this TR
+            if len(tr) > 0:
+
+                glove_vec = []
+                for word in tr:
+                    # multi word
+                    if ' ' in word or '/' in word:
+                        preproc_word = word.replace('/', ' ')
+  
+                        parts = [w for w in preproc_word.split() if w in glove]
+                        vectors = [filter_nonexistent_words(w) for w in parts if w not in stop_words ]#
+                        
+                        compound_word = np.mean(vectors, axis=0)
+                        glove_vec.append(compound_word)
+                        # print(compound_word.shape)
+
+                    # single word
+                    else:
+                        # glove_vec.append(glove[word])
+                        try:
+                            glove_vec.append(glove[word][np.newaxis,:])
+
+                        except KeyError:
+                            if len(tr) == 1:
+                                glove_vec.append(np.zeros((1, 300)))
+                            else:
+                                glove_vec.append(np.full((1,300), np.nan))
+
+                # print(f"glove vec shape: {glove_vec.shape}")
+                goog_mean = np.mean(glove_vec, axis=0)
+                print(f"goog_mean: {goog_mean.shape}")
+            # no relevant words in this TR, make empty vector
             else:
-                word_list.append(lower_word)
-    filtered_words.append(word_list)
-
-##### get unique words from processed.text
-filtered_unique = set(item for sublist in filtered_words for item in sublist)
-
-error_list = []
-for word in filtered_unique:
-    try:
-        glove[word]
-    except KeyError as e:
-        error_list.append(word)
+                goog_mean = np.zeros((1, 300))
+            glove_mean_vecs.append(goog_mean)
+        goog = np.stack(glove_mean_vecs, axis=0) #np.concatenate(glove_mean_vecs, axis=0)
+        print('glove: {0}'.format(goog.shape))
+        return(goog)
 
 
-# goog = create_w2v(proc)
-goog = create_w2v(filtered_words)
+for FNAME, TR in file_dict.items():
 
-np.save('/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/data/annotations/glove/visual_all.npy', goog)
+    for FEATURE in ['agents', 'actions', 'scenes','objects']:
+        with open(f"{OUTPUT}/{FNAME}_frames/analysis_results.json", 'r') as f:
+                contents = f.read()
+
+        data = json.loads(contents)
+
+        timestamps_list = []
+        for item in data:
+            timestamps_list.append(item['timestamp'])
+        # minimal difference
+        tr_list = np.arange(0, 0.46*TR, 0.46)
+        feature_list = []; 
+        # 1: loop through nparange
+
+        for current_tr in tr_list:
+            #  2: find nearest number in json (timestamps)
+            nearest_ts = min(timestamps_list, key=lambda x: abs(x - current_tr))
+            json_index = timestamps_list.index(nearest_ts)
+            # 3: compile word list
+            feature_list.append(data[json_index][FEATURE])
 
 
-print('Data through initial processing, see proc')
-stim_savedir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/data/annotations/filtered_stim'
-Path(stim_savedir).mkdir(parents=True, exist_ok=True)
-for cat in os.listdir(cat_dir):
-    if 'csv' in cat:
-        filt = make_list(os.path.join(cat_dir, cat))
-        # filtered_stim = [[word for word in tr if word in filt] for tr in proc]
-        filtered_stim = [[word for word in tr if word in filt] for tr in filtered_words]
+        remove_stopwords = ['in', 'Esther the Wonder Pig']
+        
+        # 4. Now run your original function
+        # It will now find both 'astronaut' and 'space explorer' in your new dictionary
+        final_output = create_glove(feature_list, remove_stopwords)
+        print(f"{FNAME}: {TR} and {final_output.shape}")
+        # 
+        np.save(f'{OUTPUT}/{FNAME}_feature-{FEATURE}.npy', final_output)
 
-        pd.DataFrame(filtered_stim).to_csv(join(stim_savedir, cat))
-        glove_features = create_w2v(filtered_stim)
-        # np.save('/idata/DBIC/cara/w2v/new_annotations/{0}.npy'.format(cat.split('.')[0]), goog)
-        np.save('/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding/data/annotations/glove/{0}.npy'.format(cat.split('.')[0]), glove_features)
+
+# %% SANDBOX
+# import numpy as np
+# annotation = [ [], 
+#               ['astronaut', 'person'], 
+#               ['astronaut', 'person in spacesuit' ],
+#               ['astronaut']
+#               ]
+
+# person = create_glove([['person']], remove_stopwords)
+# spacesuit = create_glove([['spacesuit']], remove_stopwords)
+
+# compound = create_glove([['person in spacesuit']], remove_stopwords)
+# assert np.array_equal(np.mean(np.vstack([person,spacesuit]), axis=0) , compound.flatten())
+
+
+
