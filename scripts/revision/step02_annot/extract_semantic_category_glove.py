@@ -58,11 +58,11 @@ glove = gensim.downloader.load('glove-wiki-gigaword-300')
 def filter_nonexistent_words(word):
             # glove_vec.append(glove[word])
     try:
-        emb = glove[word][np.newaxis, :]
+        emb = glove[word]
         print(emb.shape)
     except KeyError:
         # emb = np.zeros((300))
-        emb = np.full((1,300), np.nan)
+        emb = np.full((300), np.nan)
     return emb
 
 def create_glove(stim, remove_stopwords):
@@ -78,31 +78,50 @@ def create_glove(stim, remove_stopwords):
 
                 glove_vec = []
                 for word in tr:
-                    # multi word
+                    # Case 1: Handle compound labels
                     if ' ' in word or '/' in word:
                         preproc_word = word.replace('/', ' ')
   
                         parts = [w for w in preproc_word.split() if w in glove]
-                        vectors = [filter_nonexistent_words(w) for w in parts if w not in stop_words ]#
-                        
-                        compound_word = np.mean(vectors, axis=0)
-                        glove_vec.append(compound_word)
-                        # print(compound_word.shape)
 
-                    # single word
+                        if len(parts) > 0:  # Only process if we have valid words
+                            vectors = [filter_nonexistent_words(w) for w in parts if w not in stop_words ] # Each is (300,)
+                            # 1-1. vector is valid after filtering stopwords. Average them to create a single compound
+                            if len(vectors) > 0:
+                                compound_word = np.mean(vectors, axis=0) #(300,)
+                                glove_vec.append(compound_word[np.newaxis, :])
+                            # 1-2. vector is empty because all words were stopwords
+                            else: 
+                                glove_vec.append(np.full((1, 300), np.nan))
+                        # 1-3. No tokens in the compound label exist in the GloVe vocabulary
+                        else:
+                            glove_vec.append(np.full((1, 300), np.nan))
+
+                    # Case 2: single word
                     else:
-                        # glove_vec.append(glove[word])
-                        try:
-                            glove_vec.append(glove[word][np.newaxis,:])
+                        if word not in stop_words:  # Check stopwords first
+                            # 2-1. Get glove
+                            try:
+                                glove_vec.append(glove[word][np.newaxis,:])
 
-                        except KeyError:
-                            if len(tr) == 1:
-                                glove_vec.append(np.zeros((1, 300)))
-                            else:
-                                glove_vec.append(np.full((1,300), np.nan))
+                            except KeyError:
+                                # 2-2. Word missing from GloVe
+                                # If it's the only word, return zeros; ['zzz']
+                                # otherwise use NaN to flag for averaging ['astronaut', 'zzz'] -> we dont want the 0 vector from zzz to cancel out astronaut
 
-                # print(f"glove vec shape: {glove_vec.shape}")
-                goog_mean = np.mean(glove_vec, axis=0)
+                                if len(tr) == 1:
+                                    glove_vec.append(np.zeros((1, 300)))
+                                else:
+                                    glove_vec.append(np.full((1,300), np.nan))
+                        else: # if the only word is a stopword
+                            # Word is a stopword, skip or add NaN
+                            glove_vec.append(np.full((1, 300), np.nan))
+                # Compute mean if we have vectors
+                if len(glove_vec) > 0:
+                    goog_mean = np.mean(glove_vec, axis=0)
+                else:
+                    goog_mean = np.zeros((1, 300))
+                # goog_mean = np.mean(glove_vec, axis=0)
                 print(f"goog_mean: {goog_mean.shape}")
             # no relevant words in this TR, make empty vector
             else:
@@ -134,7 +153,9 @@ for FNAME, TR in file_dict.items():
             nearest_ts = min(timestamps_list, key=lambda x: abs(x - current_tr))
             json_index = timestamps_list.index(nearest_ts)
             # 3: compile word list
-            feature_list.append(data[json_index][FEATURE])
+            # feature_list.append(data[json_index][FEATURE])
+            # Error when annotation doesn't have scenes
+            feature_list.append(data[json_index].get(FEATURE, []))
 
 
         remove_stopwords = ['in', 'Esther the Wonder Pig']
@@ -142,10 +163,31 @@ for FNAME, TR in file_dict.items():
         # 4. Now run your original function
         # It will now find both 'astronaut' and 'space explorer' in your new dictionary
         final_output = create_glove(feature_list, remove_stopwords)
+        new_arr = np.squeeze(final_output, axis=1)
+        # plt.imshow(new_arr)
         print(f"{FNAME}: {TR} and {final_output.shape}")
         # 
-        np.save(f'{OUTPUT}/{FNAME}_feature-{FEATURE}.npy', final_output)
+        np.save(f'{OUTPUT}/{FNAME}_feature-{FEATURE}.npy', new_arr)
 
+
+# 3. Create and save the plot
+        plt.figure(figsize=(10, 8)) # Initialize a new figure
+        plt.imshow(new_arr, aspect='auto', interpolation='nearest')
+        plt.colorbar(label='GloVe Weight')
+        plt.title(f"Heatmap: {FNAME} - {FEATURE}")
+        plt.xlabel("Embedding Dimension (300)")
+        plt.ylabel("Time (TR)")
+        
+        # Save as PNG
+        plt.savefig(f'{OUTPUT}/{FNAME}_feature-{FEATURE}.png', dpi=300, bbox_inches='tight')
+        
+        # 4. Crucial: Close the plot to free up memory
+        plt.close()
+
+# %%
+import matplotlib.pyplot as plt 
+new_arr = np.squeeze(final_output, axis=1)
+plt.imshow(new_arr)
 
 # %% SANDBOX
 # import numpy as np
