@@ -165,15 +165,17 @@ for FNAME, TR in file_dict.items():
         # It will now find both 'astronaut' and 'space explorer' in your new dictionary
         final_output = create_glove(feature_list, remove_stopwords)
         new_arr = np.squeeze(final_output, axis=1)
+
+        nan_removed = np.nan_to_num(new_arr)
         # plt.imshow(new_arr)
-        print(f"{FNAME}: {TR} and {final_output.shape}")
+        print(f"{FNAME}: {TR} and {nan_removed.shape}")
         # 
-        np.save(f'{OUTPUT}/{FNAME}_feature-{FEATURE}.npy', new_arr)
+        np.save(f'{OUTPUT}/{FNAME}_feature-{FEATURE}.npy', nan_removed)
 
 
 # 3. Create and save the plot
         plt.figure(figsize=(10, 8)) # Initialize a new figure
-        plt.imshow(new_arr, aspect='auto', interpolation='nearest')
+        plt.imshow(nan_removed, aspect='auto', interpolation='nearest')
         plt.colorbar(label='GloVe Weight')
         plt.title(f"Heatmap: {FNAME} - {FEATURE}")
         plt.xlabel("Embedding Dimension (300)")
