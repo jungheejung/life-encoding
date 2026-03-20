@@ -140,12 +140,6 @@ if match:
 SUB=sub_number # TODO: extract subject number
 cv = KFold(n_splits=4, random_state=SUB, shuffle=True)
 X = np.arange(12)
-# for i, (train_index, test_index) in enumerate(cv.split(X)):
-#     print(f"Fold {i}:")
-#     print(f"  Train: index={train_index}")
-#     print(f"  Test:  index={test_index}")
-#     print(f"  Train: {np.array(list(model_durs.keys()))[train_index]}")
-#     print(f"  Test: {np.array(list(model_durs.keys()))[test_index]}")
 cv_list = list(cv.split(X))
 
 train_index = cv_list[test_run_id][0]
