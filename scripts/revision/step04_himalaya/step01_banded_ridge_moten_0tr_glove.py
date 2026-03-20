@@ -65,7 +65,7 @@ model_dir = '/dartfs/rc/lab/H/HaxbyLab/heejung/data/annotations/glove'
 #             'sub-rid000027', 'sub-rid000031', 'sub-rid000032',
 #             'sub-rid000033', 'sub-rid000034', 'sub-rid000036',
 #             'sub-rid000037', 'sub-rid000038', 'sub-rid000041']
-subjects = glob.glob(fmri_dir, 'sub-*')
+subjects = glob.glob(os.path.join(fmri_dir, 'sub-*'))
 tr = 0.46 #2.5
 # model_durs = {1: 369, 2: 341, 3: 372, 4: 406}
 # fmri_durs = {1: 374, 2: 346, 3: 377, 4: 412} 
