@@ -42,7 +42,7 @@ start = time.time()
 # Assign/create directories
 user_dir = 'f0042x1'#'/dartfs/rc/lab/D/DBIC/DBIC/f000fb6'
 scratch_dir = os.path.join('/dartfs-hpc/scratch', user_dir)
-data_dir = '/dartfs/rc/lab/H/HaxbyLab/heejung/data_spacetoptrim '#'/dartfs/rc/lab/D/DBIC/DBIC/life_data/'
+data_dir = '/dartfs/rc/lab/H/HaxbyLab/heejung/data'#'/dartfs/rc/lab/D/DBIC/DBIC/life_data/'
 current_dir = os.getcwd()
 #main_dir = pathlib.Path(current_dir).parents[1]
 # Create scratch directory if it doesn't exist
