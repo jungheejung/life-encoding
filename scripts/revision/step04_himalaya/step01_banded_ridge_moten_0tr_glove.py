@@ -236,6 +236,7 @@ def model_pca(train_model, test_model, n_components):
 # Load and assemble stimulus model with delays
 def load_model(feature, train_runs, test_runs, model_durs,
                run_pca=False, n_components=None):
+    # TODO: update path: 
     glove_dir = '/dartfs/rc/lab/H/HaxbyLab/heejung/data/annotations/glove'
     # Load model and split into runs
     print(f"\n2. Semantic model ({model_f.split('_')[1].split('.')[0]})")
