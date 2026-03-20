@@ -233,7 +233,7 @@ def load_model(feature, train_runs, test_runs, model_durs,
     # TODO: update path: 
     glove_dir = '/dartfs/rc/lab/H/HaxbyLab/heejung/data/annotations/glove'
     # Load model and split into runs
-    print(f"\n2. Semantic model ({model_f.split('_')[1].split('.')[0]})")
+    # print(f"\n2. Semantic model ({model_f.split('_')[1].split('.')[0]})")
     # model = np.load(os.path.join(model_dir, model_f))
     train_append = []
     for train_run in train_runs:
