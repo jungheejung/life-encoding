@@ -262,7 +262,12 @@ def load_model(feature, train_runs, test_runs, model_durs,model_ndim,
         # Concatenate training model across runs
         train_splits = np.cumsum([len(r) for r in train_model])[:-1]
         train_model = np.concatenate(train_model, axis=0)
-        print(f"train_model: {train_model.shape[1]}, test_model:{test_model.shape[1]}, model_ndim: {model_ndim}")
+
+        test_splits = np.cumsum([len(r) for r in test_model])[:-1]
+        test_model = np.concatenate(test_model, axis=0)
+
+
+        print(f"train_model: {np.vstack(train_model.shape[1])}, test_model:{np.vstack(test_model).shape[1]}, model_ndim: {model_ndim}")
         assert train_model.shape[1] == test_model.shape[1] #== model_ndim NOTE: confirm that it is correct to just check the train/model shape without the model ndim
 
         train_model, test_model = model_pca(train_model,
@@ -271,6 +276,7 @@ def load_model(feature, train_runs, test_runs, model_durs,model_ndim,
         
         # Re-split training model into runs
         train_model = np.split(train_model, train_splits)
+        test_model = np.split(test_model, test_splits)
 
     # Horizontally stack lagged versions of the stimulus model
     lags = [5, 10, 15, 20]#[1, 2, 3, 4]
@@ -311,6 +317,7 @@ def load_model(feature, train_runs, test_runs, model_durs,model_ndim,
         test_cat[lags[2]:n_trs + lags[2], n_wide * 2:n_wide * 3] = test_run
         test_cat[lags[3]:n_trs + lags[3], n_wide * 3:n_wide * 4] = test_run 
         test_cats.append(test_cat)
+        test_durs[r] = test_cat.shape[0]
     # n_trs = test_model.shape[0]
     # test_cat = np.full((n_trs + lags[-1], n_wide * len(lags)), np.nan)
     # test_cat[lags[0]:n_trs + lags[0], n_wide * 0:n_wide * 1] = test_model
@@ -323,7 +330,7 @@ def load_model(feature, train_runs, test_runs, model_durs,model_ndim,
     print("Concatenated training model shape:", train_model.shape,
           f"\nTest model run {test_run} shape:", test_model.shape)
 
-    return train_model, train_durs, test_model
+    return train_model, train_durs, test_model, test_durs
 
 
 # Load fMRI data for only test subject (within-subject encoding model)
@@ -649,7 +656,7 @@ for f in features:
 
     # model_f = f'visual_{f}.npy'
     # ses-04_run-01_order-02_content-gockskumara_feature-scenes.npy
-    train_model, train_durs, test_model = load_model(f, train_runs,
+    train_model, train_durs, test_model, test_durs = load_model(f, train_runs,
                                                      test_runs, model_durs, 
                                                      model_ndim,
                                                      run_pca=run_pca,
