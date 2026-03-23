@@ -267,7 +267,7 @@ def load_model(feature, train_runs, test_runs, model_durs,model_ndim,
         test_model = np.concatenate(test_model, axis=0)
 
 
-        print(f"train_model: {np.vstack(train_model.shape[1])}, test_model:{np.vstack(test_model).shape[1]}, model_ndim: {model_ndim}")
+        print(f"train_model: {np.vstack(train_model).shape[1]}, test_model:{np.vstack(test_model).shape[1]}, model_ndim: {model_ndim}")
         assert train_model.shape[1] == test_model.shape[1] #== model_ndim NOTE: confirm that it is correct to just check the train/model shape without the model ndim
 
         train_model, test_model = model_pca(train_model,
