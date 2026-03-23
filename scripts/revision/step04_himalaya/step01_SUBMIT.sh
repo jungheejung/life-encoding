@@ -17,7 +17,7 @@
 conda activate himalaya
 
 ### FIX THIS
-MAINDIR=/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding
+MAINDIR="/vast/labs/DBIC/datasets/Life/life-encoding"
 echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 
 # Subtract one to get python indexing
@@ -37,10 +37,10 @@ roi='None' #$(echo $INFILE | cut -f4 -d,)
 
 # Set command line arguments for banded_ridge.py
 alignment="aa" #"ha_common" # ws, aa, ha_common, ha_test
-features="bg actions agents objects moten"
+features="scenes actions agents objects moten"
 
 echo ${subject} ${hemisphere} ${test_run} ${roi}
-python ${MAINDIR}/scripts/himalaya/glove/step01_banded_ridge_moten_0tr_glove.py \
+python ${MAINDIR}/scripts/revision/step04_himalaya/step01_banded_ridge_moten_0tr_glove.py \
 --maindir ${MAINDIR} \
 -a ${alignment} \
 --hemisphere ${hemisphere} \

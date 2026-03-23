@@ -228,7 +228,7 @@ def model_pca(train_model, test_model, n_components):
 
 
 # Load and assemble stimulus model with delays
-def load_model(feature, train_runs, test_runs, model_durs,
+def load_model(feature, train_runs, test_runs, model_durs,model_ndim,
                run_pca=False, n_components=None):
     # TODO: update path: 
     glove_dir = '/dartfs/rc/lab/H/HaxbyLab/heejung/data/annotations/glove'
@@ -642,7 +642,8 @@ for f in features:
     # model_f = f'visual_{f}.npy'
     # ses-04_run-01_order-02_content-gockskumara_feature-scenes.npy
     train_model, train_durs, test_model = load_model(f, train_runs,
-                                                     test_runs, model_durs,
+                                                     test_runs, model_durs, 
+                                                     model_ndim,
                                                      run_pca=run_pca,
                                                      n_components=n_components)
     train_bands.append(train_model)
