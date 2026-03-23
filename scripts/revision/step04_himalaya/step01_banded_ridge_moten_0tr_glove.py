@@ -243,8 +243,8 @@ def load_model(feature, train_runs, test_runs, model_durs,model_ndim,
     for test_run in test_runs:
         run_data = np.load(f"{glove_dir}/{test_run}_feature-{feature}.npy")
         test_append.append(run_data)
-    test_model = np.vstack(test_append)
-    print(f"test model shape: {test_model.shape}")
+    test_model = test_append #np.vstack(test_append)
+    print(f"test model shape: {np.vstack(test_model).shape}")
     # model_splits = np.cumsum(list(model_durs.values()))[:-1]
     # model_runs = np.split(model, model_splits, axis=0)
 
@@ -276,10 +276,6 @@ def load_model(feature, train_runs, test_runs, model_durs,model_ndim,
     lags = [5, 10, 15, 20]#[1, 2, 3, 4]
     train_cats, train_durs = [], {}
     for r, train_run in zip(train_runs, train_model):
-        # train_cat = np.concatenate((train_run[lags[-1] - 1:-lags[0]],
-        #                             train_run[lags[-2] - 1:-lags[1]],
-        #                             train_run[lags[-3] - 1:-lags[2]],
-        #                             train_run[lags[-4] - 1:-lags[3]]), axis=1)
         # Z-score each training run
         train_run = zscore(train_run, axis=0)
         n_trs = train_run.shape[0]
@@ -301,14 +297,29 @@ def load_model(feature, train_runs, test_runs, model_durs,model_ndim,
     scaler = StandardScaler()
     train_model = np.nan_to_num(scaler.fit_transform(train_model))
 
-    n_trs = test_model.shape[0]
-    test_cat = np.full((n_trs + lags[-1], n_wide * len(lags)), np.nan)
-    test_cat[lags[0]:n_trs + lags[0], n_wide * 0:n_wide * 1] = test_model
-    test_cat[lags[1]:n_trs + lags[1], n_wide * 1:n_wide * 2] = test_model
-    test_cat[lags[2]:n_trs + lags[2], n_wide * 2:n_wide * 3] = test_model
-    test_cat[lags[3]:n_trs + lags[3], n_wide * 3:n_wide * 4] = test_model
 
-    test_model = np.nan_to_num(scaler.transform(test_cat))
+    test_cats, test_durs = [], {}
+    for r, test_run in zip(test_runs, test_model):
+        test_run = zscore(test_run, axis=0)
+        n_trs = test_run.shape[0]
+        n_wide = test_run.shape[1]
+        print(f"train_run.shape: {test_run.shape}")
+        test_cat = np.full((n_trs + lags[-1], n_wide * len(lags)), np.nan)
+        print(f"train_cat.shape {test_cat.shape}")
+        test_cat[lags[0]:n_trs + lags[0], n_wide * 0:n_wide * 1] = test_run
+        test_cat[lags[1]:n_trs + lags[1], n_wide * 1:n_wide * 2] = test_run
+        test_cat[lags[2]:n_trs + lags[2], n_wide * 2:n_wide * 3] = test_run
+        test_cat[lags[3]:n_trs + lags[3], n_wide * 3:n_wide * 4] = test_run 
+        test_cats.append(test_cat)
+    # n_trs = test_model.shape[0]
+    # test_cat = np.full((n_trs + lags[-1], n_wide * len(lags)), np.nan)
+    # test_cat[lags[0]:n_trs + lags[0], n_wide * 0:n_wide * 1] = test_model
+    # test_cat[lags[1]:n_trs + lags[1], n_wide * 1:n_wide * 2] = test_model
+    # test_cat[lags[2]:n_trs + lags[2], n_wide * 2:n_wide * 3] = test_model
+    # test_cat[lags[3]:n_trs + lags[3], n_wide * 3:n_wide * 4] = test_model
+    test_model = np.concatenate(test_cats, axis=0)
+    scaler = StandardScaler()
+    test_model = np.nan_to_num(scaler.fit_transform(test_model))#np.nan_to_num(scaler.transform(test_cat))
     print("Concatenated training model shape:", train_model.shape,
           f"\nTest model run {test_run} shape:", test_model.shape)
 
