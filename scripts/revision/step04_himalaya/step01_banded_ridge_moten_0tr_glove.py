@@ -230,18 +230,14 @@ def model_pca(train_model, test_model, n_components):
 # Load and assemble stimulus model with delays
 def load_model(feature, train_runs, test_runs, model_durs,model_ndim,
                run_pca=False, n_components=None):
-    # TODO: update path: 
     glove_dir = '/dartfs/rc/lab/H/HaxbyLab/heejung/data/annotations/glove'
-    # Load model and split into runs
-    # print(f"\n2. Semantic model ({model_f.split('_')[1].split('.')[0]})")
-    # model = np.load(os.path.join(model_dir, model_f))
     train_append = []
     for train_run in train_runs:
         # TODO: np.load
         run_data = np.load(f"{glove_dir}/{train_run}_feature-{feature}.npy")
         train_append.append(run_data)
-    train_model = np.vstack(train_append)
-    print(f"train model shape: {train_model.shape}")
+    train_model = train_append
+    print(f"train model shape: {np.vstack(train_model).shape}")
 
     test_append = []
     for test_run in test_runs:
@@ -288,13 +284,14 @@ def load_model(feature, train_runs, test_runs, model_durs,model_ndim,
         train_run = zscore(train_run, axis=0)
         n_trs = train_run.shape[0]
         n_wide = train_run.shape[1]
-
+        print(f"train_run.shape: {train_run.shape}")
         train_cat = np.full((n_trs + lags[-1], n_wide * len(lags)), np.nan)
-        train_cat[lags[0]:n_trs + lags[0], n_wide * (lags[0] - 1):n_wide * lags[0]] = train_run
-        train_cat[lags[1]:n_trs + lags[1], n_wide * (lags[1] - 1):n_wide * lags[1]] = train_run
-        train_cat[lags[2]:n_trs + lags[2], n_wide * (lags[2] - 1):n_wide * lags[2]] = train_run
-        train_cat[lags[3]:n_trs + lags[3], n_wide * (lags[3] - 1):n_wide * lags[3]] = train_run   
-
+        print(f"train_cat.shape {train_cat.shape}")
+        train_cat[lags[0]:n_trs + lags[0], n_wide * 0:n_wide * 1] = train_run
+        train_cat[lags[1]:n_trs + lags[1], n_wide * 1:n_wide * 2] = train_run
+        train_cat[lags[2]:n_trs + lags[2], n_wide * 2:n_wide * 3] = train_run
+        train_cat[lags[3]:n_trs + lags[3], n_wide * 3:n_wide * 4] = train_run   
+        
         # TODO: standard scaler
         train_cats.append(train_cat)
         train_durs[r] = train_cat.shape[0]
@@ -306,10 +303,10 @@ def load_model(feature, train_runs, test_runs, model_durs,model_ndim,
 
     n_trs = test_model.shape[0]
     test_cat = np.full((n_trs + lags[-1], n_wide * len(lags)), np.nan)
-    test_cat[lags[0]:n_trs + lags[0], n_wide * (lags[0] - 1):n_wide * lags[0]] = test_model
-    test_cat[lags[1]:n_trs + lags[1], n_wide * (lags[1] - 1):n_wide * lags[1]] = test_model
-    test_cat[lags[2]:n_trs + lags[2], n_wide * (lags[2] - 1):n_wide * lags[2]] = test_model
-    test_cat[lags[3]:n_trs + lags[3], n_wide * (lags[3] - 1):n_wide * lags[3]] = test_model
+    test_cat[lags[0]:n_trs + lags[0], n_wide * 0:n_wide * 1] = test_model
+    test_cat[lags[1]:n_trs + lags[1], n_wide * 1:n_wide * 2] = test_model
+    test_cat[lags[2]:n_trs + lags[2], n_wide * 2:n_wide * 3] = test_model
+    test_cat[lags[3]:n_trs + lags[3], n_wide * 3:n_wide * 4] = test_model
 
     test_model = np.nan_to_num(scaler.transform(test_cat))
     print("Concatenated training model shape:", train_model.shape,
