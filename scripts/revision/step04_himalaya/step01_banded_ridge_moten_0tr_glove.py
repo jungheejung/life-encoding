@@ -374,8 +374,9 @@ def load_ws_data(test_subject, test_runs, train_runs,
         # Z-score the test run over time
         runtest_data = zscore(runtest_data, axis=0)
         test_stack.append(runtest_data)
-    print(f"Test run {test_run} shape: {test_data.shape}")
     test_data = np.vstack(test_stack)
+    print(f"Test run {test_run} shape: {test_data.shape}")
+    
     return train_data, test_data
 
 
