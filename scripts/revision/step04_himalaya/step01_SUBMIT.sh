@@ -36,7 +36,7 @@ test_run=$(echo $INFILE | cut -f3 -d,)
 roi='None' #$(echo $INFILE | cut -f4 -d,)
 
 # Set command line arguments for banded_ridge.py
-alignment="aa" #"ha_common" # ws, aa, ha_common, ha_test
+alignment="ws" #"ha_common" # ws, aa, ha_common, ha_test
 features="scenes actions agents objects moten"
 
 echo ${subject} ${hemisphere} ${test_run} ${roi}
