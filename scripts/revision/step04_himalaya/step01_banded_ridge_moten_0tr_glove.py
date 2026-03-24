@@ -343,27 +343,16 @@ def load_ws_data(test_subject, test_runs, train_runs,
     # TODO: test_runs (list)
     # TODO: train_runs (list)
     train_data = []
-
+    test_stack = []
     data_dir = '/dartfs/rc/lab/H/HaxbyLab/heejung/data_spacetoptrim'
     # TODO: extract session number from test_run list items
     # from test_run
     for train_run in train_runs:
         ses = train_run.split('_')[0]
-        # if train_run == 4:
-
-            # Changing to non-PyMVPA read_gifti loading
         run_data = read_gifti(os.path.join(
             data_dir, test_subject, ses, 'func', f'{test_subject}_{train_run}_{hemisphere}_fsaverage6.func.gii'))
-        # else:
-            # run_data = read_gifti(os.path.join(
-            #     fmri_dir, (f'{test_subject}_task-life_acq-'
-            #                f'{fmri_durs[train_run]}vol_run-'
-            #                f'{train_run:02d}.{hemisphere}.'
-            #                'tproject.gii')))[3:-6, :]
-
         # Extract cortical vertices (or ROI) for training runs
         run_data = run_data[:, cortical_vertices]
-            
         # Z-score each training run prior to concatenation
         run_data = zscore(run_data, axis=0)
         
@@ -374,25 +363,19 @@ def load_ws_data(test_subject, test_runs, train_runs,
     train_data = np.vstack(train_data)
 
     # Load test run GIfTI data using non-PyMVPA
-    # if test_run == 4:
     for test_run in test_runs:
         ses = test_run.split('_')[0]
-        run_data = read_gifti(os.path.join(
+        runtest_data = read_gifti(os.path.join(
             data_dir, test_subject, ses, 'func', f'{test_subject}_{test_run}_{hemisphere}_fsaverage6.func.gii'))
-    # else:
-        # test_data = read_gifti(os.path.join(
-        #     fmri_dir, (f'{test_subject}_task-life_acq-'
-        #                f'{fmri_durs[test_run]}vol_run-'
-        #                f'{test_run:02d}.{hemisphere}.'
-        #                'tproject.gii')))[3:-6, :]
 
-    # Extract cortical vertices (or ROI) for test run
-    test_data = test_data[:, cortical_vertices]
-    
-    # Z-score the test run over time
-    test_data = zscore(test_data, axis=0)
+        # Extract cortical vertices (or ROI) for test run
+        runtest_data = runtest_data[:, cortical_vertices]
+        
+        # Z-score the test run over time
+        runtest_data = zscore(runtest_data, axis=0)
+        test_stack.append(runtest_data)
     print(f"Test run {test_run} shape: {test_data.shape}")
-
+    test_data = np.vstack(test_stack)
     return train_data, test_data
 
 
@@ -667,7 +650,7 @@ for f in features:
 
 # Load fMRI data with requested alignment method
 if alignment == 'ws':
-    train_data, test_data = load_ws_data(test_subject, test_run,
+    train_data, test_data = load_ws_data(test_subject, test_runs,
                                          train_runs, hemisphere,
                                          cortical_vertices)
 
