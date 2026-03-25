@@ -361,7 +361,7 @@ def load_ws_data(test_subject, test_runs, train_runs,
         
     # Concatenate training runs
     train_data = np.vstack(train_data)
-
+    print(f"number of Nans: {np.sum(np.isnan(train_data))}")
     # Load test run GIfTI data using non-PyMVPA
     for test_run in test_runs:
         ses = test_run.split('_')[0]
@@ -375,6 +375,7 @@ def load_ws_data(test_subject, test_runs, train_runs,
         runtest_data = zscore(runtest_data, axis=0)
         test_stack.append(runtest_data)
     test_data = np.vstack(test_stack)
+    print(f"number of Nans: {np.sum(np.isnan(test_data))}")
     print(f"Test run {test_run} shape: {test_data.shape}")
     
     return train_data, test_data
