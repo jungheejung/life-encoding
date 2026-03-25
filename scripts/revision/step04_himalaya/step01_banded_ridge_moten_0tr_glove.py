@@ -20,18 +20,18 @@ from sklearn.model_selection import KFold
 # %%
 from collections import OrderedDict
 model_durs = OrderedDict([
-('ses-01_run-01_order-02_content-wanderers',430),
-('ses-01_run-02_order-02_content-HB',123),
-('ses-01_run-03_order-01_content-huggingpets',230),
-('ses-01_run-03_order-04_content-dancewithdeath',295),
-('ses-01_run-04_order-02_content-angrygrandpa',736),
-('ses-02_run-02_order-03_content-menrunning',441),
-('ses-02_run-03_order-01_content-unefille',252),
-('ses-02_run-03_order-04_content-war',134),
-('ses-03_run-02_order-01_content-planetearth',321),
-('ses-03_run-02_order-03_content-heartstop',426),
-('ses-03_run-03_order-01_content-normativeprosocial2',228),
-('ses-04_run-01_order-02_content-gockskumara',389)
+('ses-01_run-01_order-02_content-wanderers',431),
+('ses-01_run-02_order-02_content-HB',124),
+('ses-01_run-03_order-01_content-huggingpets',231),
+('ses-01_run-03_order-04_content-dancewithdeath',297),
+('ses-01_run-04_order-02_content-angrygrandpa',737),
+('ses-02_run-02_order-03_content-menrunning',443),
+('ses-02_run-03_order-01_content-unefille',253),
+('ses-02_run-03_order-04_content-war',137),
+('ses-03_run-02_order-01_content-planetearth',322),
+('ses-03_run-02_order-03_content-heartstop',428),
+('ses-03_run-03_order-01_content-normativeprosocial2',230),
+('ses-04_run-01_order-02_content-gockskumara',390)
 ])
 
 # %%
@@ -682,15 +682,15 @@ def reinsert_vertices(roi_subset, roi_shape, roi_coords):
 print("\n4. Banded ridge regression")
 
 # Set up leave-one-run-out inner cross-validation loop
-run_folds = np.concatenate([[r] * t for r, t in train_durs.items()])
+run_folds = np.concatenate([[r] * t for r, t in enumerate(train_durs.values())])
 assert len(run_folds) == train_bands[0].shape[0]
 loro = PredefinedSplit(run_folds)
 
 # NOTE: 
-cv = KFold(n_splits=3, random_state=SUB, shuffle=True)
-cv.split(train_runs)
-cv = KFold(n_splits=4, random_state=SUB, shuffle=True)
-X = np.arange(12)
+# cv = KFold(n_splits=3, random_state=SUB, shuffle=True)
+# cv.split(train_runs)
+# cv = KFold(n_splits=4, random_state=SUB, shuffle=True)
+# X = np.arange(12)
 
 # Parameters for banded ridge model
 n_iter = 1000
