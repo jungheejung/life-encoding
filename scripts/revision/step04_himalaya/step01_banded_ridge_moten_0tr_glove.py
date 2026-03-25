@@ -9,8 +9,8 @@ from scipy.stats import zscore
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.model_selection import PredefinedSplit
-# from himalaya.ridge import GroupRidgeCV
-# from himalaya.scoring import correlation_score, r2_score
+from himalaya.ridge import GroupRidgeCV
+from himalaya.scoring import correlation_score, r2_score
 import nibabel as nib
 import matplotlib.pyplot as plt
 import json, glob
