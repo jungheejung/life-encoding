@@ -31,7 +31,7 @@ cortical_vertices = ~medial_mask # boolean (true for non-medials, false for medi
 cortical_coords = np.where(cortical_vertices)[0] # returns indices of non-medials
          
 
-run_data = np.load('/vast/labs/DBIC/datasets/Life/life-encoding/results/revision/glove/comb-r_pca-40_align-ws_sub-0037_run-1_roi-None_hemi-lh.npy')
+run_data = np.load('/vast/labs/DBIC/datasets/Life/life-encoding/results/revision/glove/ws_pca-40/comb-r_pca-40_align-ws_sub-0037_run-1_roi-None_hemi-lh.npy')
 # fisherz_run = np.arctanh(run_data[0, cortical_vertices])
 # stack_fisherz_run.append(fisherz_run)
 
