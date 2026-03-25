@@ -294,6 +294,7 @@ def load_model(feature, train_runs, test_runs, model_durs,model_ndim,
         train_cat[lags[2]:n_trs + lags[2], n_wide * 2:n_wide * 3] = train_run
         train_cat[lags[3]:n_trs + lags[3], n_wide * 3:n_wide * 4] = train_run   
         
+        train_cat = train_cat[ :-lags[-1]] # trim lags
         # TODO: standard scaler
         train_cats.append(train_cat)
         train_durs[r] = train_cat.shape[0]
@@ -316,6 +317,8 @@ def load_model(feature, train_runs, test_runs, model_durs,model_ndim,
         test_cat[lags[1]:n_trs + lags[1], n_wide * 1:n_wide * 2] = test_run
         test_cat[lags[2]:n_trs + lags[2], n_wide * 2:n_wide * 3] = test_run
         test_cat[lags[3]:n_trs + lags[3], n_wide * 3:n_wide * 4] = test_run 
+
+        test_cat = test_cat[ :-lags[-1]] # trim lags
         test_cats.append(test_cat)
         test_durs[r] = test_cat.shape[0]
     # n_trs = test_model.shape[0]
