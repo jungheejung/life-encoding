@@ -16,16 +16,20 @@
 
 conda activate himalaya
 
+# TODO: dnt save to vast.
 ### FIX THIS
-MAINDIR="/vast/labs/DBIC/datasets/Life/life-encoding"
+SCRIPT_DIR="/vast/labs/DBIC/datasets/Life/life-encoding"
+MAINDIR="/dartfs/rc/lab/H/HaxbyLab/heejung"
 echo "SLURMSARRAY: " ${SLURM_ARRAY_TASK_ID}
 
 # Subtract one to get python indexing
-ID=$((SLURM_ARRAY_TASK_ID-1))
+# ID=$((SLURM_ARRAY_TASK_ID-1))
 NUMBERS=$(sed -n "1p" ${MAINDIR}/scripts/himalaya/slurm_array.txt)
 IFS=',' read -ra NUMBER_ARRAY <<< "$NUMBERS"
 #ID=$((NUMBER_ARRAY[${SLURM_ARRAY_TASK_ID}]-1))
 echo ${ID}
+
+# TODO: 
 # Use slurm_array.sh file to set parameters
 ARRAY_FILE="${MAINDIR}/scripts/himalaya/slurm_array.txt"
 echo ${ARRAY_FILE}
@@ -40,7 +44,7 @@ alignment="ws" #"ha_common" # ws, aa, ha_common, ha_test
 features="scenes actions agents objects moten"
 
 echo ${subject} ${hemisphere} ${test_run} ${roi}
-python ${MAINDIR}/scripts/revision/step04_himalaya/step01_banded_ridge_moten_0tr_glove.py \
+python ${SCRIPT_DIR}/scripts/revision/step04_himalaya/step01_banded_ridge_moten_0tr_glove.py \
 --maindir ${MAINDIR} \
 -a ${alignment} \
 --hemisphere ${hemisphere} \
