@@ -127,7 +127,17 @@ test_subject = args.test_subject # e.g. 'sub-rid000005'
 features = args.features # e.g. ['bg', 'actions', 'agents'] 
 roi = args.roi # e.g. 'vt', '0'
 # lag_test = args.lag
-save_dir = os.path.join(main_dir, 'results', 'revision', 'glove', f'{alignment}_pca-{n_components}')
+
+# TODO: 
+# depending on feature length, code subdirectories differently
+# 1. turn string to list
+
+# 2. if len(list) == 5:
+if len(features) == 5:
+    save_dir = os.path.join(main_dir, 'results', 'revision', 'glove', f'{alignment}_pca-{n_components}')
+elif len(list) < 5:
+    save_dir = os.path.join(main_dir, 'results', 'revision', 'glove_nested', f'{"-".join(features)}', f'{alignment}_pca-{n_components}')
+# 3. if len(list) < 5:
 # Create save directory if it doesn't exist
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
