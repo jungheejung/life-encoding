@@ -16,7 +16,9 @@
 # * difference test -> only test against positive values
 
 
-
+# ----------------------------------------
+# invoke interactive node on discovery
+# ----------------------------------------
 # %%
 import numpy as np
 import pandas as pd
@@ -60,10 +62,6 @@ def bootstrap_test(data, n_resample=1000, estimator=np.mean, axis=0):
 def fisher_mean(correlation, axis=None):
     return np.tanh(np.nanmean(np.arctanh(correlation), axis=axis))
 
-
-# %% [markdown]
-# # parameters for Nested "actions agents bg" -- isolate "moten"
-# TODO: 
 # 
 # 
 # 1. load comb-r2 for full model & comb-r2 for glove_nested_actions-agents-bg -> 
@@ -73,19 +71,17 @@ def fisher_mean(correlation, axis=None):
 # 4. brain map: masked unique proportion R2, based on fdr-corrected t values. (Expected to be similar to Figure 1. )
 
 # %%
-# suma_dir = '/Users/h/suma-fsaverage6'
-# main_dir = '/dartfs/rc/lab/D/DBIC/DBIC/f0042x1/life-encoding'
-# main_dir = '/Volumes/life-encoding'
-# features = 'actions-agents-bg'
 
 suma_dir  = '/dartfs/rc/lab/H/HaxbyLab/heejung/data/niml'
 main_dir = '/dartfs/rc/lab/H/HaxbyLab/heejung'
 features = 'scenes-actions-agents-moten'
+features="scenes-agents-objects-moten" # actions
+features = 'actions-agents-objects-moten'
 result_dir = '/dartfs/rc/lab/H/HaxbyLab/heejung/data_spacetoptrim'
 
 nested_list = ['comb']#['agents', 'bg', 'moten']
 nested_list_r = [item + '-r' for item in nested_list]
-ANALYSIS="scenes-actions-agents-moten" # agents
+
 alignment = 'ws'
 full_dir = os.path.join(main_dir, 'results', 'revision', 'glove', 'ws_pca-40')
 nested_dir = os.path.join(main_dir, 'results', 'revision', 'glove_nested', features, 'ws_pca-40')
@@ -108,9 +104,6 @@ unique_keys = [
 ]
 
 subjects = sorted(list(set(unique_keys)))
-
-
-
 
 # initialize t, p, mean values
 hemi_t = []
@@ -205,7 +198,9 @@ for h, hemisphere in enumerate(hemis):
     output_fn = save_fname)
 print("* saved output (thresholded average r) for both hemispheres")
 
-#
+# --------------------------------------------------
+# local
+# --------------------------------------------------
 
 # %%
 print(f"shape of p: {p.shape}")
