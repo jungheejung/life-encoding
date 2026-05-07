@@ -141,7 +141,7 @@ for folder, unique_feature in folders.items():
         stats = np.zeros(n_vertices)
         mean_h = hemi_mean[h].copy()
         mean_h[q_both[h] >= fdr_thres] = 0
-        stats[cortical_coords] = mean_h[cortical_coords]
+        stats[cortical_coords] = mean_h #[cortical_coords]
 
         save_fname = f"{output_dir}/variance-{r_type}_{unique_feature}_pca-{pca_comp}_align-{alignment}_hemi-{hemisphere}_ttest.gii"
         write_gifti_v2(
