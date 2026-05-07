@@ -87,7 +87,7 @@ for folder, unique_feature in folders.items():
             stack_nestedrun = []
 
             for test_run in runs:
-                full_fname   = f"{full_dir}/comb-{r_type}_pca-{pca_comp}_align-{alignment}_{test_subject}_run-{test_run}_hemi-{hemisphere}.npy"
+                full_fname   = f"{full_dir}/comb-{r_type}_pca-{pca_comp}_align-{alignment}_{test_subject}_run-{test_run}_roi-None_hemi-{hemisphere}.npy"
                 nested_fname = f"{nested_dir}/comb-{r_type}_pca-{pca_comp}_align-{alignment}_{test_subject}_run-{test_run}_hemi-{hemisphere}.npy"
 
                 try:
