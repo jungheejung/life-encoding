@@ -88,7 +88,7 @@ for folder, unique_feature in folders.items():
 
             for test_run in runs:
                 full_fname   = f"{full_dir}/comb-{r_type}_pca-{pca_comp}_align-{alignment}_{test_subject}_run-{test_run}_roi-None_hemi-{hemisphere}.npy"
-                nested_fname = f"{nested_dir}/comb-{r_type}_pca-{pca_comp}_align-{alignment}_{test_subject}_run-{test_run}_hemi-{hemisphere}.npy"
+                nested_fname = f"{nested_dir}/comb-{r_type}_pca-{pca_comp}_align-{alignment}_{test_subject}_run-{test_run}_roi_None_hemi-{hemisphere}.npy"
 
                 try:
                     full_data   = np.load(full_fname)
