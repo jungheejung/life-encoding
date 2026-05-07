@@ -115,8 +115,8 @@ for folder, unique_feature in folders.items():
             continue
 
         diff_all = np.vstack(avg_all)  # n_subjects x n_vertices
-
-        p = bootstrap_test(diff_all, n_resample=10000, estimator=fisher_mean, axis=0)
+        t, p = scipy.stats.ttest_1samp(np.arctanh(diff_all), popmean=0,axis=0, alternative='greater')
+        # p = bootstrap_test(diff_all, n_resample=10000, estimator=fisher_mean, axis=0)
         hemi_p.append(p)
         hemi_mean.append(fisher_mean(diff_all, axis=0))
 
