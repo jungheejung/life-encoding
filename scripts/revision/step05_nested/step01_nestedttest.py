@@ -62,6 +62,9 @@ full_dir = os.path.join(main_dir, 'results', 'revision', 'glove', f'ws_pca-{pca_
 # =============================================================================
 # Main loop over nested folders
 # =============================================================================
+diff_all_nans = []
+p_all_nans =[]
+arctan_nans = []
 for folder, unique_feature in folders.items():
     print(f"\n{'='*60}")
     print(f"Processing: {folder}  →  unique variance of: {unique_feature}")
@@ -115,9 +118,16 @@ for folder, unique_feature in folders.items():
             continue
 
         diff_all = np.vstack(avg_all)  # n_subjects x n_vertices
+
         t, p = scipy.stats.ttest_1samp(np.arctanh(diff_all), popmean=0,axis=0, alternative='greater')
+
+        # NOTE: ttest_1samp introduces nans ( [373, 306]) per hemisphere
+        # We suspect this comes from zero variance from a specific voxel across participants
+        # SOLUTION: replace nans with 1s to preserve array shape 
+        pvals_replaced = np.where(np.isnan(p), 1.0, p)
         # p = bootstrap_test(diff_all, n_resample=10000, estimator=fisher_mean, axis=0)
-        hemi_p.append(p)
+        hemi_p.append(pvals_replaced)
+
         hemi_mean.append(fisher_mean(diff_all, axis=0))
 
     # -------------------------------------------------------------------------
@@ -128,6 +138,7 @@ for folder, unique_feature in folders.items():
 
     reject, q_all, _, _ = multipletests(p_all, method='fdr_bh')
     q_both = [q_all[:left_vert], q_all[left_vert:]]
+    p_both = [p_all[:left_vert], p_all[left_vert:]]
     print("  completed bootstrap + FDR correction")
 
     # -------------------------------------------------------------------------
@@ -140,10 +151,12 @@ for folder, unique_feature in folders.items():
 
         stats = np.zeros(n_vertices)
         mean_h = hemi_mean[h].copy()
-        mean_h[q_both[h] >= fdr_thres] = 0
+        # mean_h[q_both[h] >= fdr_thres] = 0
+        mean_h[p_both[h] >= fdr_thres] = 0
+
         stats[cortical_coords] = mean_h #[cortical_coords]
 
-        save_fname = f"{output_dir}/variance-{r_type}_{unique_feature}_pca-{pca_comp}_align-{alignment}_hemi-{hemisphere}_ttest.gii"
+        save_fname = f"{output_dir}/variance-{r_type}_{unique_feature}_pca-{pca_comp}_align-{alignment}_hemi-{hemisphere}_ttest_unc.gii"
         write_gifti_v2(
             stats.astype(np.float32),
             template_fn=join(suma_dir, f'{hemisphere}.pial.gii'),
