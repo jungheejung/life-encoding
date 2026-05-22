@@ -7,6 +7,15 @@ from statsmodels.stats.multitest import multipletests
 import nibabel as nib
 from pathlib import Path
 
+from nilearn import datasets
+from nilearn.image import smooth_img
+# from nilearn.datasets import (
+#     # load_fsaverage,
+#     load_fsaverage_data
+# )
+from nilearn.plotting import plot_surf_stat_map
+from nilearn.surface import SurfaceImage
+
 def write_gifti_v2(data, output_fn, template_fn):
     gii = nib.load(template_fn)
     for i in np.arange(gii.numDA):
@@ -42,6 +51,7 @@ pca_comp  = 40
 r_type    = 'r'
 runs      = [1, 2, 3, 4]
 hemis     = ['lh', 'rh']
+hemi_dict = {'lh': 'left', 'rh': 'right'}
 n_vertices = 40962
 n_medial   = {'lh': 3486, 'rh': 3491}
 fdr_thres  = 0.05
@@ -76,7 +86,8 @@ for folder, unique_feature in folders.items():
 
     hemi_p    = []
     hemi_mean = []
-
+    fsaverage6 = datasets.fetch_surf_fsaverage('fsaverage6')
+    
     for hemisphere in hemis:
         medial_mask     = np.load(join(suma_dir, f'fsaverage6_medial_{hemisphere}.npy'))
         assert np.sum(medial_mask) == n_medial[hemisphere]
@@ -111,7 +122,22 @@ for folder, unique_feature in folders.items():
             stack_nested = np.vstack(stack_nestedrun)
             diff         = stack_full - stack_nested
             avg_run      = fisher_mean(diff, axis=0)
-            avg_all.append(avg_run)
+            # TODO: -----------------------------
+            # Smooth data. npy -> .gii -> smooth via nilearn -> npy
+            # Full code
+            # 4. Create the SurfaceImage surf_image = SurfaceImage( mesh={ "left": fsaverage6["pial_left"], "right": fsaverage6["pial_right"] }, data={ "left": left_data, "right": right_data } )
+
+            avg_run_wmedial = np.zeros(n_vertices)
+            avg_run_wmedial[cortical_coords] = avg_run
+            npy2surf = SurfaceImage( mesh={ 
+                hemi_dict[hemisphere]: fsaverage6[f"pial_{hemi_dict[hemisphere]}"]}, 
+                data={ hemi_dict[hemisphere]: avg_run_wmedial } )
+
+            avg_run_smooth = smooth_img(npy2surf, fwhm=5)
+            avg_run_smooth_arr = avg_run_smooth.data.parts[hemi_dict[hemisphere]]
+            avg_run_smooth_arr_wo_medial = avg_run_smooth_arr[cortical_vertices]
+            # -----------------------------------
+            avg_all.append(avg_run_smooth_arr_wo_medial)
 
         if len(avg_all) == 0:
             print(f"  WARNING: no subjects for {hemisphere}, skipping")
@@ -127,7 +153,6 @@ for folder, unique_feature in folders.items():
         pvals_replaced = np.where(np.isnan(p), 1.0, p)
         # p = bootstrap_test(diff_all, n_resample=10000, estimator=fisher_mean, axis=0)
         hemi_p.append(pvals_replaced)
-
         hemi_mean.append(fisher_mean(diff_all, axis=0))
 
     # -------------------------------------------------------------------------
@@ -151,12 +176,12 @@ for folder, unique_feature in folders.items():
 
         stats = np.zeros(n_vertices)
         mean_h = hemi_mean[h].copy()
-        # mean_h[q_both[h] >= fdr_thres] = 0
-        mean_h[p_both[h] >= fdr_thres] = 0
+        mean_h[q_both[h] >= fdr_thres] = 0
+        # mean_h[p_both[h] >= fdr_thres] = 0
 
         stats[cortical_coords] = mean_h #[cortical_coords]
 
-        save_fname = f"{output_dir}/variance-{r_type}_{unique_feature}_pca-{pca_comp}_align-{alignment}_hemi-{hemisphere}_ttest_unc.gii"
+        save_fname = f"{output_dir}/variance-{r_type}_{unique_feature}_pca-{pca_comp}_align-{alignment}_hemi-{hemisphere}_ttest.gii"
         write_gifti_v2(
             stats.astype(np.float32),
             template_fn=join(suma_dir, f'{hemisphere}.pial.gii'),
