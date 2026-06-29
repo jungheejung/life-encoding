@@ -55,6 +55,7 @@ hemi_dict = {'lh': 'left', 'rh': 'right'}
 n_vertices = 40962
 n_medial   = {'lh': 3486, 'rh': 3491}
 fdr_thres  = 0.05
+multiplecomp = 'fdr' #'fdr'
 
 subjects = ['sub-0002', 'sub-0008', 'sub-0010', 'sub-0011', 'sub-0013', 'sub-0014', 'sub-0016', 'sub-0018', 'sub-0019', 'sub-0020', 'sub-0026', 'sub-0031', 'sub-0032', 'sub-0033', 'sub-0034', 'sub-0036', 'sub-0037', 'sub-0038', 'sub-0040', 'sub-0043', 'sub-0044', 'sub-0046', 'sub-0050', 'sub-0051', 'sub-0052', 'sub-0053', 'sub-0055', 'sub-0058', 'sub-0059', 'sub-0060', 'sub-0062', 'sub-0064', 'sub-0065', 'sub-0066', 'sub-0069', 'sub-0070', 'sub-0073', 'sub-0075', 'sub-0076', 'sub-0077', 'sub-0078', 'sub-0079', 'sub-0080', 'sub-0084', 'sub-0086', 'sub-0087', 'sub-0088', 'sub-0089', 'sub-0090', 'sub-0092', 'sub-0093', 'sub-0095', 'sub-0099', 'sub-0101', 'sub-0102', 'sub-0104', 'sub-0106', 'sub-0107', 'sub-0109', 'sub-0111', 'sub-0112', 'sub-0115', 'sub-0116', 'sub-0122', 'sub-0124', 'sub-0126', 'sub-0127', 'sub-0129', 'sub-0130', 'sub-0131', 'sub-0132', 'sub-0133']
 
@@ -133,7 +134,7 @@ for folder, unique_feature in folders.items():
                 hemi_dict[hemisphere]: fsaverage6[f"pial_{hemi_dict[hemisphere]}"]}, 
                 data={ hemi_dict[hemisphere]: avg_run_wmedial } )
 
-            avg_run_smooth = smooth_img(npy2surf, fwhm=5)
+            avg_run_smooth = smooth_img(npy2surf, fwhm=10)
             avg_run_smooth_arr = avg_run_smooth.data.parts[hemi_dict[hemisphere]]
             avg_run_smooth_arr_wo_medial = avg_run_smooth_arr[cortical_vertices]
             # -----------------------------------
@@ -154,7 +155,12 @@ for folder, unique_feature in folders.items():
         # p = bootstrap_test(diff_all, n_resample=10000, estimator=fisher_mean, axis=0)
         hemi_p.append(pvals_replaced)
         hemi_mean.append(fisher_mean(diff_all, axis=0))
-
+        diffall_save_fname = f"{output_dir}/variance-{r_type}_{unique_feature}_pca-{pca_comp}_align-{alignment}_hemi-{hemisphere}_multcomp-{multiplecomp}_mean.gii"
+        write_gifti_v2(
+            diff_all.astype(np.float32),
+            template_fn=join(suma_dir, f'{hemisphere}.pial.gii'),
+            output_fn=diffall_save_fname
+        )
     # -------------------------------------------------------------------------
     # FDR correction across both hemispheres
     # -------------------------------------------------------------------------
@@ -176,12 +182,14 @@ for folder, unique_feature in folders.items():
 
         stats = np.zeros(n_vertices)
         mean_h = hemi_mean[h].copy()
-        mean_h[q_both[h] >= fdr_thres] = 0
-        # mean_h[p_both[h] >= fdr_thres] = 0
+        if multiplecomp == 'fdr':
+            mean_h[q_both[h] >= fdr_thres] = 0
+        elif multiplecomp == 'unc':
+            mean_h[p_both[h] >= fdr_thres] = 0
 
         stats[cortical_coords] = mean_h #[cortical_coords]
 
-        save_fname = f"{output_dir}/variance-{r_type}_{unique_feature}_pca-{pca_comp}_align-{alignment}_hemi-{hemisphere}_ttest.gii"
+        save_fname = f"{output_dir}/variance-{r_type}_{unique_feature}_pca-{pca_comp}_align-{alignment}_hemi-{hemisphere}_multcomp-{multiplecomp}_ttest.gii"
         write_gifti_v2(
             stats.astype(np.float32),
             template_fn=join(suma_dir, f'{hemisphere}.pial.gii'),
